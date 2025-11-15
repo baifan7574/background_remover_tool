@@ -1,0 +1,11 @@
+flask
+flask-cors
+rembg
+pillow
+werkzeug
+requests
+supabase
+flask-sqlalchemy
+flask-login
+python-dotenv
+PyMySQL

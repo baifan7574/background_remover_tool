@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌍 跨境工具API服务</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 2.5em;
+            font-weight: 300;
+        }
+        .header p {
+            margin: 10px 0 0 0;
+            opacity: 0.9;
+            font-size: 1.2em;
+        }
+        .content {
+            padding: 40px;
+        }
+        .api-section {
+            margin-bottom: 40px;
+        }
+        .api-section h2 {
+            color: #4facfe;
+            border-bottom: 2px solid #4facfe;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        .api-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        .api-item {
+            background: #f8f9fa;
+            border-left: 4px solid #4facfe;
+            padding: 20px;
+            border-radius: 8px;
+            transition: transform 0.2s;
+        }
+        .api-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .api-method {
+            display: inline-block;
+            background: #28a745;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8em;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        .api-method.post {
+            background: #007bff;
+        }
+        .api-method.get {
+            background: #28a745;
+        }
+        .api-url {
+            font-family: 'Courier New', monospace;
+            background: #e9ecef;
+            padding: 5px 8px;
+            border-radius: 4px;
+            margin: 5px 0;
+            word-break: break-all;
+        }
+        .status {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+        .status.running {
+            background: #d1ecf1;
+            border-color: #bee5eb;
+            color: #0c5460;
+        }
+        .test-section {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 30px;
+        }
+        .test-btn {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1em;
+            margin: 5px;
+            transition: background 0.2s;
+        }
+        .test-btn:hover {
+            background: #0056b3;
+        }
+        .footer {
+            background: #f8f9fa;
+            padding: 30px;
+            text-align: center;
+            border-top: 1px solid #dee2e6;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌍 跨境工具API服务</h1>
+            <p>专业的跨境电商工具集合 - API版本</p>
+        </div>
+        
+        <div class="content">
+            <div class="status running">
+                <strong>🟢 服务状态：</strong> 正在运行<br>
+                <strong>🕒 启动时间：</strong> <span id="startTime"></span><br>
+                <strong>📊 数据库：</strong> 模拟内存数据库<br>
+                <strong>🔧 API版本：</strong> 2.1.0-test
+            </div>
+
+            <div class="api-section">
+                <h2>🔐 用户认证API</h2>
+                <div class="api-list">
+                    <div class="api-item">
+                        <div><span class="api-method post">POST</span>用户注册</div>
+                        <div class="api-url">/api/auth/register</div>
+                        <div>创建新用户账户，自动赠送10积分</div>
+                    </div>
+                    <div class="api-item">
+                        <div><span class="api-method post">POST</span>用户登录</div>
+                        <div class="api-url">/api/auth/login</div>
+                        <div>用户登录获取访问令牌</div>
+                    </div>
+                    <div class="api-item">
+                        <div><span class="api-method get">GET</span>获取用户资料</div>
+                        <div class="api-url">/api/auth/profile</div>
+                        <div>获取当前用户的详细信息和积分</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="api-section">
+                <h2>🛠️ 工具API</h2>
+                <div class="api-list">
+                    <div class="api-item">
+                        <div><span class="api-method post">POST</span>背景移除工具</div>
+                        <div class="api-url">/api/tools/remove-background</div>
+                        <div>移除图片背景，消耗2积分</div>
+                    </div>
+                    <div class="api-item">
+                        <div><span class="api-method post">POST</span>汇率转换工具</div>
+                        <div class="api-url">/api/tools/currency-converter</div>
+                        <div>实时汇率转换，消耗1积分</div>
+                    </div>
+                    <div class="api-item">
+                        <div><span class="api-method post">POST</span>单位转换工具</div>
+                        <div class="api-url">/api/tools/unit-converter</div>
+                        <div>多种单位类型转换，消耗1积分</div>
+                    </div>
+                    <div class="api-item">
+                        <div><span class="api-method post">POST</span>运费计算工具</div>
+                        <div class="api-url">/api/tools/shipping-calculator</div>
+                        <div>国际运费计算，消耗1积分</div>
+                    </div>
+                    <div class="api-item">
+                        <div><span class="api-method get">GET</span>使用统计</div>
+                        <div class="api-url">/api/tools/usage-stats</div>
+                        <div>获取用户工具使用统计信息</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="api-section">
+                <h2>🔍 系统API</h2>
+                <div class="api-list">
+                    <div class="api-item">
+                        <div><span class="api-method get">GET</span>健康检查</div>
+                        <div class="api-url">/health</div>
+                        <div>系统健康状态检查</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="test-section">
+                <h3>🧪 快速测试</h3>
+                <p>点击下面的按钮快速测试API功能：</p>
+                <button class="test-btn" onclick="testAPI('/health')">测试健康检查</button>
+                <button class="test-btn" onclick="testAPI('/api/tools/usage-stats')">测试使用统计</button>
+                <div id="testResult" style="margin-top: 15px; padding: 10px; background: #f8f9fa; border-radius: 5px; display: none;">
+                    <strong>测试结果：</strong>
+                    <pre id="resultContent" style="white-space: pre-wrap; margin: 5px 0;"></pre>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>🚀 <strong>跨境工具API服务</strong> - 为跨境电商提供专业工具支持</p>
+            <p>💡 提示：这是一个API服务，建议通过API客户端或前端应用调用</p>
+        </div>
+    </div>
+
+    <script>
+        // 显示当前时间
+        document.getElementById('startTime').textContent = new Date().toLocaleString('zh-CN');
+
+        // API测试函数
+        async function testAPI(endpoint) {
+            const resultDiv = document.getElementById('testResult');
+            const contentDiv = document.getElementById('resultContent');
+            
+            try {
+                resultDiv.style.display = 'block';
+                contentDiv.textContent = '正在测试...';
+                
+                const response = await fetch(endpoint);
+                const data = await response.json();
+                
+                contentDiv.textContent = JSON.stringify(data, null, 2);
+                resultDiv.style.background = '#d4edda';
+                resultDiv.style.borderColor = '#c3e6cb';
+            } catch (error) {
+                contentDiv.textContent = '错误: ' + error.message;
+                resultDiv.style.background = '#f8d7da';
+                resultDiv.style.borderColor = '#f5c6cb';
+            }
+        }
+
+        // 每30秒检查一次服务状态
+        setInterval(() => {
+            testAPI('/health');
+        }, 30000);
+    </script>
+</body>
+</html>
