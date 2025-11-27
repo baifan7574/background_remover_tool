@@ -1344,6 +1344,17 @@ class AppManager {
             image: base64Image,
             ...toolOptions
         };
+        
+        // 调试：打印水印相关参数
+        if (this.currentTool === 'add_watermark') {
+            console.log('🔍 准备发送的水印参数:', {
+                watermark_text: requestData.watermark_text,
+                watermark_position: requestData.watermark_position,
+                opacity: requestData.opacity,
+                font_size: requestData.font_size,
+                font_color: requestData.font_color
+            });
+        }
 
         // 根据工具类型设置不同的URL
         let apiUrl;
@@ -1482,10 +1493,18 @@ class AppManager {
                 const watermarkColor = document.getElementById('watermarkColor');
                 
                 if (watermarkText) options.watermark_text = watermarkText.value;
-                if (watermarkPosition) options.watermark_position = watermarkPosition.value;
+                if (watermarkPosition) {
+                    options.watermark_position = watermarkPosition.value;
+                    console.log('🔍 水印位置选择框的值:', watermarkPosition.value, '类型:', typeof watermarkPosition.value);
+                    console.log('🔍 水印位置选择框的选项:', Array.from(watermarkPosition.options).map(opt => ({value: opt.value, selected: opt.selected})));
+                } else {
+                    console.error('❌ 找不到水印位置选择框元素');
+                }
                 if (watermarkOpacity) options.opacity = parseFloat(watermarkOpacity.value);
                 if (watermarkFontSize) options.font_size = parseInt(watermarkFontSize.value);
                 if (watermarkColor) options.font_color = watermarkColor.value;
+                
+                console.log('🔍 完整的水印选项:', options);
                 break;
             case 'remove_watermark':
                 // 去水印不需要额外选项

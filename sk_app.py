@@ -3033,7 +3033,9 @@ def add_watermark():
         
         # 获取水印参数
         watermark_text = data.get('watermark_text', '© 2025')
-        watermark_position = data.get('watermark_position', 'bottom-right')  # top-left, top-right, bottom-left, bottom-right, center
+        watermark_position_raw = data.get('watermark_position', 'bottom-right')  # 原始值
+        print(f"🔍 接收到的原始位置参数: {repr(watermark_position_raw)} (类型: {type(watermark_position_raw).__name__})")
+        
         # 支持中文位置名称映射
         position_map = {
             '左上角': 'top-left',
@@ -3047,7 +3049,17 @@ def add_watermark():
             'bottom-right': 'bottom-right',
             'center': 'center'
         }
+        
+        # 转换为字符串并去除空格
+        if watermark_position_raw:
+            watermark_position = str(watermark_position_raw).strip()
+        else:
+            watermark_position = 'bottom-right'
+        
+        # 映射位置
         watermark_position = position_map.get(watermark_position, watermark_position)
+        print(f"🔍 映射后的位置参数: {repr(watermark_position)}")
+        
         opacity = float(data.get('opacity', 0.7))  # 提高默认透明度，使水印更清晰
         font_size = int(data.get('font_size', 50))  # 增大默认字体大小
         font_color = data.get('font_color', '#000000')  # 默认黑色，更易看见
@@ -3108,9 +3120,17 @@ def add_watermark():
             'bottom-right': (max(20, width - text_width - 20), max(20, height - text_height - 20)),
             'center': (max(0, (width - text_width) // 2), max(0, (height - text_height) // 2))
         }
+        
+        print(f"🔍 可用的位置选项: {list(positions.keys())}")
+        print(f"🔍 请求的位置: {repr(watermark_position)}")
+        print(f"🔍 位置是否在字典中: {watermark_position in positions}")
+        
         position = positions.get(watermark_position, positions['bottom-right'])
         
-        print(f"📍 水印位置: {position} (图片尺寸: {width} x {height})")
+        if watermark_position not in positions:
+            print(f"⚠️ 警告: 位置 '{watermark_position}' 不在可用选项中，使用默认位置 'bottom-right'")
+        
+        print(f"📍 最终水印位置: {position} (图片尺寸: {width} x {height}, 文本尺寸: {text_width} x {text_height})")
         
         # 转换颜色
         if font_color.startswith('#'):
