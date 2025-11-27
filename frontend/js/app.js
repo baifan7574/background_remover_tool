@@ -1319,15 +1319,29 @@ class AppManager {
                     font_size: requestData.font_size,
                     font_color: requestData.font_color
                 }, null, 2));
+                console.log('🎯🎯🎯 [processImage] 新版水印 - 准备发送POST请求到:', apiUrl);
             }
             
-            const response = await fetch(apiUrl, {
-                method: 'POST',
-                headers: headers,
-                body: JSON.stringify(requestData)
-            });
-            
-            console.log('API响应状态:', response.status, response.statusText);
+            let response;
+            try {
+                response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: headers,
+                    body: JSON.stringify(requestData)
+                });
+                
+                console.log('API响应状态:', response.status, response.statusText);
+                
+                if (this.currentTool === 'add_watermark_v2') {
+                    console.log('🎯🎯🎯 [processImage] 新版水印 - 收到响应，状态码:', response.status);
+                }
+            } catch (error) {
+                console.error('❌❌❌ [processImage] 请求发送失败:', error);
+                if (this.currentTool === 'add_watermark_v2') {
+                    console.error('❌❌❌ [processImage] 新版水印 - 请求失败:', error.message);
+                }
+                throw error;
+            }
 
             this.updateProgress(80, '等待服务器响应...');
             
