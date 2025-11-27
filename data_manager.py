@@ -348,6 +348,24 @@ class DataManager:
             daily_usage = profile.get('daily_usage', {})
             today_usage = daily_usage.get(today, {})
             
+            # 获取当前计划的所有工具配置
+            plan = profile.get('plan', 'free')
+            default_stats = self.get_default_usage_stats(plan)
+            
+            # 补充缺失的工具到 usage_stats（兼容老会员）
+            for tool_name, tool_stats in default_stats.items():
+                if tool_name not in profile['usage_stats']:
+                    # 新工具，添加到 usage_stats
+                    profile['usage_stats'][tool_name] = {
+                        'current_usage': 0,
+                        'daily_limit': tool_stats['daily_limit'],
+                        'remaining_usage': tool_stats['remaining_usage']
+                    }
+                else:
+                    # 已存在的工具，更新限制（如果配置有变化）
+                    profile['usage_stats'][tool_name]['daily_limit'] = tool_stats['daily_limit']
+            
+            # 更新所有工具的使用次数和剩余次数
             for tool_name in profile['usage_stats']:
                 current_usage = today_usage.get(tool_name, 0)
                 daily_limit = profile['usage_stats'][tool_name]['daily_limit']
@@ -355,6 +373,9 @@ class DataManager:
                 
                 profile['usage_stats'][tool_name]['current_usage'] = current_usage
                 profile['usage_stats'][tool_name]['remaining_usage'] = remaining
+            
+            # 保存更新后的资料（包含新工具）
+            self.save_all()
             
             return profile
         return None
