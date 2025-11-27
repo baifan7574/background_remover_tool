@@ -731,16 +731,23 @@ class AppManager {
                     </div>
                 `;
                 break;
-            case 'add_watermark':
+            // ========== 旧版水印功能（已注释）==========
+            // case 'add_watermark':
+            //     ...
+            //     break;
+            
+            // ========== 新版水印功能（简化版）==========
+            case 'add_watermark_v2':
+                console.log('🎯🎯🎯 创建新版水印工具界面');
                 optionsHTML = `
                     <div class="tool-options">
                         <div class="option-group">
-                            <label for="watermarkText">水印文字:</label>
-                            <input type="text" id="watermarkText" class="form-input" placeholder="输入水印文字，例如：© 2025 或 版权所有" value="© 2025">
+                            <label for="watermarkTextV2">水印文字:</label>
+                            <input type="text" id="watermarkTextV2" class="form-input" placeholder="输入水印文字，例如：© 2025 或 版权所有" value="© 2025">
                         </div>
                         <div class="option-group">
-                            <label for="watermarkPosition">水印位置:</label>
-                            <select id="watermarkPosition" class="form-select">
+                            <label for="watermarkPositionV2">水印位置:</label>
+                            <select id="watermarkPositionV2" class="form-select">
                                 <option value="top-left">左上角</option>
                                 <option value="top-right">右上角</option>
                                 <option value="bottom-left">左下角</option>
@@ -749,20 +756,21 @@ class AppManager {
                             </select>
                         </div>
                         <div class="option-group">
-                            <label for="watermarkOpacity">透明度:</label>
-                            <input type="range" id="watermarkOpacity" min="0.1" max="1" step="0.1" value="0.7" class="form-range" oninput="document.getElementById('watermarkOpacityValue').textContent = Math.round(this.value * 100) + '%'">
-                            <span id="watermarkOpacityValue">70%</span>
+                            <label for="watermarkOpacityV2">透明度:</label>
+                            <input type="range" id="watermarkOpacityV2" min="0.1" max="1" step="0.1" value="0.7" class="form-range" oninput="document.getElementById('watermarkOpacityValueV2').textContent = Math.round(this.value * 100) + '%'">
+                            <span id="watermarkOpacityValueV2">70%</span>
                         </div>
                         <div class="option-group">
-                            <label for="watermarkFontSize">字体大小:</label>
-                            <input type="number" id="watermarkFontSize" class="form-input" min="10" max="200" value="50">
+                            <label for="watermarkFontSizeV2">字体大小:</label>
+                            <input type="number" id="watermarkFontSizeV2" class="form-input" min="10" max="200" value="50">
                         </div>
                         <div class="option-group">
-                            <label for="watermarkColor">字体颜色:</label>
-                            <input type="color" id="watermarkColor" class="form-input" value="#000000">
+                            <label for="watermarkColorV2">字体颜色:</label>
+                            <input type="color" id="watermarkColorV2" class="form-input" value="#000000">
                         </div>
                     </div>
                 `;
+                console.log('✅ 新版水印工具界面创建完成');
                 break;
             case 'remove_watermark':
                 optionsHTML = `
@@ -1262,9 +1270,16 @@ class AppManager {
                     apiUrl = `${this.apiBaseUrl}/api/tools/crop-image`;
                     this.updateProgress(20, '准备裁剪参数...');
                     break;
-                case 'add_watermark':
-                    apiUrl = `${this.apiBaseUrl}/api/tools/add-watermark`;
-                    this.updateProgress(20, '准备水印参数...');
+                // 旧版水印功能（已注释）
+                // case 'add_watermark':
+                //     apiUrl = `${this.apiBaseUrl}/api/tools/add-watermark`;
+                //     break;
+                
+                // 新版水印功能
+                case 'add_watermark_v2':
+                    console.log('🎯🎯🎯 新版水印功能 - 设置API URL');
+                    apiUrl = `${this.apiBaseUrl}/api/tools/add-watermark-v2`;
+                    this.updateProgress(20, '准备水印参数（新版）...');
                     break;
                 case 'remove_watermark':
                     apiUrl = `${this.apiBaseUrl}/api/tools/remove-watermark`;
@@ -1417,8 +1432,15 @@ class AppManager {
             case 'keyword_analyzer':
                 apiUrl = `${this.apiBaseUrl}/api/tools/keyword-analyzer`;
                 break;
-            case 'add_watermark':
-                apiUrl = `${this.apiBaseUrl}/api/tools/add-watermark`;
+            // 旧版水印功能（已注释）
+            // case 'add_watermark':
+            //     apiUrl = `${this.apiBaseUrl}/api/tools/add-watermark`;
+            //     break;
+            
+            // 新版水印功能
+            case 'add_watermark_v2':
+                console.log('🎯🎯🎯 新版水印功能 - processImageFile - 设置API URL');
+                apiUrl = `${this.apiBaseUrl}/api/tools/add-watermark-v2`;
                 break;
             case 'remove_watermark':
                 apiUrl = `${this.apiBaseUrl}/api/tools/remove-watermark`;
@@ -1528,35 +1550,52 @@ class AppManager {
                 if (fromCurrency) options.from_currency = fromCurrency.value;
                 if (toCurrency) options.to_currency = toCurrency.value;
                 break;
-            case 'add_watermark':
-                console.log('🎯🎯🎯 [getToolOptions] 开始获取水印参数！');
-                const watermarkText = document.getElementById('watermarkText');
-                const watermarkPosition = document.getElementById('watermarkPosition');
-                const watermarkOpacity = document.getElementById('watermarkOpacity');
-                const watermarkFontSize = document.getElementById('watermarkFontSize');
-                const watermarkColor = document.getElementById('watermarkColor');
+            // 旧版水印功能（已注释）
+            // case 'add_watermark':
+            //     ...
+            //     break;
+            
+            // 新版水印功能（简化版）
+            case 'add_watermark_v2':
+                console.log('🎯🎯🎯 [getToolOptions] 新版水印 - 开始获取参数！');
+                const watermarkTextV2 = document.getElementById('watermarkTextV2');
+                const watermarkPositionV2 = document.getElementById('watermarkPositionV2');
+                const watermarkOpacityV2 = document.getElementById('watermarkOpacityV2');
+                const watermarkFontSizeV2 = document.getElementById('watermarkFontSizeV2');
+                const watermarkColorV2 = document.getElementById('watermarkColorV2');
                 
-                console.log('🎯 [getToolOptions] 找到的元素:', {
-                    watermarkText: !!watermarkText,
-                    watermarkPosition: !!watermarkPosition,
-                    watermarkOpacity: !!watermarkOpacity,
-                    watermarkFontSize: !!watermarkFontSize,
-                    watermarkColor: !!watermarkColor
+                console.log('🎯 [getToolOptions] 新版 - 找到的元素:', {
+                    watermarkTextV2: !!watermarkTextV2,
+                    watermarkPositionV2: !!watermarkPositionV2,
+                    watermarkOpacityV2: !!watermarkOpacityV2,
+                    watermarkFontSizeV2: !!watermarkFontSizeV2,
+                    watermarkColorV2: !!watermarkColorV2
                 });
                 
-                if (watermarkText) options.watermark_text = watermarkText.value;
-                if (watermarkPosition) {
-                    options.watermark_position = watermarkPosition.value;
-                    console.log('🎯🎯🎯 水印位置选择框的值:', watermarkPosition.value, '类型:', typeof watermarkPosition.value);
-                    console.log('🎯🎯🎯 水印位置选择框的选项:', Array.from(watermarkPosition.options).map(opt => ({value: opt.value, selected: opt.selected})));
-                } else {
-                    console.error('❌❌❌ 找不到水印位置选择框元素！');
+                if (watermarkTextV2) {
+                    options.watermark_text = watermarkTextV2.value;
+                    console.log('✅ 水印文字:', watermarkTextV2.value);
                 }
-                if (watermarkOpacity) options.opacity = parseFloat(watermarkOpacity.value);
-                if (watermarkFontSize) options.font_size = parseInt(watermarkFontSize.value);
-                if (watermarkColor) options.font_color = watermarkColor.value;
+                if (watermarkPositionV2) {
+                    options.watermark_position = watermarkPositionV2.value;
+                    console.log('✅✅✅ 新版水印位置:', watermarkPositionV2.value, '类型:', typeof watermarkPositionV2.value);
+                } else {
+                    console.error('❌❌❌ 找不到新版水印位置选择框！');
+                }
+                if (watermarkOpacityV2) {
+                    options.opacity = parseFloat(watermarkOpacityV2.value);
+                    console.log('✅ 透明度:', options.opacity);
+                }
+                if (watermarkFontSizeV2) {
+                    options.font_size = parseInt(watermarkFontSizeV2.value);
+                    console.log('✅ 字体大小:', options.font_size);
+                }
+                if (watermarkColorV2) {
+                    options.font_color = watermarkColorV2.value;
+                    console.log('✅ 字体颜色:', options.font_color);
+                }
                 
-                console.log('🎯🎯🎯 [getToolOptions] 最终的水印选项:', options);
+                console.log('🎯🎯🎯 [getToolOptions] 新版 - 最终选项:', options);
                 break;
                 if (watermarkOpacity) options.opacity = parseFloat(watermarkOpacity.value);
                 if (watermarkFontSize) options.font_size = parseInt(watermarkFontSize.value);

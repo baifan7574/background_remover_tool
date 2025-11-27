@@ -185,7 +185,23 @@
                     </button>
                 </div>
 
-                <!-- 加水印工具 -->
+                <!-- 加水印工具（新版） -->
+                <div class="tool-card tool-card-large" data-tool="add_watermark_v2">
+                    <div class="tool-icon">🖼️</div>
+                    <h3 class="tool-title">加水印（新版）</h3>
+                    <p class="tool-description">为图片添加文字水印，保护版权，支持自定义位置、透明度和样式（新版简化版）</p>
+                    <div class="tool-features">
+                        <span class="feature-tag">自定义文字</span>
+                        <span class="feature-tag">多种位置</span>
+                        <span class="feature-tag">透明度调节</span>
+                    </div>
+                    <button class="btn btn-primary tool-btn tool-btn-large" data-tool="add_watermark_v2" onclick="if(window.appManager) { window.appManager.openTool('add_watermark_v2'); } else { alert('应用正在初始化，请稍候...'); }">
+                        立即使用
+                    </button>
+                </div>
+                
+                <!-- 旧版加水印工具（已注释） -->
+                <!--
                 <div class="tool-card tool-card-large" data-tool="add_watermark">
                     <div class="tool-icon">🖼️</div>
                     <h3 class="tool-title">加水印</h3>
@@ -199,6 +215,7 @@
                         立即使用
                     </button>
                 </div>
+                -->
 
                 <!-- 去水印工具 -->
                 <div class="tool-card tool-card-large" data-tool="remove_watermark">

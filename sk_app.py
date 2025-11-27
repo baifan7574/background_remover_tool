@@ -2992,9 +2992,16 @@ def send_email():
 
 # ==================== 加水印工具 ====================
 
-@app.route('/api/tools/add-watermark', methods=['POST'])
-def add_watermark():
-    """加水印工具"""
+# ========== 旧版水印功能（已注释，改用 add_watermark_v2）==========
+# @app.route('/api/tools/add-watermark', methods=['POST'])
+# def add_watermark():
+#     """加水印工具（旧版，已禁用）"""
+#     pass
+
+# ========== 新版水印功能（简化版，带详细调试）==========
+@app.route('/api/tools/add-watermark-v2', methods=['POST'])
+def add_watermark_v2():
+    """加水印工具（新版简化版）"""
     try:
         user = get_user_from_token()
         if not user:
@@ -3217,6 +3224,183 @@ def add_watermark():
         
     except Exception as e:
         import traceback
+        return jsonify({'error': f'水印添加失败: {str(e)}', 'traceback': traceback.format_exc()}), 500
+# ========== 旧版水印功能结束 ==========
+
+# ==================== 新版水印功能（简化版）====================
+@app.route('/api/tools/add-watermark-v2', methods=['POST'])
+def add_watermark_v2():
+    """加水印工具（新版简化版，带详细调试）"""
+    print("=" * 50)
+    print("🎯🎯🎯 新版水印功能被调用！")
+    print("=" * 50)
+    
+    try:
+        # 1. 用户认证
+        user = get_user_from_token()
+        if not user:
+            print("❌ 用户未登录")
+            return jsonify({'error': '请先登录'}), 401
+        
+        user_id = user['id']
+        print(f"✅ 用户已登录: {user_id}")
+        
+        # 2. 检查使用次数
+        can_use, current_usage, daily_limit, message = check_daily_usage_limit(user_id, 'add_watermark')
+        if not can_use:
+            print(f"❌ 使用次数已达上限: {current_usage}/{daily_limit}")
+            return jsonify({
+                'error': f'今日使用次数已达上限（{daily_limit}次）',
+                'current_usage': current_usage,
+                'daily_limit': daily_limit,
+                'message': message
+            }), 400
+        
+        print(f"✅ 使用次数检查通过: {current_usage}/{daily_limit}")
+        
+        # 3. 获取请求数据
+        data = request.get_json()
+        print(f"📦 接收到的数据键: {list(data.keys()) if data else 'None'}")
+        
+        # 4. 获取图片数据
+        image_data = data.get('image') or data.get('image_data')
+        if not image_data:
+            print("❌ 没有图片数据")
+            return jsonify({'error': '没有上传图片数据'}), 400
+        
+        print(f"✅ 图片数据已接收，长度: {len(image_data)} 字符")
+        
+        # 5. 解码图片
+        try:
+            if ',' in image_data:
+                image_data = image_data.split(',')[1]
+            image_bytes = base64.b64decode(image_data)
+            input_image = Image.open(io.BytesIO(image_bytes))
+            print(f"✅ 图片解码成功，尺寸: {input_image.size}")
+        except Exception as e:
+            print(f"❌ 图片解码失败: {str(e)}")
+            return jsonify({'error': f'图片数据解析失败: {str(e)}'}), 400
+        
+        # 6. 获取水印参数（简化版，只支持基本参数）
+        watermark_text = data.get('watermark_text', '© 2025')
+        watermark_position = data.get('watermark_position', 'bottom-right')
+        opacity = float(data.get('opacity', 0.7))
+        font_size = int(data.get('font_size', 50))
+        font_color = data.get('font_color', '#000000')
+        
+        print(f"📝 水印参数:")
+        print(f"   文字: {watermark_text}")
+        print(f"   位置: {watermark_position}")
+        print(f"   透明度: {opacity}")
+        print(f"   字体大小: {font_size}")
+        print(f"   颜色: {font_color}")
+        
+        # 7. 位置映射（简化版）
+        position_map = {
+            'top-left': 'top-left',
+            'top-right': 'top-right',
+            'bottom-left': 'bottom-left',
+            'bottom-right': 'bottom-right',
+            'center': 'center',
+            '左上角': 'top-left',
+            '右上角': 'top-right',
+            '左下角': 'bottom-left',
+            '右下角': 'bottom-right',
+            '居中': 'center'
+        }
+        watermark_position = position_map.get(watermark_position, 'bottom-right')
+        print(f"📍 映射后的位置: {watermark_position}")
+        
+        # 8. 处理图片
+        if input_image.mode != 'RGBA':
+            input_image = input_image.convert('RGBA')
+        
+        from PIL import ImageDraw, ImageFont
+        watermark_layer = Image.new('RGBA', input_image.size, (0, 0, 0, 0))
+        draw = ImageDraw.Draw(watermark_layer)
+        
+        # 9. 加载字体（简化版，使用默认字体）
+        try:
+            font = ImageFont.load_default()
+            print("✅ 使用默认字体")
+        except:
+            font = ImageFont.load_default()
+            print("⚠️ 使用默认字体（备用）")
+        
+        # 10. 计算位置
+        width, height = input_image.size
+        text_width = len(watermark_text) * 10  # 简单估算
+        text_height = 20
+        
+        positions = {
+            'top-left': (20, 20),
+            'top-right': (max(20, width - text_width - 20), 20),
+            'bottom-left': (20, max(20, height - text_height - 20)),
+            'bottom-right': (max(20, width - text_width - 20), max(20, height - text_height - 20)),
+            'center': (max(0, (width - text_width) // 2), max(0, (height - text_height) // 2))
+        }
+        
+        position = positions.get(watermark_position, positions['bottom-right'])
+        print(f"📍 最终位置坐标: {position} (图片尺寸: {width}x{height})")
+        
+        # 11. 转换颜色
+        if font_color.startswith('#'):
+            font_color = font_color[1:]
+        if len(font_color) == 3:
+            font_color = ''.join([c*2 for c in font_color])
+        try:
+            r, g, b = int(font_color[0:2], 16), int(font_color[2:4], 16), int(font_color[4:6], 16)
+        except:
+            r, g, b = 0, 0, 0
+        
+        alpha = int(255 * opacity)
+        print(f"🎨 颜色: RGB({r}, {g}, {b}), 透明度: {alpha}/255")
+        
+        # 12. 绘制水印
+        draw.text(position, watermark_text, font=font, fill=(r, g, b, alpha))
+        print(f"✅ 水印已绘制")
+        
+        # 13. 合并图片
+        output_image = Image.alpha_composite(input_image, watermark_layer)
+        if output_image.mode == 'RGBA':
+            rgb_image = Image.new('RGB', output_image.size, (255, 255, 255))
+            rgb_image.paste(output_image, mask=output_image.split()[3])
+            output_image = rgb_image
+        
+        print(f"✅ 图片合并完成")
+        
+        # 14. 保存并返回
+        output_buffer = io.BytesIO()
+        output_image.save(output_buffer, format='PNG')
+        output_base64 = base64.b64encode(output_buffer.getvalue()).decode('utf-8')
+        
+        # 15. 记录使用次数
+        success, usage_message = record_daily_usage(user_id, 'add_watermark')
+        if not success:
+            print(f"❌ 记录使用次数失败: {usage_message}")
+            return jsonify({'error': usage_message}), 500
+        
+        updated_usage = check_daily_usage_limit(user_id, 'add_watermark')[1]
+        
+        print("=" * 50)
+        print("✅✅✅ 新版水印功能执行成功！")
+        print("=" * 50)
+        
+        return jsonify({
+            'success': True,
+            'message': '水印添加完成（新版）',
+            'processed_image': f'data:image/png;base64,{output_base64}',
+            'current_usage': updated_usage,
+            'daily_limit': daily_limit,
+            'remaining_usage': daily_limit - updated_usage if daily_limit != -1 else -1
+        })
+        
+    except Exception as e:
+        import traceback
+        print("=" * 50)
+        print(f"❌❌❌ 新版水印功能出错: {str(e)}")
+        print(traceback.format_exc())
+        print("=" * 50)
         return jsonify({'error': f'水印添加失败: {str(e)}', 'traceback': traceback.format_exc()}), 500
 
 # ==================== 去水印工具 ====================
