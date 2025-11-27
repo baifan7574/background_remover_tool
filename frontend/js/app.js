@@ -1468,6 +1468,7 @@ class AppManager {
         const result = await response.json();
 
         if (response.ok) {
+            // 新版水印功能也返回 processed_image
             return result.processed_image || result.converted_image || result.cropped_image;
         } else {
             const errorMsg = result.error || '处理失败';
@@ -2608,6 +2609,37 @@ class AppManager {
                         </div>
                     </div>
                 `;
+                break;
+                
+            // 旧版水印功能（已注释）
+            // case 'add_watermark':
+            //     ...
+            //     break;
+            
+            // 新版水印功能
+            case 'add_watermark_v2':
+                console.log('🎯🎯🎯 [showSuccessResult] 新版水印 - 显示结果');
+                console.log('🎯 结果数据:', result);
+                imageUrl = result.processed_image || '';
+                console.log('🎯 图片URL:', imageUrl ? '有图片' : '无图片');
+                resultHTML = `
+                    <div class="result-container">
+                        <h3>水印添加完成！（新版）</h3>
+                        <div class="result-preview">
+                            <img src="${imageUrl}" alt="加水印结果" class="result-image" onerror="console.error('❌ 图片加载失败:', this.src)">
+                        </div>
+                        <div class="result-info">
+                            <p>今日使用: ${result.current_usage || 0}/${result.daily_limit || '∞'}</p>
+                            <p>剩余次数: ${result.remaining_usage !== undefined ? (result.remaining_usage === -1 ? '无限制' : result.remaining_usage) : '未知'}</p>
+                        </div>
+                        <div class="result-actions">
+                            <a href="${imageUrl}" download="watermarked_v2.png" class="btn btn-primary">下载图片</a>
+                            <button class="btn btn-secondary" onclick="if(window.appManager) { window.appManager.closeModal('toolModal'); }">关闭</button>
+                            <button class="btn btn-primary" onclick="if(window.appManager) { window.appManager.resetTool(); window.appManager.showModal('toolModal'); }">重新处理</button>
+                        </div>
+                    </div>
+                `;
+                console.log('✅ 新版水印结果HTML已生成');
                 break;
                 
             case 'add_watermark':
