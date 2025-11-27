@@ -1,5 +1,13 @@
+// ========== 水印功能调试版本 - 2025-11-27 ==========
+console.log('🎯🎯🎯 app.js 文件已加载！版本：水印调试版');
+// ================================================
+
 // 前端应用主逻辑
 // 自动检测环境：开发环境使用localhost，生产环境使用线上地址
+// ========== 水印功能调试版本 - 2025-11-27 ==========
+console.log('🎯🎯🎯 app.js 文件已加载！版本：水印调试版');
+// ================================================
+
 const getAppApiBaseUrl = () => {
     // 如果访问 localhost，使用本地开发服务器
     if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
@@ -3491,9 +3499,10 @@ if (typeof window !== 'undefined') {
         setTimeout(() => {
             if (typeof AuthManager !== 'undefined' && typeof window.appManager === 'undefined') {
                 try {
-                    console.log('自动初始化AppManager...');
+                    console.log('🎯🎯🎯 自动初始化AppManager...');
                     window.authManager = window.authManager || new AuthManager();
                     window.appManager = new AppManager();
+                    console.log('🎯🎯🎯 AppManager创建完成！', window.appManager);
                     console.log('✅ AppManager自动初始化完成');
                 } catch (error) {
                     console.error('❌ AppManager自动初始化失败:', error);
