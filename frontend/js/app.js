@@ -1241,15 +1241,16 @@ class AppManager {
                 ...toolOptions
             };
 
-            // 调试：打印水印相关参数
-            if (this.currentTool === 'add_watermark') {
-                console.log('🔍 [processImage] 准备发送的水印参数:', {
+            // 调试：打印水印相关参数（新版）
+            if (this.currentTool === 'add_watermark_v2') {
+                console.log('🎯🎯🎯 [processImage] 新版水印 - 准备发送的参数:', {
                     watermark_text: requestData.watermark_text,
                     watermark_position: requestData.watermark_position,
                     opacity: requestData.opacity,
                     font_size: requestData.font_size,
                     font_color: requestData.font_color,
-                    toolOptions: toolOptions
+                    toolOptions: toolOptions,
+                    requestData: requestData
                 });
             }
 
@@ -1308,9 +1309,9 @@ class AppManager {
             
             console.log('发送API请求:', apiUrl, { headers, hasBody: !!requestData.image });
             
-            // 调试：打印实际发送的数据（水印功能）
-            if (this.currentTool === 'add_watermark') {
-                console.log('🔍 [processImage] 实际发送的请求体:', JSON.stringify({
+            // 调试：打印实际发送的数据（新版水印功能）
+            if (this.currentTool === 'add_watermark_v2') {
+                console.log('🎯🎯🎯 [processImage] 新版水印 - 实际发送的请求体:', JSON.stringify({
                     hasImage: !!requestData.image,
                     watermark_text: requestData.watermark_text,
                     watermark_position: requestData.watermark_position,
