@@ -2096,6 +2096,143 @@ def image_cropper():
         import traceback
         return jsonify({'error': f'图片裁剪异常: {str(e)}', 'traceback': traceback.format_exc()}), 500
 
+@app.route('/api/tools/rotate-flip', methods=['POST'])
+def rotate_flip():
+    """图片旋转/翻转工具"""
+    try:
+        # 检查功能开关
+        try:
+            from config.feature_flags import is_feature_enabled
+            if not is_feature_enabled('image_rotate_flip'):
+                return jsonify({'error': '功能暂未开放'}), 403
+        except ImportError:
+            # 如果功能开关模块不存在，继续执行（向后兼容）
+            pass
+        
+        # 用户认证
+        user = get_user_from_token()
+        if not user:
+            return jsonify({'error': '请先登录'}), 401
+        
+        user_id = user['id']
+        
+        # 检查使用次数
+        can_use, current_usage, daily_limit, message = check_daily_usage_limit(user_id, 'image_rotate_flip')
+        if not can_use:
+            return jsonify({
+                'error': f'今日使用次数已达上限（{daily_limit}次）',
+                'current_usage': current_usage,
+                'daily_limit': daily_limit,
+                'message': message
+            }), 400
+        
+        # 获取请求数据
+        if not request.is_json:
+            return jsonify({'error': '请提供JSON数据'}), 400
+        
+        data = request.get_json()
+        
+        # 获取操作类型
+        operation = data.get('operation', 'rotate_90_cw')  # 默认顺时针90度
+        
+        # 支持的操作类型
+        valid_operations = {
+            'rotate_90_cw': 'rotate_90_cw',      # 顺时针90度
+            'rotate_90_ccw': 'rotate_90_ccw',    # 逆时针90度
+            'rotate_180': 'rotate_180',          # 180度
+            'flip_horizontal': 'flip_horizontal', # 水平翻转
+            'flip_vertical': 'flip_vertical'      # 垂直翻转
+        }
+        
+        if operation not in valid_operations:
+            return jsonify({'error': f'不支持的操作类型: {operation}'}), 400
+        
+        # 获取图片数据
+        image_data = data.get('image') or data.get('image_data')
+        if not image_data:
+            return jsonify({'error': '没有上传图片数据'}), 400
+        
+        # 解码图片
+        try:
+            if ',' in image_data:
+                image_data = image_data.split(',')[1]
+            image_bytes = base64.b64decode(image_data)
+            input_image = Image.open(io.BytesIO(image_bytes))
+        except Exception as e:
+            return jsonify({'error': f'图片数据解析失败: {str(e)}'}), 400
+        
+        # 执行操作
+        output_image = input_image.copy()
+        
+        if operation == 'rotate_90_cw':
+            output_image = input_image.rotate(-90, expand=True)
+        elif operation == 'rotate_90_ccw':
+            output_image = input_image.rotate(90, expand=True)
+        elif operation == 'rotate_180':
+            output_image = input_image.rotate(180, expand=True)
+        elif operation == 'flip_horizontal':
+            output_image = input_image.transpose(Image.Transpose.FLIP_LEFT_RIGHT)
+        elif operation == 'flip_vertical':
+            output_image = input_image.transpose(Image.Transpose.FLIP_TOP_BOTTOM)
+        
+        # 保存处理后的图片
+        output_filename = f"rotated_{uuid.uuid4().hex[:8]}.png"
+        output_path = os.path.join(app.config['UPLOAD_FOLDER'], output_filename)
+        
+        # 确保uploads文件夹存在
+        if not os.path.exists(app.config['UPLOAD_FOLDER']):
+            os.makedirs(app.config['UPLOAD_FOLDER'])
+        
+        output_image.save(output_path, 'PNG')
+        
+        # 转换为base64返回
+        output_buffer = io.BytesIO()
+        output_image.save(output_buffer, format='PNG')
+        output_buffer.seek(0)
+        output_base64 = base64.b64encode(output_buffer.getvalue()).decode('utf-8')
+        
+        # 记录使用次数
+        success, usage_message = record_daily_usage(user_id, 'image_rotate_flip')
+        if not success:
+            return jsonify({'error': usage_message}), 500
+        
+        # 记录工具使用情况
+        record_tool_usage(
+            user_id,
+            'image_rotate_flip',
+            {'operation': operation},
+            {'output_filename': output_filename, 'processed': True}
+        )
+        
+        # 获取更新后的使用次数
+        updated_usage = check_daily_usage_limit(user_id, 'image_rotate_flip')[1]
+        
+        # 操作名称映射
+        operation_names = {
+            'rotate_90_cw': '顺时针旋转90度',
+            'rotate_90_ccw': '逆时针旋转90度',
+            'rotate_180': '旋转180度',
+            'flip_horizontal': '水平翻转',
+            'flip_vertical': '垂直翻转'
+        }
+        
+        return jsonify({
+            'success': True,
+            'message': f'{operation_names.get(operation, operation)}完成',
+            'processed_image': f'data:image/png;base64,{output_base64}',
+            'output_filename': output_filename,
+            'download_url': f'/api/download/{output_filename}',
+            'operation': operation,
+            'operation_name': operation_names.get(operation, operation),
+            'current_usage': updated_usage,
+            'daily_limit': daily_limit,
+            'remaining_usage': daily_limit - updated_usage if daily_limit != -1 else -1
+        })
+        
+    except Exception as e:
+        import traceback
+        return jsonify({'error': f'图片处理异常: {str(e)}', 'traceback': traceback.format_exc()}), 500
+
 @app.route('/api/tools/keyword-analyzer', methods=['POST'])
 @app.route('/api/tools/analyze-keyword', methods=['POST'])
 def keyword_analyzer():

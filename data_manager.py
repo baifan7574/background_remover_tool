@@ -216,7 +216,8 @@ class DataManager:
                 'shipping_calculator': 10,
                 'send_email': 5,
                 'add_watermark': 10,
-                'remove_watermark': 10
+                'remove_watermark': 10,
+                'image_rotate_flip': 5  # 图片旋转/翻转
             },
             'basic': {
                 'background_remover': 10,
@@ -229,7 +230,8 @@ class DataManager:
                 'shipping_calculator': 20,
                 'send_email': 20,
                 'add_watermark': 50,
-                'remove_watermark': 50
+                'remove_watermark': 50,
+                'image_rotate_flip': 50  # 图片旋转/翻转
             },
             'professional': {
                 'background_remover': 100,
@@ -242,7 +244,8 @@ class DataManager:
                 'shipping_calculator': -1,
                 'send_email': -1,
                 'add_watermark': -1,
-                'remove_watermark': -1
+                'remove_watermark': -1,
+                'image_rotate_flip': 200  # 图片旋转/翻转
             },
             'flagship': {
                 'background_remover': -1,
@@ -255,7 +258,8 @@ class DataManager:
                 'shipping_calculator': -1,
                 'send_email': -1,
                 'add_watermark': -1,
-                'remove_watermark': -1
+                'remove_watermark': -1,
+                'image_rotate_flip': -1  # 图片旋转/翻转
             },
             'enterprise': {
                 'background_remover': -1,
@@ -268,7 +272,8 @@ class DataManager:
                 'shipping_calculator': -1,
                 'send_email': -1,
                 'add_watermark': -1,
-                'remove_watermark': -1
+                'remove_watermark': -1,
+                'image_rotate_flip': -1  # 图片旋转/翻转
             }
         }
         

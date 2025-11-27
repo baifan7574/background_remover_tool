@@ -478,6 +478,7 @@ class AppManager {
             'image_compressor': '图片压缩工具',
             'format_converter': '格式转换工具',
             'image_cropper': '图片裁剪工具',
+            'image_rotate_flip': '图片旋转/翻转工具',
             'keyword_analyzer': '关键词分析工具',
             'currency_converter': '汇率换算工具',
             'add_watermark': '加水印工具',
@@ -1272,6 +1273,10 @@ class AppManager {
                     apiUrl = `${this.apiBaseUrl}/api/tools/crop-image`;
                     this.updateProgress(20, '准备裁剪参数...');
                     break;
+                case 'image_rotate_flip':
+                    apiUrl = `${this.apiBaseUrl}/api/tools/rotate-flip`;
+                    this.updateProgress(20, '准备旋转/翻转参数...');
+                    break;
                 // 旧版水印功能（已注释）
                 // case 'add_watermark':
                 //     apiUrl = `${this.apiBaseUrl}/api/tools/add-watermark`;
@@ -1464,6 +1469,9 @@ class AppManager {
             case 'image_cropper':
                 apiUrl = `${this.apiBaseUrl}/api/tools/crop-image`;
                 break;
+            case 'image_rotate_flip':
+                apiUrl = `${this.apiBaseUrl}/api/tools/rotate-flip`;
+                break;
             case 'keyword_analyzer':
                 apiUrl = `${this.apiBaseUrl}/api/tools/keyword-analyzer`;
                 break;
@@ -1479,6 +1487,9 @@ class AppManager {
                 break;
             case 'remove_watermark':
                 apiUrl = `${this.apiBaseUrl}/api/tools/remove-watermark`;
+                break;
+            case 'image_rotate_flip':
+                apiUrl = `${this.apiBaseUrl}/api/tools/rotate-flip`;
                 break;
             default:
                 apiUrl = `${this.apiBaseUrl}/api/tools/background-remover`;
@@ -1553,6 +1564,14 @@ class AppManager {
             case 'image_cropper':
                 const cropPreset = document.getElementById('cropPreset');
                 if (cropPreset) options.preset = cropPreset.value;
+                break;
+            case 'image_rotate_flip':
+                const rotateFlipOperation = document.querySelector('input[name="rotateFlipOperation"]:checked');
+                if (rotateFlipOperation) {
+                    options.operation = rotateFlipOperation.value;
+                } else {
+                    options.operation = 'rotate_90_cw'; // 默认值
+                }
                 break;
             case 'keyword_analyzer':
                 const keywordAction = document.getElementById('keywordAction');
@@ -2633,6 +2652,28 @@ class AppManager {
                         </div>
                         <div class="result-actions">
                             <a href="${imageUrl}" download="cropped_image.png" class="btn btn-primary">下载图片</a>
+                            <button class="btn btn-secondary" onclick="if(window.appManager) { window.appManager.closeModal('toolModal'); }">关闭</button>
+                            <button class="btn btn-primary" onclick="if(window.appManager) { window.appManager.resetTool(); window.appManager.showModal('toolModal'); }">重新处理</button>
+                        </div>
+                    </div>
+                `;
+                break;
+            case 'image_rotate_flip':
+                imageUrl = result.processed_image || '';
+                const operationName = result.operation_name || result.operation || '旋转/翻转';
+                resultHTML = `
+                    <div class="result-container">
+                        <h3>图片${operationName}完成！</h3>
+                        <div class="result-preview">
+                            <img src="${imageUrl}" alt="处理结果" class="result-image">
+                        </div>
+                        <div class="result-info">
+                            <p>操作类型: ${operationName}</p>
+                            <p>今日使用: ${result.current_usage || 0}/${result.daily_limit || '∞'}</p>
+                            <p>剩余次数: ${result.remaining_usage !== undefined ? (result.remaining_usage === -1 ? '无限制' : result.remaining_usage) : '未知'}</p>
+                        </div>
+                        <div class="result-actions">
+                            <a href="${imageUrl}" download="rotated_image.png" class="btn btn-primary">下载图片</a>
                             <button class="btn btn-secondary" onclick="if(window.appManager) { window.appManager.closeModal('toolModal'); }">关闭</button>
                             <button class="btn btn-primary" onclick="if(window.appManager) { window.appManager.resetTool(); window.appManager.showModal('toolModal'); }">重新处理</button>
                         </div>
