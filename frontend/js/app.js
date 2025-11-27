@@ -1013,6 +1013,10 @@ class AppManager {
         }
 
         // 自动开始处理
+        console.log('🚀 [handleFileSelect] 开始处理文件，工具类型:', this.currentTool, '文件名:', file.name);
+        if (this.currentTool === 'add_watermark') {
+            console.log('🎯 [handleFileSelect] 这是水印工具，准备调用processImage');
+        }
         this.processImage(file);
     }
 
@@ -1200,11 +1204,17 @@ class AppManager {
 
     async processImage(file) {
         try {
+            console.log('🚀 [processImage] 函数被调用，工具类型:', this.currentTool);
+            if (this.currentTool === 'add_watermark') {
+                console.log('🎯 [processImage] 这是水印工具！');
+            }
             this.isProcessing = true;
             this.showProcessingStatus(this.currentTool);
             
             // 获取工具选项
+            console.log('📋 [processImage] 准备获取工具选项...');
             const toolOptions = this.getToolOptions();
+            console.log('📋 [processImage] 获取到的工具选项:', toolOptions);
             
             // 转换文件为base64
             const base64Image = await this.fileToBase64(file);
