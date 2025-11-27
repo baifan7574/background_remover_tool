@@ -1,0 +1,4 @@
+PythonAnywhere 兼容性测试报告
+测试时间: 2025-11-15 12:02:53.418347
+Python版本: 3.11.1 (tags/v3.11.1:a7a450f, Dec  6 2022, 19:58:39) [MSC v.1934 64 bit (AMD64)]
+测试结果: {'python_version': True, 'core_packages': False, 'file_operations': True, 'network_access': False, 'memory_storage': True, 'image_processing': True}

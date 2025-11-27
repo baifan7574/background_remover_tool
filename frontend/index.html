@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PixelMagic - 跨境电商专业处理工具</title>
+    <meta name="description" content="专业的跨境电商处理工具，提供背景移除、图片压缩、格式转换等功能">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://unpkg.com/jszip@3.10.1/dist/jszip.min.js"></script>
+    <script>
+        // 检查JSZip是否加载成功，如果失败则设置fallback
+        window.addEventListener('DOMContentLoaded', function() {
+            if (typeof JSZip === 'undefined') {
+                console.warn('JSZip库加载失败，批量下载功能将不可用');
+                window.JSZipAvailable = false;
+            } else {
+                console.log('JSZip库加载成功');
+                window.JSZipAvailable = true;
+            }
+        });
+    </script>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎨</text></svg>">
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <span class="brand-icon">🎨</span>
+                <span class="brand-text">PixelMagic</span>
+            </div>
+            <div class="nav-menu">
+                <a href="#home" class="nav-link active">首页</a>
+                <a href="#tools" class="nav-link">工具</a>
+                <a href="#pricing" class="nav-link">定价</a>
+                <a href="#about" class="nav-link">关于</a>
+            </div>
+            <div class="nav-auth">
+                <button id="loginBtn" class="btn btn-outline">登录</button>
+                <button id="registerBtn" class="btn btn-primary">注册</button>
+                <div class="user-info" id="userInfo" style="display: none;">
+                    <div class="user-avatar" onclick="if(window.appManager) { window.appManager.showProfile(); } else { alert('应用正在初始化，请稍候...'); }">
+                        <div class="avatar-placeholder">👤</div>
+                    </div>
+                    <div class="user-details">
+                        <div class="user-name">用户</div>
+                        <div class="user-plan">免费版</div>
+                        <div class="user-credits">使用次数限制</div>
+                    </div>
+                    <div class="user-actions">
+                        <button class="btn btn-primary btn-sm" id="inviteBtn" onclick="if(window.appManager) { window.appManager.showInviteModal(); } else { alert('应用正在初始化，请稍候...'); }" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; color: white; margin-right: 5px;">🎁 邀请好友</button>
+                        <button class="btn btn-outline btn-sm" onclick="if(window.appManager) { window.appManager.showProfile(); } else { alert('应用正在初始化，请稍候...'); }">资料</button>
+                        <button class="btn btn-outline btn-sm" onclick="if(window.appManager) { window.appManager.logout(); } else { alert('应用正在初始化，请稍候...'); }">退出</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero 区域 -->
+    <header class="hero" id="home">
+        <div class="hero-container">
+            <div class="hero-content">
+                    <h1 class="hero-title">
+                        <span class="gradient-text">PixelMagic</span>
+                        <br>跨境电商处理工具
+                    </h1>
+                    <div class="hero-description">
+                        <div class="description-tag">一站式跨境电商解决方案</div>
+                    </div>
+                    <div class="hero-actions">
+                        <a href="payment.html" class="btn btn-primary btn-large upgrade-btn-pulse upgrade-btn-glow" id="upgradeBtn">
+                            <span class="btn-text">升级会员</span>
+                        </a>
+                        <button class="btn btn-secondary btn-large" id="heroInviteBtn" onclick="if(window.appManager) { window.appManager.showInviteModal(); } else { alert('应用正在初始化，请稍候...'); }" style="display: none; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; color: white; margin-left: 15px;">
+                            🎁 邀请好友得奖励
+                        </button>
+                    </div>
+                    <!-- 邀请推荐提示（已登录用户显示） -->
+                    <div id="inviteBanner" style="display: none; margin-top: 30px; padding: 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 15px; color: white; text-align: center;">
+                        <div style="font-size: 1.2rem; font-weight: bold; margin-bottom: 10px;">🎁 推荐好友，双方各得免费使用次数奖励！</div>
+                        <div style="margin-bottom: 15px; font-size: 0.95rem; opacity: 0.9;">
+                            老用户+50次，新用户+20次，30天内有效，所有工具通用
+                        </div>
+                        <button class="btn" onclick="if(window.appManager) { window.appManager.showInviteModal(); }" style="background: white; color: #667eea; padding: 10px 30px; border: none; border-radius: 25px; font-weight: bold; cursor: pointer; font-size: 1rem;">
+                            立即邀请 →
+                        </button>
+                    </div>
+                </div>
+        </div>
+    </header>
+
+    <!-- 工具展示区域 -->
+    <section class="tools" id="tools">
+        <div class="container">
+            <div class="tools-grid">
+                <!-- 背景移除工具 -->
+                <div class="tool-card tool-card-large" data-tool="background_remover">
+                    <div class="tool-icon">🎭</div>
+                    <h3 class="tool-title">背景移除</h3>
+                    <p class="tool-description">智能识别并移除图片背景，支持批量处理，完美适配产品展示需求</p>
+                    <div class="tool-features">
+                        <span class="feature-tag">AI智能识别</span>
+                        <span class="feature-tag">批量处理</span>
+                        <span class="feature-tag">高清输出</span>
+                    </div>
+                        <button class="btn btn-primary tool-btn tool-btn-large" data-tool="background_remover" onclick="if(window.appManager) { window.appManager.openTool('background_remover'); } else { alert('应用正在初始化，请稍候...'); }">
+                        立即使用
+                    </button>
+                </div>
+
+                <!-- 图片压缩工具 -->
+                <div class="tool-card tool-card-large" data-tool="image_compressor">
+                    <div class="tool-icon">🗜️</div>
+                    <h3 class="tool-title">图片压缩</h3>
+                    <p class="tool-description">在保持图片质量的同时大幅减小文件大小，提升网站加载速度</p>
+                    <div class="tool-features">
+                        <span class="feature-tag">质量控制</span>
+                        <span class="feature-tag">批量压缩</span>
+                        <span class="feature-tag">格式优化</span>
+                    </div>
+                    <button class="btn btn-primary tool-btn tool-btn-large" data-tool="image_compressor" onclick="if(window.appManager) { window.appManager.openTool('image_compressor'); } else { alert('应用正在初始化，请稍候...'); }">
+                        立即使用
+                    </button>
+                </div>
+
+                <!-- 格式转换工具 -->
+                <div class="tool-card tool-card-large" data-tool="format_converter">
+                    <div class="tool-icon">🔄</div>
+                    <h3 class="tool-title">格式转换</h3>
+                    <p class="tool-description">支持多种图片格式互转，包括JPG、PNG、WebP等主流格式</p>
+                    <div class="tool-features">
+                        <span class="feature-tag">多格式支持</span>
+                        <span class="feature-tag">批量转换</span>
+                        <span class="feature-tag">质量保持</span>
+                    </div>
+                    <button class="btn btn-primary tool-btn tool-btn-large" data-tool="format_converter" onclick="if(window.appManager) { window.appManager.openTool('format_converter'); } else { alert('应用正在初始化，请稍候...'); }">
+                        立即使用
+                    </button>
+                </div>
+
+                <!-- 图片裁剪工具 -->
+                <div class="tool-card tool-card-large" data-tool="image_cropper">
+                    <div class="tool-icon">✂️</div>
+                    <h3 class="tool-title">图片裁剪</h3>
+                    <p class="tool-description">精确裁剪图片尺寸，支持预设尺寸和自定义裁剪，满足各种平台要求</p>
+                    <div class="tool-features">
+                        <span class="feature-tag">精确裁剪</span>
+                        <span class="feature-tag">预设尺寸</span>
+                        <span class="feature-tag">自由裁剪</span>
+                    </div>
+                    <button class="btn btn-primary tool-btn tool-btn-large" data-tool="image_cropper" onclick="if(window.appManager) { window.appManager.openTool('image_cropper'); } else { alert('应用正在初始化，请稍候...'); }">
+                        立即使用
+                    </button>
+                </div>
+
+                <!-- 关键词分析工具 -->
+                <div class="tool-card tool-card-large" data-tool="keyword_analyzer">
+                    <div class="tool-icon">🔍</div>
+                    <h3 class="tool-title">关键词分析</h3>
+                    <p class="tool-description">AI智能提取跨平台关键词，分析竞争度趋势，挖掘长尾关键词，助力产品优化</p>
+                    <div class="tool-features">
+                        <span class="feature-tag">AI智能提取</span>
+                        <span class="feature-tag">竞争度分析</span>
+                        <span class="feature-tag">数据导出</span>
+                    </div>
+                    <button class="btn btn-primary tool-btn tool-btn-large" data-tool="keyword_analyzer" onclick="if(window.appManager) { window.appManager.openTool('keyword_analyzer'); } else { alert('应用正在初始化，请稍候...'); }">
+                        立即使用
+                    </button>
+                </div>
+
+                <!-- 汇率换算工具 -->
+                <div class="tool-card tool-card-large" data-tool="currency_converter">
+                    <div class="tool-icon">💱</div>
+                    <h3 class="tool-title">汇率换算</h3>
+                    <p class="tool-description">实时汇率换算，支持多种货币互转，助力跨境交易和成本核算</p>
+                    <div class="tool-features">
+                        <span class="feature-tag">实时汇率</span>
+                        <span class="feature-tag">多币种支持</span>
+                        <span class="feature-tag">精确计算</span>
+                    </div>
+                    <button class="btn btn-primary tool-btn tool-btn-large" data-tool="currency_converter" onclick="if(window.appManager) { window.appManager.openTool('currency_converter'); } else { alert('应用正在初始化，请稍候...'); }">
+                        立即使用
+                    </button>
+                </div>
+
+                <!-- 加水印工具 -->
+                <div class="tool-card tool-card-large" data-tool="add_watermark">
+                    <div class="tool-icon">🖼️</div>
+                    <h3 class="tool-title">加水印</h3>
+                    <p class="tool-description">为图片添加文字水印，保护版权，支持自定义位置、透明度和样式</p>
+                    <div class="tool-features">
+                        <span class="feature-tag">自定义文字</span>
+                        <span class="feature-tag">多种位置</span>
+                        <span class="feature-tag">透明度调节</span>
+                    </div>
+                    <button class="btn btn-primary tool-btn tool-btn-large" data-tool="add_watermark" onclick="if(window.appManager) { window.appManager.openTool('add_watermark'); } else { alert('应用正在初始化，请稍候...'); }">
+                        立即使用
+                    </button>
+                </div>
+
+                <!-- 去水印工具 -->
+                <div class="tool-card tool-card-large" data-tool="remove_watermark">
+                    <div class="tool-icon">🧹</div>
+                    <h3 class="tool-title">去水印</h3>
+                    <p class="tool-description">智能移除图片水印，修复图片瑕疵，恢复图片原貌</p>
+                    <div class="tool-features">
+                        <span class="feature-tag">智能识别</span>
+                        <span class="feature-tag">自动修复</span>
+                        <span class="feature-tag">保持画质</span>
+                    </div>
+                    <button class="btn btn-primary tool-btn tool-btn-large" data-tool="remove_watermark" onclick="if(window.appManager) { window.appManager.openTool('remove_watermark'); } else { alert('应用正在初始化，请稍候...'); }">
+                        立即使用
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 定价区域 -->
+    <section class="pricing" id="pricing">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">选择适合您的计划</h2>
+                <p class="section-subtitle">专业工具，性价比之选，为跨境电商卖家量身定制</p>
+            </div>
+            
+            <div class="pricing-grid">
+                <!-- 免费版 -->
+                <div class="pricing-card">
+                    <div class="pricing-header">
+                        <h3 class="pricing-title">免费版</h3>
+                        <div class="pricing-price">
+                        <span class="price-amount">¥0</span>
+                        <span class="price-period">/月</span>
+                    </div>
+                    </div>
+                    <ul class="pricing-features">
+                        <li>✨ 背景移除：每天3次</li>
+                        <li>🗜️ 图片压缩：每天5次</li>
+                        <li>🔄 格式转换：每天5次</li>
+                        <li>✂️ 图片裁剪：每天5次</li>
+                        <li>🔍 关键词分析：每天5次</li>
+                        <li>💱 汇率换算：每天10次</li>
+                        <li>🖼️ 加水印/去水印：每天5次</li>
+                        <li>📧 批量分享：每天3次</li>
+                        <li>📞 社区支持</li>
+                    </ul>
+                    <button class="btn btn-outline pricing-btn">当前计划</button>
+                </div>
+
+                <!-- 入门版 -->
+                <div class="pricing-card popular">
+                    <div class="pricing-badge">推荐</div>
+                    <div class="pricing-header">
+                        <h3 class="pricing-title">入门版</h3>
+                        <div class="pricing-price">
+                        <span class="price-amount">¥19</span>
+                        <span class="price-period">/月</span>
+                    </div>
+                    </div>
+                    <ul class="pricing-features">
+                        <li>✨ 背景移除：每天20次</li>
+                        <li>🗜️ 图片压缩：每天50次</li>
+                        <li>🔄 格式转换：每天50次</li>
+                        <li>✂️ 图片裁剪：每天50次</li>
+                        <li>🔍 关键词分析：每天30次</li>
+                        <li>💱 汇率换算：无限使用</li>
+                        <li>🖼️ 加水印：每天50次</li>
+                        <li>🧹 去水印：每天30次</li>
+                        <li>📧 批量分享：每天20次</li>
+                        <li>📊 关键词导出（Excel/CSV）</li>
+                        <li>📦 批量处理（最多20张）</li>
+                        <li>📞 邮件技术支持</li>
+                    </ul>
+                    <button class="btn btn-primary pricing-btn" onclick="window.location.href='payment.html'">
+                        升级到入门版
+                    </button>
+                </div>
+
+                <!-- 专业版 -->
+                <div class="pricing-card">
+                    <div class="pricing-header">
+                        <h3 class="pricing-title">专业版</h3>
+                        <div class="pricing-price">
+                        <span class="price-amount">¥49</span>
+                        <span class="price-period">/月</span>
+                    </div>
+                    </div>
+                    <ul class="pricing-features">
+                        <li>✨ 背景移除：每天100次</li>
+                        <li>🗜️ 图片压缩：每天200次</li>
+                        <li>🔄 格式转换：每天200次</li>
+                        <li>✂️ 图片裁剪：每天200次</li>
+                        <li>🔍 关键词分析：每天150次</li>
+                        <li>💱 汇率换算：无限使用</li>
+                        <li>🖼️ 加水印：每天200次</li>
+                        <li>🧹 去水印：每天150次</li>
+                        <li>📧 批量分享：每天100次</li>
+                        <li>📊 数据导出（Excel/CSV/PDF）</li>
+                        <li>📈 关键词趋势分析图表</li>
+                        <li>🔍 竞品对比分析</li>
+                        <li>📦 批量处理（最多100张）</li>
+                        <li>🔌 API接口调用（每天500次）</li>
+                        <li>📞 优先客服支持</li>
+                    </ul>
+                    <button class="btn btn-primary pricing-btn" onclick="window.location.href='payment.html'">
+                        升级到专业版
+                    </button>
+                </div>
+
+                <!-- 旗舰版 -->
+                <div class="pricing-card">
+                    <div class="pricing-header">
+                        <h3 class="pricing-title">旗舰版</h3>
+                        <div class="pricing-price">
+                        <span class="price-amount">¥99</span>
+                        <span class="price-period">/月</span>
+                    </div>
+                    </div>
+                    <ul class="pricing-features">
+                        <li>🚀 所有功能：无限使用</li>
+                        <li>✨ 背景移除：无限</li>
+                        <li>🗜️ 图片压缩：无限</li>
+                        <li>🔄 格式转换：无限</li>
+                        <li>✂️ 图片裁剪：无限</li>
+                        <li>🔍 关键词分析：无限</li>
+                        <li>🖼️ 加水印/去水印：无限</li>
+                        <li>📧 批量分享：无限</li>
+                        <li>📊 高级数据分析报告</li>
+                        <li>📦 批量处理（最多500张）</li>
+                        <li>📁 历史记录保存（180天）</li>
+                        <li>🔌 专属API接口（每天2000次）</li>
+                        <li>⚡ 优先处理队列</li>
+                        <li>👤 专属客户经理</li>
+                        <li>🎯 功能优先体验权</li>
+                    </ul>
+                    <button class="btn btn-primary pricing-btn" onclick="window.location.href='payment.html'">
+                        升级到旗舰版
+                    </button>
+                </div>
+
+                <!-- 企业版 -->
+                <div class="pricing-card">
+                    <div class="pricing-header">
+                        <h3 class="pricing-title">企业版</h3>
+                        <div class="pricing-price">
+                        <span class="price-amount">¥299</span>
+                        <span class="price-period">/月</span>
+                    </div>
+                    </div>
+                    <ul class="pricing-features">
+                        <li>🚀 所有功能：无限使用</li>
+                        <li>📦 批量处理：不限制</li>
+                        <li>📁 历史记录保存（365天）</li>
+                        <li>📊 高级数据分析报告（定制化）</li>
+                        <li>🔌 专属API接口：不限制</li>
+                        <li>🖥️ 专属服务器资源</li>
+                        <li>🛠️ 定制化功能开发</li>
+                        <li>👥 团队协作功能（多账户管理）</li>
+                        <li>👤 专属客户经理（7×24小时）</li>
+                        <li>🔒 数据安全保证（企业级）</li>
+                        <li>✅ SLA服务保证（99.9%可用性）</li>
+                    </ul>
+                    <button class="btn btn-primary pricing-btn" onclick="window.location.href='payment.html'">
+                        升级到企业版
+                    </button>
+                </div>
+            </div>
+            
+            <div style="text-align: center; margin-top: 40px; padding: 20px; background-color: #f8f9fa; border-radius: 10px;">
+                <p style="margin: 0; color: #666; font-size: 0.9rem;">
+                    💰 年付更优惠：入门版¥15.8/月 | 专业版¥40.8/月 | 旗舰版¥82.5/月 | 企业版¥249/月
+                    <br>
+                    🎁 新用户专享：首月仅需¥9.9，体验完整功能
+                    <br>
+                    👥 推荐好友：双方各得免费使用次数奖励（老用户+50次，新用户+70次）
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 关于区域 -->
+    <section class="about" id="about">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">关于 PixelMagic</h2>
+                <p class="section-subtitle">专为跨境电商卖家打造的图像处理平台</p>
+            </div>
+            
+            <div class="about-content">
+                <div class="about-text">
+                    <h3>为什么选择我们？</h3>
+                    <p>PixelMagic 深度了解跨境电商卖家的需求，提供专业、高效、易用的图像处理工具。我们帮助您快速处理产品图片，提升店铺形象，提高转化率。</p>
+                    
+                    <div class="about-stats">
+                        <div class="stat-item">
+                            <div class="stat-number">10万+</div>
+                            <div class="stat-label">处理图片</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">5000+</div>
+                            <div class="stat-label">活跃用户</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">99.9%</div>
+                            <div class="stat-label">满意度</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="about-image">
+                    <div class="about-card">
+                        <div class="card-icon">🚀</div>
+                        <div class="card-title">快速高效</div>
+                        <div class="card-desc">秒级处理，批量操作</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 页脚 -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="footer-brand">
+                        <span class="brand-icon">🎨</span>
+                        <span class="brand-text">PixelMagic</span>
+                    </div>
+                    <p class="footer-desc">专业的跨境电商图像处理工具</p>
+                </div>
+                
+                <div class="footer-section">
+                    <h4 class="footer-title">产品</h4>
+                    <ul class="footer-links">
+                        <li><a href="#tools">工具功能</a></li>
+                        <li><a href="#pricing">定价方案</a></li>
+                        <li><a href="#about">关于我们</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4 class="footer-title">支持</h4>
+                    <ul class="footer-links">
+                        <li><a href="#">使用教程</a></li>
+                        <li><a href="#">常见问题</a></li>
+                        <li><a href="#">联系我们</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4 class="footer-title">法律</h4>
+                    <ul class="footer-links">
+                        <li><a href="#">服务条款</a></li>
+                        <li><a href="#">隐私政策</a></li>
+                        <li><a href="#">Cookie政策</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2024 PixelMagic. 保留所有权利。</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 用户资料模态框 -->
+    <div id="profileModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">用户资料</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="profile-container">
+                    <div class="profile-header">
+                        <div class="profile-avatar">
+                            <div class="avatar-placeholder">👤</div>
+                        </div>
+                        <div class="profile-info">
+                            <h4 id="profileName">用户名</h4>
+                            <p id="profileEmail">email@example.com</p>
+                            <span id="profilePlan" class="plan-badge">免费版</span>
+                        </div>
+                    </div>
+                    
+                    <div class="profile-stats">
+                        <div class="stat-card">
+                            <div class="stat-icon">💎</div>
+                            <div class="stat-info">
+                                <div class="stat-value" id="profileCredits">0</div>
+                                <div class="stat-label">会员等级</div>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">📊</div>
+                            <div class="stat-info">
+                                <div class="stat-value" id="profileUsage">0</div>
+                                <div class="stat-label">今日使用</div>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">📅</div>
+                            <div class="stat-info">
+                                <div class="stat-value" id="profileDays">0</div>
+                                <div class="stat-label">使用天数</div>
+                            </div>
+                        </div>
+                        
+                        <!-- 邀请推荐 -->
+                        <div class="stat-card" style="grid-column: span 3; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px;">
+                            <div style="display: flex; align-items: center; gap: 15px;">
+                                <div class="stat-icon" style="font-size: 2rem;">🎁</div>
+                                <div class="stat-info" style="flex: 1;">
+                                    <div class="stat-label" style="color: rgba(255,255,255,0.9); margin-bottom: 10px; font-size: 1rem;">我的邀请码</div>
+                                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+                                        <input type="text" id="inviteCodeDisplay" readonly style="flex: 1; padding: 10px; border: 1px solid rgba(255,255,255,0.3); border-radius: 5px; background: rgba(255,255,255,0.2); color: white; font-weight: bold; font-size: 1.2rem; text-align: center; letter-spacing: 3px;" value="加载中...">
+                                        <button onclick="if(window.appManager) { window.appManager.copyInviteCode(); }" class="btn" style="background: white; color: #667eea; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; white-space: nowrap;">复制</button>
+                                    </div>
+                                    <div style="font-size: 0.9rem; color: rgba(255,255,255,0.9);">
+                                        <span id="invitedCount">已邀请: 0人</span>
+                                        <span style="margin-left: 15px;">推荐好友双方各得免费使用次数奖励</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="profile-section">
+                        <h5>今日使用情况</h5>
+                        <div class="usage-chart">
+                            <div class="chart-item">
+                                <span class="tool-name">背景移除</span>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" id="bgRemoverProgress"></div>
+                                </div>
+                                <span class="usage-count" id="bgRemoverCount">0</span>
+                            </div>
+                            <div class="chart-item">
+                                <span class="tool-name">图片压缩</span>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" id="compressorProgress"></div>
+                                </div>
+                                <span class="usage-count" id="compressorCount">0</span>
+                            </div>
+                            <div class="chart-item">
+                                <span class="tool-name">格式转换</span>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" id="converterProgress"></div>
+                                </div>
+                                <span class="usage-count" id="converterCount">0</span>
+                            </div>
+                            <div class="chart-item">
+                                <span class="tool-name">图片裁剪</span>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" id="cropperProgress"></div>
+                                </div>
+                                <span class="usage-count" id="cropperCount">0</span>
+                            </div>
+                            <div class="chart-item">
+                                <span class="tool-name">图片增强</span>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" id="enhancerProgress"></div>
+                                </div>
+                                <span class="usage-count" id="enhancerCount">0</span>
+                            </div>
+                            <div class="chart-item">
+                                <span class="tool-name">水印移除</span>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" id="watermarkProgress"></div>
+                                </div>
+                                <span class="usage-count" id="watermarkCount">0</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="profile-actions">
+                        <button class="btn btn-primary" onclick="appManager.showUpgradeModal()">
+                            <i class="fas fa-crown"></i> 升级会员
+                        </button>
+                        <button class="btn btn-outline" onclick="appManager.loadUserProfile()">
+                            <i class="fas fa-sync"></i> 刷新数据
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 主页内容 -->
+    <div id="toolModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modalTitle">工具处理</h3>
+                <button class="modal-close" onclick="appManager.closeModal('toolModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <!-- 批量处理切换 -->
+                <div class="batch-toggle">
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="batchMode">
+                        <span class="toggle-slider"></span>
+                    </label>
+                    <span class="toggle-label">批量处理模式</span>
+                </div>
+                
+                <!-- 单文件上传区域 -->
+                <div class="upload-area" id="uploadArea">
+                    <div class="upload-icon">📁</div>
+                    <p class="upload-text">点击或拖拽图片到此处</p>
+                    <p class="upload-hint">支持 JPG、PNG、GIF 格式，最大 10MB</p>
+                    <input type="file" id="fileInput" accept="image/*" style="display: none;">
+                </div>
+                
+                <!-- 批量上传区域 -->
+                <div class="batch-upload-area" id="batchUploadArea" style="display: none;">
+                    <div class="batch-upload-header">
+                        <div class="upload-icon">📁</div>
+                        <p class="upload-text">点击或拖拽多个图片到此处</p>
+                        <p class="upload-hint">支持 JPG、PNG、GIF 格式，单个文件最大 10MB，最多20个文件</p>
+                        <input type="file" id="batchFileInput" accept="image/*" multiple style="display: none;">
+                    </div>
+                    <div class="batch-file-list" id="batchFileList" style="display: none;">
+                        <h4>已选择的文件：</h4>
+                        <div class="file-items" id="fileItems"></div>
+                        <div class="batch-actions">
+                            <button class="btn btn-outline btn-sm" onclick="appManager.clearBatchFiles()">清空列表</button>
+                            <button class="btn btn-primary btn-sm" onclick="appManager.startBatchProcessing()">开始批量处理</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tool-options" id="toolOptions" style="display: none;">
+                    <!-- 工具选项将动态插入 -->
+                </div>
+                
+                <div class="processing-area" id="processingArea" style="display: none;">
+                    <div class="processing-spinner"></div>
+                    <p class="processing-text">正在处理...</p>
+                </div>
+                
+                <div class="result-area" id="resultArea" style="display: none;">
+                    <h4>处理结果</h4>
+                    <div class="result-preview">
+                        <img id="resultImage" src="" alt="处理结果">
+                    </div>
+                    <div class="result-actions">
+                        <button class="btn btn-primary" id="downloadBtn">下载图片</button>
+                        <button class="btn btn-outline" onclick="appManager.closeModal('toolModal')">重新处理</button>
+                    </div>
+                </div>
+                
+                <div class="error-message" id="errorArea" style="display: none;">
+                    <div class="error-icon">❌</div>
+                    <p class="error-text" id="errorText">处理失败</p>
+                    <div class="error-actions">
+                        <button class="btn btn-primary" onclick="appManager.resetTool(); appManager.showModal('toolModal');">重新尝试</button>
+                        <button class="btn btn-outline" onclick="appManager.closeModal('toolModal')">关闭</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 登录模态框 -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content modal-small">
+            <div class="modal-header">
+                <h3 class="modal-title">用户登录</h3>
+                <button class="modal-close" onclick="appManager.closeModal('loginModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label for="loginEmail">邮箱地址</label>
+                        <input type="email" id="loginEmail" name="email" required placeholder="请输入邮箱地址">
+                    </div>
+                    <div class="form-group">
+                        <label for="loginPassword">密码</label>
+                        <input type="password" id="loginPassword" name="password" required placeholder="请输入密码">
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-full">登录</button>
+                    
+                    <!-- 社交登录 -->
+                    <div class="social-login">
+                        <div class="social-divider">或使用其他方式登录</div>
+                        <div class="social-buttons">
+                            <button class="social-btn wechat" onclick="appManager.showWechatLoginModal()">
+                                <i>🟢</i> 微信扫码登录
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <p class="form-switch">
+                        还没有账号？<a href="#" onclick="appManager.switchToRegister()">立即注册</a>
+                    </p>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- 微信登录模态框 -->
+    <div id="wechatLoginModal" class="modal">
+        <div class="modal-content modal-small">
+            <div class="modal-header">
+                <h3 class="modal-title">微信登录</h3>
+                <button class="modal-close" onclick="appManager.closeModal('wechatLoginModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="wechat-login-container">
+                    <div class="qr-code-container">
+                        <div class="qr-code">
+                            <div class="qr-placeholder">
+                                <div class="qr-icon">📱</div>
+                                <p>二维码</p>
+                            </div>
+                        </div>
+                        <div class="qr-instructions">
+                            <h4>扫码登录步骤：</h4>
+                            <ol>
+                                <li>打开微信扫一扫</li>
+                                <li>扫描上方二维码</li>
+                                <li>确认登录授权</li>
+                            </ol>
+                        </div>
+                    </div>
+                    
+                    <div class="wechat-alternatives">
+                        <p>或使用模拟登录：</p>
+                        <button class="btn btn-primary btn-full" onclick="simulateWechatLogin()">
+                            模拟微信登录
+                        </button>
+                        <p style="margin-top: 1rem;">
+                            <a href="#" onclick="appManager.switchToTraditionalLogin()">使用账号密码登录</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 注册模态框 -->
+    <div id="registerModal" class="modal">
+        <div class="modal-content modal-small">
+            <div class="modal-header">
+                <h3 class="modal-title">用户注册</h3>
+                <button class="modal-close" onclick="appManager.closeModal('registerModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="registerForm">
+                    <div class="form-group">
+                        <label for="registerName">姓名</label>
+                        <input type="text" id="registerName" name="name" required placeholder="请输入姓名">
+                    </div>
+                    <div class="form-group">
+                        <label for="registerEmail">邮箱地址</label>
+                        <input type="email" id="registerEmail" name="email" required placeholder="请输入邮箱地址">
+                    </div>
+                    <div class="form-group">
+                        <label for="registerPassword">密码</label>
+                        <input type="password" id="registerPassword" name="password" required placeholder="请输入密码">
+                    </div>
+                    <div class="form-group">
+                        <label for="confirmPassword">确认密码</label>
+                        <input type="password" id="confirmPassword" name="confirmPassword" required placeholder="请再次输入密码">
+                    </div>
+                    <div class="form-group">
+                        <label for="registerInviteCode">邀请码（可选）</label>
+                        <input type="text" id="registerInviteCode" name="invite_code" placeholder="输入邀请码可获得额外奖励" style="text-transform: uppercase;">
+                        <small style="color: #666; font-size: 0.85rem; display: block; margin-top: 5px;">使用邀请码注册，双方各得免费使用次数奖励</small>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-full">注册</button>
+                    
+                    <!-- 社交注册 -->
+                    <div class="social-login">
+                        <div class="social-divider">或使用其他方式注册</div>
+                        <div class="social-buttons">
+                            <button class="social-btn wechat" onclick="appManager.showWechatLoginModal()">
+                                <i>🟢</i> 微信扫码注册
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <p class="form-switch">
+                        已有账号？<a href="#" onclick="appManager.switchToLogin()">立即登录</a>
+                    </p>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 邀请推荐模态框 -->
+    <div id="inviteModal" class="modal">
+        <div class="modal-content modal-small">
+            <div class="modal-header">
+                <h3 class="modal-title">🎁 邀请好友得奖励</h3>
+                <button class="modal-close" onclick="if(window.appManager) { window.appManager.closeModal('inviteModal'); }">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div style="text-align: center; padding: 10px;">
+                    <div style="font-size: 1.1rem; color: #333; margin-bottom: 20px;">
+                        <strong>推荐好友注册，双方各得免费使用次数奖励！</strong>
+                    </div>
+                    
+                    <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 20px; border-radius: 10px; margin-bottom: 20px; color: white;">
+                        <div style="font-size: 0.9rem; margin-bottom: 15px; opacity: 0.9;">我的邀请码</div>
+                        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
+                            <input type="text" id="inviteCodeModal" readonly style="flex: 1; padding: 12px; border: 2px solid rgba(255,255,255,0.3); border-radius: 8px; background: rgba(255,255,255,0.2); color: white; font-weight: bold; font-size: 1.3rem; text-align: center; letter-spacing: 3px;" value="加载中...">
+                            <button onclick="if(window.appManager) { window.appManager.copyInviteCodeModal(); }" class="btn" style="background: white; color: #667eea; padding: 12px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; white-space: nowrap;">复制</button>
+                        </div>
+                        <div style="font-size: 0.85rem; opacity: 0.9;">
+                            <span id="invitedCountModal">已邀请: 0人</span>
+                        </div>
+                    </div>
+                    
+                    <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+                        <div style="font-size: 0.95rem; color: #666; margin-bottom: 10px;">
+                            <strong style="color: #333;">奖励说明：</strong>
+                        </div>
+                        <div style="text-align: left; font-size: 0.9rem; color: #555; line-height: 1.8;">
+                            <div>✅ <strong>老用户</strong>：每成功邀请1人，获得<strong style="color: #667eea;">+50次</strong>免费使用（一次性，30天内有效）</div>
+                            <div>✅ <strong>新用户</strong>：注册成功即可获得<strong style="color: #667eea;">+20次</strong>免费使用（一次性，30天内有效）</div>
+                            <div>✅ <strong>所有工具通用</strong>：奖励可用于背景移除、图片压缩、关键词分析等所有工具</div>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 20px;">
+                        <div style="font-size: 0.9rem; color: #666; margin-bottom: 10px;">
+                            <strong>分享方式：</strong>
+                        </div>
+                        <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+                            <button onclick="if(window.appManager) { window.appManager.shareInviteCode('link'); }" class="btn" style="background: #4CAF50; color: white; padding: 8px 20px; border: none; border-radius: 5px; cursor: pointer;">
+                                🔗 复制邀请链接
+                            </button>
+                            <button onclick="if(window.appManager) { window.appManager.shareInviteCode('code'); }" class="btn" style="background: #2196F3; color: white; padding: 8px 20px; border: none; border-radius: 5px; cursor: pointer;">
+                                📋 复制邀请码
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="js/auth.js"></script>
+    <script src="js/app.js"></script>
+    <script>
+        // 确保页面加载完成后初始化
+        (function() {
+            console.log('开始初始化脚本...');
+            
+            function initApp() {
+                console.log('页面加载完成，开始初始化...');
+                
+                // 首先初始化AuthManager
+                if (typeof AuthManager === 'undefined') {
+                    console.error('❌ AuthManager未加载，请检查js/auth.js文件');
+                    return;
+                }
+                
+                try {
+                    console.log('✅ AuthManager已加载，初始化认证管理器...');
+                    window.authManager = new AuthManager();
+                    console.log('✅ AuthManager初始化完成，认证状态:', window.authManager.isAuthenticated());
+                } catch (error) {
+                    console.error('❌ AuthManager初始化失败:', error);
+                    return;
+                }
+                
+                // 然后初始化AppManager - 延迟一点确保AuthManager完全初始化
+                setTimeout(() => {
+                    if (typeof AppManager === 'undefined') {
+                        console.error('❌ AppManager未加载，请检查js/app.js文件');
+                        console.error('请检查浏览器控制台是否有JavaScript语法错误');
+                        alert('应用初始化失败：AppManager未加载。请检查浏览器控制台查看详细错误。');
+                        return;
+                    }
+                    
+                    try {
+                        console.log('✅ AppManager已加载，初始化应用管理器...');
+                        window.appManager = new AppManager();
+                        console.log('✅ AppManager初始化完成，appManager:', window.appManager);
+                        
+                        // 确保appManager已初始化后，重新绑定工具卡片事件
+                        setTimeout(() => {
+                            if (window.appManager && typeof window.appManager.setupEventListeners === 'function') {
+                                console.log('重新绑定工具卡片事件...');
+                                // 清理之前的绑定标记，重新绑定
+                                document.querySelectorAll('[data-event-bound]').forEach(el => {
+                                    el.removeAttribute('data-event-bound');
+                                });
+                                window.appManager.setupEventListeners();
+                                console.log('✅ 所有事件绑定完成');
+                            } else {
+                                console.warn('⚠️ appManager.setupEventListeners 方法不存在');
+                            }
+                        }, 300);
+                    } catch (error) {
+                        console.error('❌ AppManager初始化失败:', error);
+                        alert('应用初始化失败：' + error.message);
+                    }
+                }, 200);
+            }
+            
+            // 如果DOM已经加载完成，立即初始化
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', initApp);
+            } else {
+                // DOM已经加载完成，直接初始化
+                initApp();
+            }
+            
+            // 也监听window.load事件作为备用
+            window.addEventListener('load', function() {
+                if (!window.appManager) {
+                    console.warn('⚠️ window.load事件触发时appManager仍未初始化，尝试重新初始化...');
+                    setTimeout(initApp, 100);
+                }
+            });
+        })();
+    </script>
+</body>
+</html>

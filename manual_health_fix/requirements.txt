@@ -1,0 +1,48 @@
+# 海外跨境小工具 - Supabase版本依赖包
+# 支持PythonAnywhere + Supabase分离式架构
+
+# Web框架
+Flask==2.3.3
+Flask-CORS==4.0.0
+Flask-Login==0.6.3
+Flask-SQLAlchemy==3.0.5
+
+# Supabase客户端
+supabase==1.0.4
+python-dotenv==1.0.0
+
+# 图片处理
+Pillow==10.0.1
+rembg==2.0.50
+opencv-python-headless==4.8.1.78
+
+# 数据处理
+numpy==1.24.3
+pandas==2.0.3
+
+# HTTP请求
+requests==2.31.0
+urllib3==2.0.4
+
+# 认证和安全
+PyJWT==2.8.0
+cryptography==41.0.4
+
+# 文件处理
+Werkzeug==2.3.7
+
+# 开发和测试工具
+pytest==7.4.2
+pytest-flask==1.2.0
+
+# 生产环境部署
+gunicorn==21.2.0
+
+# 可选：性能监控
+# psutil==5.9.5
+
+# 可选：缓存
+# redis==4.6.0
+
+# 可选：任务队列
+# celery==5.3.1

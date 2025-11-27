@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>工具按钮测试</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .test-button:hover {
+            background: #0056b3;
+        }
+        .log {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .success { color: #28a745; }
+        .error { color: #dc3545; }
+        .info { color: #17a2b8; }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>工具按钮点击测试</h1>
+        
+        <div>
+            <h3>测试按钮</h3>
+            <button class="test-button tool-btn" data-tool="background-remover">背景移除</button>
+            <button class="test-button tool-btn" data-tool="image-compressor">图片压缩</button>
+            <button class="test-button tool-btn" data-tool="image-converter">格式转换</button>
+            <button class="test-button tool-btn" data-tool="image-cropper">图片裁剪</button>
+        </div>
+
+        <div>
+            <h3>测试控制</h3>
+            <button class="test-button" onclick="runMultipleClickTest()">多次点击测试</button>
+            <button class="test-button" onclick="clearLog()">清空日志</button>
+        </div>
+
+        <div>
+            <h3>测试日志</h3>
+            <div id="log" class="log"></div>
+        </div>
+    </div>
+
+    <script>
+        let clickCount = 0;
+        let logElement = document.getElementById('log');
+
+        // 模拟 appManager.openTool 方法
+        window.appManager = {
+            openTool: function(toolType) {
+                clickCount++;
+                const timestamp = new Date().toLocaleTimeString();
+                const message = `[${timestamp}] 第${clickCount}次点击 - 工具类型: ${toolType}`;
+                log(message + ' <span class="success">✓ 成功</span>');
+                console.log(message);
+                
+                // 模拟工具处理
+                setTimeout(() => {
+                    log(`[${timestamp}] ${toolType} 工具处理完成 <span class="info">ℹ</span>`);
+                }, 100);
+            }
+        };
+
+        // 添加事件监听器
+        document.querySelectorAll('.tool-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const toolType = btn.dataset.tool;
+                log(`事件监听器触发 - 按钮: ${btn.textContent}, 工具类型: ${toolType}`);
+                
+                if (toolType) {
+                    appManager.openTool(toolType);
+                } else {
+                    log('错误: 未找到工具类型 <span class="error">✗</span>');
+                }
+            });
+        });
+
+        function runMultipleClickTest() {
+            log('=== 开始多次点击测试 ===');
+            const buttons = document.querySelectorAll('.tool-btn');
+            
+            // 对每个按钮点击3次
+            buttons.forEach((btn, index) => {
+                setTimeout(() => {
+                    for (let i = 1; i <= 3; i++) {
+                        setTimeout(() => {
+                            btn.click();
+                        }, i * 200);
+                    }
+                }, index * 1000);
+            });
+        }
+
+        function log(message) {
+            const timestamp = new Date().toLocaleTimeString();
+            logElement.innerHTML += `[${timestamp}] ${message}\n`;
+            logElement.scrollTop = logElement.scrollHeight;
+        }
+
+        function clearLog() {
+            logElement.innerHTML = '';
+            clickCount = 0;
+            log('日志已清空');
+        }
+
+        // 页面加载完成后的初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            log('测试页面加载完成');
+            log(`找到 ${document.querySelectorAll('.tool-btn').length} 个工具按钮`);
+            
+            // 检查每个按钮的data-tool属性
+            document.querySelectorAll('.tool-btn').forEach(btn => {
+                const toolType = btn.dataset.tool;
+                log(`按钮 "${btn.textContent}": data-tool="${toolType}"`);
+            });
+        });
+    </script>
+</body>
+</html>

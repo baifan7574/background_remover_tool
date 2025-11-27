@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>功能测试页面</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        .test-btn {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .test-btn:hover {
+            background: #0056b3;
+        }
+        .result {
+            margin: 10px 0;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 5px;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+        }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 PixelMagic 功能测试</h1>
+    
+    <div class="test-section">
+        <h2>🔐 用户注册测试</h2>
+        <button class="test-btn" onclick="testRegister()">测试注册功能</button>
+        <div id="registerResult" class="result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>🔑 用户登录测试</h2>
+        <button class="test-btn" onclick="testLogin()">测试登录功能</button>
+        <div id="loginResult" class="result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>👤 用户资料测试</h2>
+        <button class="test-btn" onclick="testProfile()">测试获取用户资料</button>
+        <div id="profileResult" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>🎯 页面跳转测试</h2>
+        <button class="test-btn" onclick="window.open('http://localhost:8080', '_blank')">打开主页</button>
+        <button class="test-btn" onclick="window.open('http://localhost:8080/login.html', '_blank')">打开登录页</button>
+        <button class="test-btn" onclick="window.open('http://localhost:8080/register.html', '_blank')">打开注册页</button>
+    </div>
+
+    <script>
+        async function testRegister() {
+            const resultDiv = document.getElementById('registerResult');
+            resultDiv.innerHTML = '正在测试注册功能...';
+            
+            try {
+                const testData = {
+                    email: `test${Date.now()}@example.com`,
+                    password: 'test123456',
+                    name: '测试用户'
+                };
+                
+                const response = await fetch('http://localhost:5000/api/auth/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(testData)
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    resultDiv.innerHTML = `<div class="success">✅ 注册成功！<br>
+                    用户ID: ${result.user_id}<br>
+                    邮箱: ${result.email}<br>
+                    计划: ${result.plan}<br>
+                    积分: ${result.credits}<br>
+                    说明: ${result.note}</div>`;
+                } else {
+                    resultDiv.innerHTML = `<div class="error">❌ 注册失败: ${result.error}</div>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">❌ 注册测试异常: ${error.message}</div>`;
+            }
+        }
+        
+        async function testLogin() {
+            const resultDiv = document.getElementById('loginResult');
+            resultDiv.innerHTML = '正在测试登录功能...';
+            
+            try {
+                const testData = {
+                    email: 'test@example.com',
+                    password: 'any_password'
+                };
+                
+                const response = await fetch('http://localhost:5000/api/auth/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(testData)
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    resultDiv.innerHTML = `<div class="success">✅ 登录成功！<br>
+                    用户ID: ${result.user.id}<br>
+                    邮箱: ${result.user.email}<br>
+                    计划: ${result.user.plan}<br>
+                    积分: ${result.user.credits}<br>
+                    Token: ${result.token}<br>
+                    说明: ${result.note}</div>`;
+                } else {
+                    resultDiv.innerHTML = `<div class="error">❌ 登录失败: ${result.error}</div>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">❌ 登录测试异常: ${error.message}</div>`;
+            }
+        }
+        
+        async function testProfile() {
+            const resultDiv = document.getElementById('profileResult');
+            resultDiv.innerHTML = '正在测试获取用户资料...';
+            
+            try {
+                const response = await fetch('http://localhost:5000/api/auth/profile', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': 'Bearer dev-token-test-user'
+                    }
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    resultDiv.innerHTML = `<div class="success">✅ 获取资料成功！<br>
+                    用户ID: ${result.user.id}<br>
+                    邮箱: ${result.user.email}<br>
+                    姓名: ${result.user.name}<br>
+                    计划: ${result.user.plan}<br>
+                    积分: ${result.user.credits}</div>`;
+                } else {
+                    resultDiv.innerHTML = `<div class="error">❌ 获取资料失败: ${result.error}</div>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">❌ 获取资料测试异常: ${error.message}</div>`;
+            }
+        }
+    </script>
+</body>
+</html>

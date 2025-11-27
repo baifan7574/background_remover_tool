@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>注册功能调试</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .message {
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        .debug {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            font-size: 12px;
+        }
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 20px 0;
+        }
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 2s linear infinite;
+            margin: 0 auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 注册功能调试页面</h1>
+        
+        <div class="info">
+            <strong>说明：</strong>这个页面用于测试注册功能，会显示详细的调试信息。
+        </div>
+
+        <form id="registerForm">
+            <div class="form-group">
+                <label for="name">姓名：</label>
+                <input type="text" id="name" name="name" value="测试用户" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="email">邮箱：</label>
+                <input type="email" id="email" name="email" value="test@example.com" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">密码：</label>
+                <input type="password" id="password" name="password" value="password123" required>
+            </div>
+            
+            <button type="submit" id="submitBtn">🚀 测试注册</button>
+            <button type="button" onclick="testConnection()">🔗 测试连接</button>
+            <button type="button" onclick="generateRandomEmail()">🎲 随机邮箱</button>
+        </form>
+
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>正在注册...</p>
+        </div>
+
+        <div id="messages"></div>
+        
+        <div class="debug" id="debugInfo">等待调试信息...</div>
+    </div>
+
+    <script>
+        let debugLog = [];
+
+        function log(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            debugLog.push(`[${timestamp}] ${type.toUpperCase()}: ${message}`);
+            updateDebugDisplay();
+            console.log(`[${timestamp}] ${type.toUpperCase()}: ${message}`);
+        }
+
+        function updateDebugDisplay() {
+            document.getElementById('debugInfo').textContent = debugLog.join('\n');
+        }
+
+        function showMessage(text, type) {
+            const messagesDiv = document.getElementById('messages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${type}`;
+            messageDiv.textContent = text;
+            messagesDiv.appendChild(messageDiv);
+            
+            // 5秒后自动移除
+            setTimeout(() => {
+                if (messageDiv.parentNode) {
+                    messageDiv.parentNode.removeChild(messageDiv);
+                }
+            }, 5000);
+        }
+
+        function showLoading(show) {
+            document.getElementById('loading').style.display = show ? 'block' : 'none';
+            document.getElementById('submitBtn').disabled = show;
+        }
+
+        function generateRandomEmail() {
+            const randomNum = Math.floor(Math.random() * 10000);
+            const email = `test${randomNum}@example.com`;
+            document.getElementById('email').value = email;
+            log(`生成随机邮箱: ${email}`);
+        }
+
+        async function testConnection() {
+            log('开始测试后端连接...');
+            
+            try {
+                const response = await fetch('http://localhost:5000/api/auth/register', {
+                    method: 'OPTIONS',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+                
+                log(`连接测试响应状态: ${response.status}`);
+                log(`响应头: ${JSON.stringify([...response.headers.entries()])}`);
+                
+                if (response.ok) {
+                    showMessage('后端连接正常！', 'success');
+                } else {
+                    showMessage(`连接测试失败: ${response.status}`, 'error');
+                }
+            } catch (error) {
+                log(`连接测试异常: ${error.message}`, 'error');
+                showMessage(`连接失败: ${error.message}`, 'error');
+            }
+        }
+
+        document.getElementById('registerForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            log('=== 开始注册测试 ===');
+            log(`姓名: ${name}`);
+            log(`邮箱: ${email}`);
+            log(`密码: ${password.replace(/./g, '*')}`);
+            
+            showLoading(true);
+            
+            try {
+                log('发送注册请求到: http://localhost:5000/api/auth/register');
+                
+                const requestData = {
+                    name: name,
+                    email: email,
+                    password: password,
+                    newsletter: false
+                };
+                
+                log(`请求数据: ${JSON.stringify(requestData, null, 2)}`);
+                
+                const response = await fetch('http://localhost:5000/api/auth/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(requestData)
+                });
+                
+                log(`响应状态: ${response.status} ${response.statusText}`);
+                log(`响应头: ${JSON.stringify([...response.headers.entries()])}`);
+                
+                const responseText = await response.text();
+                log(`响应原文: ${responseText}`);
+                
+                let data;
+                try {
+                    data = JSON.parse(responseText);
+                    log(`解析后的JSON: ${JSON.stringify(data, null, 2)}`);
+                } catch (parseError) {
+                    log(`JSON解析失败: ${parseError.message}`, 'error');
+                    data = { raw: responseText };
+                }
+                
+                if (response.ok) {
+                    showMessage(`✅ 注册成功！用户ID: ${data.user_id || 'N/A'}`, 'success');
+                    log('注册成功！');
+                } else {
+                    const errorMessage = data.error || data.message || '注册失败';
+                    showMessage(`❌ 注册失败: ${errorMessage}`, 'error');
+                    log(`注册失败: ${errorMessage}`, 'error');
+                }
+                
+            } catch (error) {
+                log(`请求异常: ${error.message}`, 'error');
+                log(`错误堆栈: ${error.stack}`, 'error');
+                showMessage(`❌ 网络错误: ${error.message}`, 'error');
+            } finally {
+                showLoading(false);
+                log('=== 注册测试结束 ===\n');
+            }
+        });
+
+        // 页面加载时记录信息
+        window.addEventListener('load', function() {
+            log('页面加载完成');
+            log(`当前URL: ${window.location.href}`);
+            log(`用户代理: ${navigator.userAgent}`);
+            
+            // 检查后端是否可用
+            testConnection();
+        });
+    </script>
+</body>
+</html>

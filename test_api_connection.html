@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API连接测试</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        .test-item {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .success {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .btn-primary {
+            background-color: #007bff;
+            color: white;
+        }
+        .btn-success {
+            background-color: #28a745;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <h1>API连接测试</h1>
+    
+    <div class="test-item">
+        <h3>1. 后端服务器连接测试</h3>
+        <button class="btn-primary" onclick="testBackendConnection()">测试连接</button>
+        <div id="backendResult"></div>
+    </div>
+    
+    <div class="test-item">
+        <h3>2. 认证状态测试</h3>
+        <button class="btn-primary" onclick="testAuthStatus()">测试认证</button>
+        <div id="authResult"></div>
+    </div>
+    
+    <div class="test-item">
+        <h3>3. 工具权限测试</h3>
+        <button class="btn-primary" onclick="testPermission('background_remover')">测试背景移除权限</button>
+        <button class="btn-primary" onclick="testPermission('image_compressor')">测试图片压缩权限</button>
+        <div id="permissionResult"></div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'http://localhost:5000';
+        
+        async function testBackendConnection() {
+            const resultDiv = document.getElementById('backendResult');
+            try {
+                const response = await fetch(`${API_BASE_URL}/health`);
+                if (response.ok) {
+                    const data = await response.json();
+                    resultDiv.innerHTML = `<div class="success">✅ 后端连接成功: ${data.message}</div>`;
+                } else {
+                    resultDiv.innerHTML = `<div class="error">❌ 后端连接失败: ${response.status}</div>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">❌ 连接错误: ${error.message}</div>`;
+            }
+        }
+        
+        async function testAuthStatus() {
+            const resultDiv = document.getElementById('authResult');
+            try {
+                const token = localStorage.getItem('authToken');
+                const response = await fetch(`${API_BASE_URL}/api/auth/profile`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    resultDiv.innerHTML = `<div class="success">✅ 认证成功: ${data.name || data.email || '未知用户'}</div>`;
+                } else {
+                    resultDiv.innerHTML = `<div class="error">❌ 认证失败: ${response.status} - 请先登录</div>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">❌ 认证错误: ${error.message}</div>`;
+            }
+        }
+        
+        async function testPermission(toolType) {
+            const resultDiv = document.getElementById('permissionResult');
+            try {
+                const token = localStorage.getItem('authToken');
+                const response = await fetch(`${API_BASE_URL}/api/auth/check-permission/${toolType}`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    resultDiv.innerHTML = `<div class="success">✅ ${toolType} 权限检查成功: ${data.allowed ? '允许使用' : '需要升级'}</div>`;
+                } else {
+                    resultDiv.innerHTML = `<div class="error">❌ ${toolType} 权限检查失败: ${response.status}</div>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">❌ ${toolType} 权限检查错误: ${error.message}</div>`;
+            }
+        }
+        
+        // 页面加载时自动测试后端连接
+        window.onload = function() {
+            testBackendConnection();
+        };
+    </script>
+</body>
+</html>

@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>注册调试</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-right: 10px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .message {
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+            display: none;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        .log {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>注册功能调试</h1>
+        
+        <form id="registerForm">
+            <div class="form-group">
+                <label for="firstName">名字:</label>
+                <input type="text" id="firstName" name="firstName" placeholder="请输入名字" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="lastName">姓氏:</label>
+                <input type="text" id="lastName" name="lastName" placeholder="请输入姓氏" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="email">邮箱:</label>
+                <input type="email" id="email" name="email" placeholder="请输入邮箱" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">密码:</label>
+                <input type="password" id="password" name="password" placeholder="请输入密码" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="confirmPassword">确认密码:</label>
+                <input type="password" id="confirmPassword" name="confirmPassword" placeholder="请再次输入密码" required>
+            </div>
+            
+            <div class="form-group">
+                <label>
+                    <input type="checkbox" id="terms" name="terms" required>
+                    我同意服务条款
+                </label>
+            </div>
+            
+            <button type="submit">注册</button>
+            <button type="button" onclick="fillTestData()">填充测试数据</button>
+            <button type="button" onclick="clearLog()">清空日志</button>
+        </form>
+        
+        <div id="successMessage" class="message success"></div>
+        <div id="errorMessage" class="message error"></div>
+        <div id="infoMessage" class="message info"></div>
+        
+        <div id="log" class="log">调试日志将显示在这里...</div>
+    </div>
+
+    <script>
+        function log(message) {
+            const logDiv = document.getElementById('log');
+            const timestamp = new Date().toLocaleTimeString();
+            logDiv.textContent += `[${timestamp}] ${message}\n`;
+            logDiv.scrollTop = logDiv.scrollHeight;
+            console.log(message);
+        }
+
+        function showSuccess(message) {
+            log(`✅ 成功: ${message}`);
+            const div = document.getElementById('successMessage');
+            div.textContent = message;
+            div.style.display = 'block';
+            setTimeout(() => { div.style.display = 'none'; }, 5000);
+        }
+
+        function showError(message) {
+            log(`❌ 错误: ${message}`);
+            const div = document.getElementById('errorMessage');
+            div.textContent = message;
+            div.style.display = 'block';
+            setTimeout(() => { div.style.display = 'none'; }, 5000);
+        }
+
+        function showInfo(message) {
+            log(`ℹ️ 信息: ${message}`);
+            const div = document.getElementById('infoMessage');
+            div.textContent = message;
+            div.style.display = 'block';
+            setTimeout(() => { div.style.display = 'none'; }, 3000);
+        }
+
+        function fillTestData() {
+            const timestamp = Date.now();
+            document.getElementById('firstName').value = '测试';
+            document.getElementById('lastName').value = '用户' + timestamp;
+            document.getElementById('email').value = `test${timestamp}@example.com`;
+            document.getElementById('password').value = 'Test123456';
+            document.getElementById('confirmPassword').value = 'Test123456';
+            document.getElementById('terms').checked = true;
+            log('已填充测试数据');
+        }
+
+        function clearLog() {
+            document.getElementById('log').textContent = '日志已清空...\n';
+        }
+
+        // 页面加载时初始化
+        window.addEventListener('load', function() {
+            log('页面加载完成');
+            fillTestData();
+            
+            // 检查表单元素
+            const form = document.getElementById('registerForm');
+            if (form) {
+                log('✅ 找到注册表单');
+            } else {
+                log('❌ 未找到注册表单');
+            }
+            
+            // 添加表单提交事件监听器
+            form.addEventListener('submit', function(e) {
+                log('📝 表单提交事件触发');
+                handleRegister(e);
+            });
+            
+            log('✅ 事件监听器已添加');
+        });
+
+        async function handleRegister(e) {
+            e.preventDefault();
+            log('🚀 开始处理注册');
+            
+            try {
+                // 获取表单数据
+                const firstName = document.getElementById('firstName').value;
+                const lastName = document.getElementById('lastName').value;
+                const email = document.getElementById('email').value;
+                const password = document.getElementById('password').value;
+                const confirmPassword = document.getElementById('confirmPassword').value;
+                const terms = document.getElementById('terms').checked;
+                
+                log(`📋 表单数据: ${firstName} ${lastName}, ${email}, 密码长度: ${password.length}, 条款同意: ${terms}`);
+                
+                // 基本验证
+                if (!firstName || !lastName || !email || !password || !confirmPassword) {
+                    showError('请填写所有必填字段');
+                    return;
+                }
+                
+                if (password !== confirmPassword) {
+                    showError('两次输入的密码不一致');
+                    return;
+                }
+                
+                if (!terms) {
+                    showError('请同意服务条款');
+                    return;
+                }
+                
+                showInfo('正在发送注册请求...');
+                
+                // 构建请求数据
+                const requestData = {
+                    name: firstName + ' ' + lastName,
+                    email: email,
+                    password: password,
+                    newsletter: false
+                };
+                
+                log(`📤 发送请求数据: ${JSON.stringify(requestData, null, 2)}`);
+                
+                // 发送请求
+                const response = await fetch('http://localhost:5000/api/auth/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(requestData)
+                });
+                
+                log(`📥 收到响应: 状态 ${response.status} ${response.statusText}`);
+                
+                // 解析响应
+                const data = await response.json();
+                log(`📊 响应数据: ${JSON.stringify(data, null, 2)}`);
+                
+                if (response.ok) {
+                    showSuccess(`注册成功！用户ID: ${data.user_id}`);
+                    log('🎉 注册成功！');
+                } else {
+                    showError(`注册失败: ${data.error || '未知错误'}`);
+                    log(`💥 注册失败: ${data.error || '未知错误'}`);
+                }
+                
+            } catch (error) {
+                log(`🚨 异常: ${error.message}`);
+                log(`📋 错误堆栈: ${error.stack}`);
+                showError(`网络错误: ${error.message}`);
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>功能测试页面</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .test-container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .test-button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .test-button:hover {
+            background: #0056b3;
+        }
+        .status {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+        .info { background: #d1ecf1; color: #0c5460; }
+        .debug-info {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 15px;
+            margin: 10px 0;
+            font-family: monospace;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔧 背景移除工具 - 功能测试</h1>
+    
+    <div class="test-container">
+        <h2>📋 测试清单</h2>
+        <div id="testList">
+            <div>□ 检查AppManager类是否正确加载</div>
+            <div>□ 检查AuthManager类是否正确加载</div>
+            <div>□ 检查DOM元素是否存在</div>
+            <div>□ 测试工具按钮点击事件</div>
+            <div>□ 测试模态框显示功能</div>
+            <div>□ 测试文件上传功能</div>
+            <div>□ 测试API调用功能</div>
+        </div>
+    </div>
+
+    <div class="test-container">
+        <h2>🧪 快速测试</h2>
+        <button class="test-button" onclick="testBasicSetup()">基础设置测试</button>
+        <button class="test-button" onclick="testToolButtons()">工具按钮测试</button>
+        <button class="test-button" onclick="testModalSystem()">模态框系统测试</button>
+        <button class="test-button" onclick="testFileUpload()">文件上传测试</button>
+        <button class="test-button" onclick="testAPICall()">API调用测试</button>
+        <button class="test-button" onclick="runAllTests()">运行所有测试</button>
+        
+        <div id="testStatus"></div>
+        <div id="debugInfo"></div>
+    </div>
+
+    <div class="test-container">
+        <h2>🔍 调试信息</h2>
+        <button class="test-button" onclick="showDebugInfo()">显示调试信息</button>
+        <button class="test-button" onclick="testDirectToolCall()">直接调用工具</button>
+        <button class="test-button" onclick="clearDebugInfo()">清除调试信息</button>
+    </div>
+
+    <!-- 引入必要的脚本 -->
+    <script src="js/auth.js"></script>
+    <script src="js/app.js"></script>
+
+    <script>
+        let testResults = [];
+
+        function updateStatus(message, type = 'info') {
+            const statusDiv = document.getElementById('testStatus');
+            const timestamp = new Date().toLocaleTimeString();
+            statusDiv.innerHTML += `<div class="status ${type}">[${timestamp}] ${message}</div>`;
+            statusDiv.scrollTop = statusDiv.scrollHeight;
+        }
+
+        function updateDebugInfo(info) {
+            const debugDiv = document.getElementById('debugInfo');
+            debugDiv.textContent = info;
+        }
+
+        function updateTestList(index, status) {
+            const testItems = document.querySelectorAll('#testList div');
+            if (testItems[index]) {
+                testItems[index].innerHTML = testItems[index].innerHTML.replace('□', status);
+            }
+        }
+
+        async function testBasicSetup() {
+            updateStatus('开始基础设置测试...', 'info');
+            
+            try {
+                // 检查AppManager
+                if (typeof AppManager !== 'undefined') {
+                    updateStatus('✅ AppManager类已加载', 'success');
+                    updateTestList(0, '✅');
+                } else {
+                    updateStatus('❌ AppManager类未加载', 'error');
+                    updateTestList(0, '❌');
+                    return;
+                }
+
+                // 检查AuthManager
+                if (typeof AuthManager !== 'undefined') {
+                    updateStatus('✅ AuthManager类已加载', 'success');
+                    updateTestList(1, '✅');
+                } else {
+                    updateStatus('❌ AuthManager类未加载', 'error');
+                    updateTestList(1, '❌');
+                    return;
+                }
+
+                // 检查appManager实例
+                if (typeof appManager !== 'undefined') {
+                    updateStatus('✅ appManager实例已创建', 'success');
+                } else {
+                    updateStatus('❌ appManager实例未创建', 'error');
+                    return;
+                }
+
+                // 检查关键DOM元素
+                const criticalElements = [
+                    'toolModal',
+                    'loginModal',
+                    'registerModal'
+                ];
+
+                let domOK = true;
+                for (const elementId of criticalElements) {
+                    const element = document.getElementById(elementId);
+                    if (element) {
+                        updateStatus(`✅ 找到元素: ${elementId}`, 'success');
+                    } else {
+                        updateStatus(`❌ 未找到元素: ${elementId}`, 'error');
+                        domOK = false;
+                    }
+                }
+
+                if (domOK) {
+                    updateTestList(2, '✅');
+                } else {
+                    updateTestList(2, '❌');
+                }
+
+                updateStatus('基础设置测试完成', 'success');
+
+            } catch (error) {
+                updateStatus(`基础设置测试失败: ${error.message}`, 'error');
+            }
+        }
+
+        async function testToolButtons() {
+            updateStatus('开始工具按钮测试...', 'info');
+
+            try {
+                // 检查工具按钮
+                const toolButtons = document.querySelectorAll('[data-tool]');
+                updateStatus(`找到 ${toolButtons.length} 个工具按钮`, 'info');
+
+                if (toolButtons.length === 0) {
+                    updateStatus('❌ 未找到任何工具按钮', 'error');
+                    updateTestList(3, '❌');
+                    return;
+                }
+
+                // 测试每个按钮
+                let buttonsOK = true;
+                toolButtons.forEach((btn, index) => {
+                    const toolType = btn.dataset.tool;
+                    if (toolType) {
+                        updateStatus(`✅ 按钮 ${index + 1}: ${toolType}`, 'success');
+                    } else {
+                        updateStatus(`❌ 按钮 ${index + 1}: 缺少data-tool属性`, 'error');
+                        buttonsOK = false;
+                    }
+                });
+
+                if (buttonsOK) {
+                    updateTestList(3, '✅');
+                    updateStatus('工具按钮测试通过', 'success');
+                } else {
+                    updateTestList(3, '❌');
+                }
+
+            } catch (error) {
+                updateStatus(`工具按钮测试失败: ${error.message}`, 'error');
+            }
+        }
+
+        async function testModalSystem() {
+            updateStatus('开始模态框系统测试...', 'info');
+
+            try {
+                if (!appManager) {
+                    updateStatus('❌ appManager实例不存在', 'error');
+                    return;
+                }
+
+                // 测试模态框显示
+                const modal = document.getElementById('toolModal');
+                if (modal) {
+                    updateStatus('✅ 找到工具模态框', 'success');
+                    
+                    // 测试showModal方法
+                    if (typeof appManager.showModal === 'function') {
+                        updateStatus('✅ showModal方法存在', 'success');
+                        
+                        // 尝试显示模态框
+                        appManager.showModal(modal);
+                        updateStatus('✅ 模态框显示成功', 'success');
+                        
+                        // 等待一秒后关闭
+                        setTimeout(() => {
+                            appManager.closeModal(modal);
+                            updateStatus('✅ 模态框关闭成功', 'success');
+                        }, 1000);
+                        
+                        updateTestList(4, '✅');
+                    } else {
+                        updateStatus('❌ showModal方法不存在', 'error');
+                        updateTestList(4, '❌');
+                    }
+                } else {
+                    updateStatus('❌ 未找到工具模态框', 'error');
+                    updateTestList(4, '❌');
+                }
+
+            } catch (error) {
+                updateStatus(`模态框系统测试失败: ${error.message}`, 'error');
+            }
+        }
+
+        async function testFileUpload() {
+            updateStatus('开始文件上传测试...', 'info');
+
+            try {
+                // 检查文件输入元素
+                const fileInput = document.getElementById('fileInput');
+                if (fileInput) {
+                    updateStatus('✅ 找到文件输入元素', 'success');
+                } else {
+                    updateStatus('❌ 未找到文件输入元素', 'error');
+                    updateTestList(5, '❌');
+                    return;
+                }
+
+                // 检查validateFile方法
+                if (typeof appManager.validateFile === 'function') {
+                    updateStatus('✅ validateFile方法存在', 'success');
+                    
+                    // 创建测试文件
+                    const testFile = new File(['test'], 'test.jpg', { type: 'image/jpeg' });
+                    const isValid = appManager.validateFile(testFile);
+                    
+                    if (isValid) {
+                        updateStatus('✅ 文件验证功能正常', 'success');
+                        updateTestList(5, '✅');
+                    } else {
+                        updateStatus('❌ 文件验证功能异常', 'error');
+                        updateTestList(5, '❌');
+                    }
+                } else {
+                    updateStatus('❌ validateFile方法不存在', 'error');
+                    updateTestList(5, '❌');
+                }
+
+            } catch (error) {
+                updateStatus(`文件上传测试失败: ${error.message}`, 'error');
+            }
+        }
+
+        async function testAPICall() {
+            updateStatus('开始API调用测试...', 'info');
+
+            try {
+                // 检查API基础URL
+                if (appManager.apiBaseUrl) {
+                    updateStatus(`✅ API基础URL: ${appManager.apiBaseUrl}`, 'success');
+                } else {
+                    updateStatus('❌ API基础URL未设置', 'error');
+                    updateTestList(6, '❌');
+                    return;
+                }
+
+                // 测试fileToBase64方法
+                if (typeof appManager.fileToBase64 === 'function') {
+                    updateStatus('✅ fileToBase64方法存在', 'success');
+                    
+                    const testFile = new File(['test'], 'test.jpg', { type: 'image/jpeg' });
+                    const base64 = await appManager.fileToBase64(testFile);
+                    
+                    if (base64 && base64.length > 0) {
+                        updateStatus('✅ 文件转base64功能正常', 'success');
+                        updateTestList(6, '✅');
+                    } else {
+                        updateStatus('❌ 文件转base64功能异常', 'error');
+                        updateTestList(6, '❌');
+                    }
+                } else {
+                    updateStatus('❌ fileToBase64方法不存在', 'error');
+                    updateTestList(6, '❌');
+                }
+
+            } catch (error) {
+                updateStatus(`API调用测试失败: ${error.message}`, 'error');
+            }
+        }
+
+        async function runAllTests() {
+            updateStatus('🚀 开始运行所有测试...', 'info');
+            
+            await testBasicSetup();
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            await testToolButtons();
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            await testModalSystem();
+            await new Promise(resolve => setTimeout(resolve, 1500));
+            
+            await testFileUpload();
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            await testAPICall();
+            
+            updateStatus('🎉 所有测试完成！', 'success');
+        }
+
+        function showDebugInfo() {
+            const debugData = {
+                appManagerExists: typeof appManager !== 'undefined',
+                authManagerExists: typeof AuthManager !== 'undefined',
+                currentTool: appManager ? appManager.currentTool : null,
+                isProcessing: appManager ? appManager.isProcessing : null,
+                apiBaseUrl: appManager ? appManager.apiBaseUrl : null,
+                domElements: {
+                    toolModal: !!document.getElementById('toolModal'),
+                    loginModal: !!document.getElementById('loginModal'),
+                    registerModal: !!document.getElementById('registerModal'),
+                    uploadArea: !!document.getElementById('uploadArea'),
+                    fileInput: !!document.getElementById('fileInput')
+                },
+                toolButtons: document.querySelectorAll('[data-tool]').length,
+                eventListeners: appManager ? Object.keys(appManager).filter(key => key.includes('Event')) : []
+            };
+
+            updateDebugInfo(JSON.stringify(debugData, null, 2));
+        }
+
+        function testDirectToolCall() {
+            updateStatus('测试直接调用工具...', 'info');
+            
+            if (appManager && typeof appManager.openTool === 'function') {
+                try {
+                    appManager.openTool('background_remover');
+                    updateStatus('✅ 直接调用background_remover工具成功', 'success');
+                } catch (error) {
+                    updateStatus(`❌ 直接调用工具失败: ${error.message}`, 'error');
+                }
+            } else {
+                updateStatus('❌ appManager或openTool方法不存在', 'error');
+            }
+        }
+
+        function clearDebugInfo() {
+            document.getElementById('debugInfo').textContent = '';
+            document.getElementById('testStatus').innerHTML = '';
+        }
+
+        // 页面加载完成后自动运行基础测试
+        window.addEventListener('load', () => {
+            updateStatus('📄 页面加载完成，开始自动测试...', 'info');
+            setTimeout(testBasicSetup, 1000);
+        });
+    </script>
+</body>
+</html>

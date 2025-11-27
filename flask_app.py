@@ -105,7 +105,47 @@ def record_tool_usage(user_id, tool_name, input_data, output_data, credits_used)
 @app.route('/')
 def index():
     """主页"""
-    return render_template('index.html')
+    return """
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>跨境工具API服务</title>
+        <meta charset="utf-8">
+        <style>
+            body { font-family: Arial, sans-serif; margin: 40px; }
+            .container { max-width: 800px; margin: 0 auto; }
+            .status { background: #e8f5e8; padding: 20px; border-radius: 8px; }
+            .api-list { margin-top: 20px; }
+            .api-item { background: #f5f5f5; margin: 10px 0; padding: 10px; border-radius: 4px; }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h1>🌍 跨境工具API服务</h1>
+            <div class="status">
+                <h2>✅ 服务状态</h2>
+                <p>服务正在运行...</p>
+                <p><a href="/health">健康检查</a></p>
+            </div>
+            <div class="api-list">
+                <h3>📚 可用API</h3>
+                <div class="api-item">
+                    <strong>用户认证:</strong> POST /api/auth/register, /api/auth/login
+                </div>
+                <div class="api-item">
+                    <strong>汇率转换:</strong> POST /api/tools/currency-converter
+                </div>
+                <div class="api-item">
+                    <strong>单位转换:</strong> POST /api/tools/unit-converter
+                </div>
+                <div class="api-item">
+                    <strong>运费计算:</strong> POST /api/tools/shipping-calculator
+                </div>
+            </div>
+        </div>
+    </body>
+    </html>
+    """
 
 @app.route('/health')
 def health_check():

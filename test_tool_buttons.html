@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>工具按钮测试</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-button { 
+            padding: 10px 20px; 
+            margin: 10px; 
+            background: #007bff; 
+            color: white; 
+            border: none; 
+            border-radius: 5px; 
+            cursor: pointer; 
+        }
+        .test-button:hover { background: #0056b3; }
+        .log { 
+            background: #f8f9fa; 
+            border: 1px solid #dee2e6; 
+            padding: 10px; 
+            margin: 10px 0; 
+            border-radius: 5px; 
+        }
+    </style>
+</head>
+<body>
+    <h1>工具按钮测试</h1>
+    
+    <div>
+        <button class="test-button" onclick="testButtonClick('background-remover')">测试背景移除按钮</button>
+        <button class="test-button" onclick="testButtonClick('image-compressor')">测试图片压缩按钮</button>
+        <button class="test-button" onclick="testButtonClick('image-converter')">测试格式转换按钮</button>
+        <button class="test-button" onclick="testButtonClick('image-cropper')">测试图片裁剪按钮</button>
+    </div>
+    
+    <div>
+        <button class="test-button" onclick="testMultipleClicks()">测试多次点击</button>
+        <button class="test-button" onclick="clearLog()">清除日志</button>
+    </div>
+    
+    <div id="log" class="log">
+        <strong>测试日志：</strong><br>
+    </div>
+
+    <script>
+        let clickCount = 0;
+        
+        function log(message) {
+            const logDiv = document.getElementById('log');
+            const time = new Date().toLocaleTimeString();
+            logDiv.innerHTML += `[${time}] ${message}<br>`;
+            logDiv.scrollTop = logDiv.scrollHeight;
+        }
+        
+        function testButtonClick(toolType) {
+            clickCount++;
+            log(`第 ${clickCount} 次点击 - 工具类型: ${toolType}`);
+            
+            // 模拟 appManager.openTool 调用
+            console.log(`模拟调用 appManager.openTool('${toolType}')`);
+            
+            // 检查是否有响应
+            setTimeout(() => {
+                log(`✅ 工具 ${toolType} 响应正常`);
+            }, 100);
+        }
+        
+        function testMultipleClicks() {
+            log('开始多次点击测试...');
+            
+            // 连续点击背景移除按钮5次
+            for (let i = 1; i <= 5; i++) {
+                setTimeout(() => {
+                    testButtonClick('background-remover');
+                }, i * 200);
+            }
+        }
+        
+        function clearLog() {
+            document.getElementById('log').innerHTML = '<strong>测试日志：</strong><br>';
+            clickCount = 0;
+        }
+        
+        // 页面加载完成后的初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            log('测试页面加载完成');
+            log('请点击上方按钮进行测试');
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>登录注册集成测试</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .test-container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .test-section {
+            margin-bottom: 30px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .test-button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .test-button:hover {
+            background: #0056b3;
+        }
+        .result {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            font-family: monospace;
+            white-space: pre-wrap;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 前端登录注册API集成测试</h1>
+    
+    <div class="test-container">
+        <div class="test-section">
+            <h3>📝 用户注册测试</h3>
+            <div class="form-group">
+                <label for="regName">姓名:</label>
+                <input type="text" id="regName" value="集成测试用户" placeholder="请输入姓名">
+            </div>
+            <div class="form-group">
+                <label for="regEmail">邮箱:</label>
+                <input type="email" id="regEmail" value="integration@test.com" placeholder="请输入邮箱">
+            </div>
+            <div class="form-group">
+                <label for="regPassword">密码:</label>
+                <input type="password" id="regPassword" value="123456" placeholder="请输入密码">
+            </div>
+            <button class="test-button" onclick="testRegister()">测试注册</button>
+            <div id="registerResult" class="result" style="display:none;"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>🔐 用户登录测试</h3>
+            <div class="form-group">
+                <label for="loginEmail">邮箱:</label>
+                <input type="email" id="loginEmail" value="integration@test.com" placeholder="请输入邮箱">
+            </div>
+            <div class="form-group">
+                <label for="loginPassword">密码:</label>
+                <input type="password" id="loginPassword" value="123456" placeholder="请输入密码">
+            </div>
+            <button class="test-button" onclick="testLogin()">测试登录</button>
+            <div id="loginResult" class="result" style="display:none;"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>👤 用户状态测试</h3>
+            <button class="test-button" onclick="testProfile()">获取用户资料</button>
+            <button class="test-button" onclick="testLogout()">退出登录</button>
+            <button class="test-button" onclick="checkAuthStatus()">检查认证状态</button>
+            <div id="profileResult" class="result" style="display:none;"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>🔧 权限测试</h3>
+            <button class="test-button" onclick="testPermission('background_remover')">测试背景移除权限</button>
+            <button class="test-button" onclick="testPermission('image_compressor')">测试图片压缩权限</button>
+            <div id="permissionResult" class="result" style="display:none;"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>🌐 页面链接测试</h3>
+            <button class="test-button" onclick="window.open('/frontend/register.html', '_blank')">打开注册页面</button>
+            <button class="test-button" onclick="window.open('/frontend/login.html', '_blank')">打开登录页面</button>
+            <button class="test-button" onclick="window.open('/', '_blank')">打开主页</button>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:5000';
+        let currentToken = null;
+        let currentUser = null;
+
+        // 显示结果
+        function showResult(elementId, message, type = 'info') {
+            const element = document.getElementById(elementId);
+            element.style.display = 'block';
+            element.className = `result ${type}`;
+            element.textContent = message;
+        }
+
+        // 测试注册
+        async function testRegister() {
+            const name = document.getElementById('regName').value;
+            const email = document.getElementById('regEmail').value;
+            const password = document.getElementById('regPassword').value;
+
+            showResult('registerResult', '正在注册...', 'info');
+
+            try {
+                const response = await fetch(`${API_BASE}/api/auth/register`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ name, email, password })
+                });
+
+                const data = await response.json();
+                
+                if (response.ok) {
+                    currentToken = data.token;
+                    currentUser = data.user;
+                    showResult('registerResult', 
+                        `✅ 注册成功！\n用户ID: ${data.user.id}\n邮箱: ${data.user.email}\n计划: ${data.user.plan}\nToken: ${data.token.substring(0, 20)}...`, 
+                        'success'
+                    );
+                } else {
+                    showResult('registerResult', `❌ 注册失败: ${data.error}`, 'error');
+                }
+            } catch (error) {
+                showResult('registerResult', `❌ 网络错误: ${error.message}`, 'error');
+            }
+        }
+
+        // 测试登录
+        async function testLogin() {
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+
+            showResult('loginResult', '正在登录...', 'info');
+
+            try {
+                const response = await fetch(`${API_BASE}/api/auth/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await response.json();
+                
+                if (response.ok) {
+                    currentToken = data.token;
+                    currentUser = data.user;
+                    showResult('loginResult', 
+                        `✅ 登录成功！\n用户ID: ${data.user.id}\n邮箱: ${data.user.email}\n计划: ${data.user.plan}\n积分: ${data.user.credits}\nToken: ${data.token.substring(0, 20)}...`, 
+                        'success'
+                    );
+                } else {
+                    showResult('loginResult', `❌ 登录失败: ${data.error}`, 'error');
+                }
+            } catch (error) {
+                showResult('loginResult', `❌ 网络错误: ${error.message}`, 'error');
+            }
+        }
+
+        // 测试获取用户资料
+        async function testProfile() {
+            if (!currentToken) {
+                showResult('profileResult', '❌ 请先登录', 'error');
+                return;
+            }
+
+            showResult('profileResult', '正在获取用户资料...', 'info');
+
+            try {
+                const response = await fetch(`${API_BASE}/api/auth/profile`, {
+                    headers: {
+                        'Authorization': `Bearer ${currentToken}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const data = await response.json();
+                
+                if (response.ok) {
+                    showResult('profileResult', 
+                        `✅ 用户资料获取成功！\n${JSON.stringify(data, null, 2)}`, 
+                        'success'
+                    );
+                } else {
+                    showResult('profileResult', `❌ 获取资料失败: ${data.error}`, 'error');
+                }
+            } catch (error) {
+                showResult('profileResult', `❌ 网络错误: ${error.message}`, 'error');
+            }
+        }
+
+        // 测试退出登录
+        function testLogout() {
+            currentToken = null;
+            currentUser = null;
+            showResult('profileResult', '✅ 已退出登录', 'success');
+        }
+
+        // 检查认证状态
+        function checkAuthStatus() {
+            if (currentToken && currentUser) {
+                showResult('profileResult', 
+                    `✅ 当前已登录\n用户: ${currentUser.email}\n计划: ${currentUser.plan}\nToken有效: ${currentToken.substring(0, 20)}...`, 
+                    'success'
+                );
+            } else {
+                showResult('profileResult', '❌ 当前未登录', 'error');
+            }
+        }
+
+        // 测试权限
+        async function testPermission(toolType) {
+            if (!currentToken) {
+                showResult('permissionResult', '❌ 请先登录', 'error');
+                return;
+            }
+
+            showResult('permissionResult', `正在检查${toolType}权限...`, 'info');
+
+            try {
+                const response = await fetch(`${API_BASE}/api/auth/check-permission/${toolType}`, {
+                    headers: {
+                        'Authorization': `Bearer ${currentToken}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const data = await response.json();
+                
+                if (response.ok) {
+                    const message = data.has_permission ? 
+                        `✅ 有使用权限\n今日使用: ${data.current_usage}/${data.daily_limit === -1 ? '无限制' : data.daily_limit}` :
+                        `❌ 无使用权限\n原因: ${data.message}`;
+                    showResult('permissionResult', message, data.has_permission ? 'success' : 'error');
+                } else {
+                    showResult('permissionResult', `❌ 权限检查失败: ${data.error}`, 'error');
+                }
+            } catch (error) {
+                showResult('permissionResult', `❌ 网络错误: ${error.message}`, 'error');
+            }
+        }
+
+        // 页面加载时检查状态
+        window.onload = function() {
+            checkAuthStatus();
+        };
+    </script>
+</body>
+</html>

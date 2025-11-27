@@ -1,6 +1,6 @@
 """
-PythonAnywhere适配版Flask应用 - 不依赖Supabase
-适配默认路径结构：/home/用户名/mysite/
+独立测试版Flask应用 - 不依赖Supabase
+用于测试基本的API结构和功能
 """
 
 import os
@@ -15,9 +15,10 @@ from PIL import Image
 import io
 import base64
 
+# PythonAnywhere部署配置
 app = Flask(__name__, 
-    static_folder='static',
-    template_folder='templates')
+    static_folder='../static',
+    template_folder='../templates')
 CORS(app)
 
 # 配置
@@ -114,7 +115,7 @@ def health_check():
         'status': 'healthy',
         'timestamp': datetime.now().isoformat(),
         'database': 'mock',
-        'version': '2.1.0-pythonanywhere'
+        'version': '2.1.0-test'
     })
 
 @app.route('/api/auth/register', methods=['POST'])
@@ -206,8 +207,8 @@ def login():
     except Exception as e:
         return jsonify({'error': f'登录异常: {str(e)}'}), 500
 
-@app.route('/api/user/profile', methods=['GET'])
-def get_user_profile():
+@app.route('/api/auth/profile', methods=['GET'])
+def get_profile():
     """获取用户资料"""
     try:
         user = get_user_from_token()
@@ -216,14 +217,9 @@ def get_user_profile():
         
         user_id = user['id']
         if user_id not in user_profiles_db:
-            return jsonify({'error': '用户不存在'}), 404
+            return jsonify({'error': '用户资料不存在'}), 404
         
         profile = user_profiles_db[user_id]
-        
-        # 获取使用统计
-        usage_count = 0
-        if user_id in tool_usage_db:
-            usage_count = len(tool_usage_db[user_id])
         
         return jsonify({
             'user': {
@@ -232,8 +228,8 @@ def get_user_profile():
                 'name': profile['name'],
                 'plan': profile['plan'],
                 'credits': profile['credits'],
-                'usage_count': usage_count,
-                'created_at': profile['created_at']
+                'created_at': profile['created_at'],
+                'updated_at': profile['updated_at']
             }
         })
             
@@ -242,45 +238,27 @@ def get_user_profile():
 
 @app.route('/api/tools/currency-converter', methods=['POST'])
 def currency_converter():
-    """汇率转换"""
+    """汇率转换工具"""
     try:
         user = get_user_from_token()
         if not user:
-            return jsonify({'error': '未授权访问'}), 401
+            return jsonify({'error': '请先登录'}), 401
         
         user_id = user['id']
-        can_use, current_credits, required_credits = check_user_credits(user_id, 'currency_converter')
         
-        if not can_use:
-            return jsonify({
-                'error': '积分不足',
-                'current_credits': current_credits,
-                'required_credits': required_credits
-            }), 400
+        # 检查积分
+        has_credits, current_credits, required_credits = check_user_credits(user_id, 'currency_converter')
+        if not has_credits:
+            return jsonify({'error': f'积分不足，需要{required_credits}积分，当前{current_credits}积分'}), 400
         
         data = request.get_json()
-        amount = data.get('amount')
-        from_currency = data.get('from_currency')
-        to_currency = data.get('to_currency')
+        amount = data.get('amount', 0)
+        from_currency = data.get('from_currency', 'USD')
+        to_currency = data.get('to_currency', 'CNY')
         
-        if not amount or not from_currency or not to_currency:
-            return jsonify({'error': '参数不完整'}), 400
-        
-        # 模拟汇率转换（实际应用中应该调用真实汇率API）
-        exchange_rates = {
-            'USD': 1.0,
-            'CNY': 7.2,
-            'EUR': 0.85,
-            'GBP': 0.73,
-            'JPY': 110.0
-        }
-        
-        if from_currency not in exchange_rates or to_currency not in exchange_rates:
-            return jsonify({'error': '不支持的货币'}), 400
-        
-        # 转换计算
-        usd_amount = amount / exchange_rates[from_currency]
-        result = usd_amount * exchange_rates[to_currency]
+        # 模拟汇率转换
+        exchange_rate = 7.2 if from_currency == 'USD' and to_currency == 'CNY' else 1.0
+        result = amount * exchange_rate
         
         # 扣除积分
         success, message = deduct_user_credits(user_id, 'currency_converter')
@@ -289,20 +267,19 @@ def currency_converter():
         
         # 记录使用
         record_tool_usage(
-            user_id, 'currency_converter',
-            {'amount': amount, 'from': from_currency, 'to': to_currency},
-            {'result': result},
+            user_id, 
+            'currency_converter',
+            {'amount': amount, 'from_currency': from_currency, 'to_currency': to_currency},
+            {'result': result, 'exchange_rate': exchange_rate},
             required_credits
         )
         
         return jsonify({
             'success': True,
             'result': round(result, 2),
-            'from_currency': from_currency,
-            'to_currency': to_currency,
-            'original_amount': amount,
+            'exchange_rate': exchange_rate,
             'credits_used': required_credits,
-            'remaining_credits': user_profiles_db[user_id]['credits']
+            'message': message
         })
         
     except Exception as e:
@@ -310,48 +287,27 @@ def currency_converter():
 
 @app.route('/api/tools/unit-converter', methods=['POST'])
 def unit_converter():
-    """单位转换"""
+    """单位转换工具"""
     try:
         user = get_user_from_token()
         if not user:
-            return jsonify({'error': '未授权访问'}), 401
+            return jsonify({'error': '请先登录'}), 401
         
         user_id = user['id']
-        can_use, current_credits, required_credits = check_user_credits(user_id, 'unit_converter')
         
-        if not can_use:
-            return jsonify({
-                'error': '积分不足',
-                'current_credits': current_credits,
-                'required_credits': required_credits
-            }), 400
+        # 检查积分
+        has_credits, current_credits, required_credits = check_user_credits(user_id, 'unit_converter')
+        if not has_credits:
+            return jsonify({'error': f'积分不足，需要{required_credits}积分，当前{current_credits}积分'}), 400
         
         data = request.get_json()
-        value = data.get('value')
-        from_unit = data.get('from_unit')
-        to_unit = data.get('to_unit')
-        
-        if not value or not from_unit or not to_unit:
-            return jsonify({'error': '参数不完整'}), 400
+        value = data.get('value', 0)
+        from_unit = data.get('from_unit', 'kg')
+        to_unit = data.get('to_unit', 'lb')
         
         # 模拟单位转换
-        conversion_factors = {
-            'kg': 1.0,
-            'g': 0.001,
-            'lb': 0.453592,
-            'oz': 0.0283495,
-            'm': 1.0,
-            'cm': 0.01,
-            'inch': 0.0254,
-            'ft': 0.3048
-        }
-        
-        if from_unit not in conversion_factors or to_unit not in conversion_factors:
-            return jsonify({'error': '不支持的单位'}), 400
-        
-        # 转换计算
-        base_value = value * conversion_factors[from_unit]
-        result = base_value / conversion_factors[to_unit]
+        conversion_rate = 2.20462 if from_unit == 'kg' and to_unit == 'lb' else 1.0
+        result = value * conversion_rate
         
         # 扣除积分
         success, message = deduct_user_credits(user_id, 'unit_converter')
@@ -360,20 +316,19 @@ def unit_converter():
         
         # 记录使用
         record_tool_usage(
-            user_id, 'unit_converter',
-            {'value': value, 'from': from_unit, 'to': to_unit},
-            {'result': result},
+            user_id,
+            'unit_converter',
+            {'value': value, 'from_unit': from_unit, 'to_unit': to_unit},
+            {'result': result, 'conversion_rate': conversion_rate},
             required_credits
         )
         
         return jsonify({
             'success': True,
             'result': round(result, 4),
-            'from_unit': from_unit,
-            'to_unit': to_unit,
-            'original_value': value,
+            'conversion_rate': conversion_rate,
             'credits_used': required_credits,
-            'remaining_credits': user_profiles_db[user_id]['credits']
+            'message': message
         })
         
     except Exception as e:
@@ -381,42 +336,27 @@ def unit_converter():
 
 @app.route('/api/tools/shipping-calculator', methods=['POST'])
 def shipping_calculator():
-    """运费计算"""
+    """国际运费计算工具"""
     try:
         user = get_user_from_token()
         if not user:
-            return jsonify({'error': '未授权访问'}), 401
+            return jsonify({'error': '请先登录'}), 401
         
         user_id = user['id']
-        can_use, current_credits, required_credits = check_user_credits(user_id, 'shipping_calculator')
         
-        if not can_use:
-            return jsonify({
-                'error': '积分不足',
-                'current_credits': current_credits,
-                'required_credits': required_credits
-            }), 400
+        # 检查积分
+        has_credits, current_credits, required_credits = check_user_credits(user_id, 'shipping_calculator')
+        if not has_credits:
+            return jsonify({'error': f'积分不足，需要{required_credits}积分，当前{current_credits}积分'}), 400
         
         data = request.get_json()
-        weight = data.get('weight')
-        from_country = data.get('from_country')
-        to_country = data.get('to_country')
-        
-        if not weight or not from_country or not to_country:
-            return jsonify({'error': '参数不完整'}), 400
+        weight = data.get('weight', 0)  # kg
+        from_country = data.get('from_country', 'CN')
+        to_country = data.get('to_country', 'US')
         
         # 模拟运费计算
-        base_rates = {
-            'US': {'CN': 50, 'GB': 35, 'DE': 40},
-            'CN': {'US': 45, 'GB': 55, 'DE': 50},
-            'GB': {'US': 30, 'CN': 50, 'DE': 15}
-        }
-        
-        if from_country not in base_rates or to_country not in base_rates[from_country]:
-            return jsonify({'error': '不支持的国家'}), 400
-        
-        base_rate = base_rates[from_country][to_country]
-        shipping_cost = base_rate * (1 + weight / 10)  # 简单的重量加价
+        base_rate = 50 if from_country == 'CN' and to_country == 'US' else 30
+        shipping_cost = base_rate + (weight * 10)
         
         # 扣除积分
         success, message = deduct_user_credits(user_id, 'shipping_calculator')
@@ -425,165 +365,144 @@ def shipping_calculator():
         
         # 记录使用
         record_tool_usage(
-            user_id, 'shipping_calculator',
-            {'weight': weight, 'from': from_country, 'to': to_country},
-            {'shipping_cost': shipping_cost},
+            user_id,
+            'shipping_calculator',
+            {'weight': weight, 'from_country': from_country, 'to_country': to_country},
+            {'shipping_cost': shipping_cost, 'base_rate': base_rate},
             required_credits
         )
         
         return jsonify({
             'success': True,
             'shipping_cost': round(shipping_cost, 2),
-            'from_country': from_country,
-            'to_country': to_country,
-            'weight': weight,
+            'base_rate': base_rate,
             'credits_used': required_credits,
-            'remaining_credits': user_profiles_db[user_id]['credits']
+            'message': message
         })
         
     except Exception as e:
         return jsonify({'error': f'运费计算异常: {str(e)}'}), 500
 
-@app.route('/api/tools/background-remover', methods=['POST'])
-def background_remover():
-    """背景移除（测试版）"""
+@app.route('/api/tools/usage-stats', methods=['GET'])
+def usage_stats():
+    """获取工具使用统计"""
     try:
         user = get_user_from_token()
         if not user:
-            return jsonify({'error': '未授权访问'}), 401
-        
-        user_id = user['id']
-        can_use, current_credits, required_credits = check_user_credits(user_id, 'background_remover')
-        
-        if not can_use:
-            return jsonify({
-                'error': '积分不足',
-                'current_credits': current_credits,
-                'required_credits': required_credits
-            }), 400
-        
-        if 'image' not in request.files:
-            return jsonify({'error': '没有上传文件'}), 400
-        
-        file = request.files['image']
-        if file.filename == '':
-            return jsonify({'error': '没有选择文件'}), 400
-        
-        if not allowed_file(file.filename):
-            return jsonify({'error': '不支持的文件类型'}), 400
-        
-        # 读取图片
-        image_bytes = file.read()
-        image = Image.open(io.BytesIO(image_bytes))
-        
-        # 模拟背景移除（实际应用中应该调用remove.bg等API）
-        # 这里只是简单地将图片转换为RGBA模式作为示例
-        if image.mode != 'RGBA':
-            image = image.convert('RGBA')
-        
-        # 创建一个简单的透明背景效果（示例）
-        width, height = image.size
-        pixels = image.load()
-        
-        # 简单的边缘检测（示例效果）
-        for x in range(width):
-            for y in range(height):
-                if x < 5 or x >= width-5 or y < 5 or y >= height-5:
-                    r, g, b, a = pixels[x, y]
-                    pixels[x, y] = (r, g, b, 128)  # 边缘半透明
-        
-        # 转换为base64返回
-        buffer = io.BytesIO()
-        image.save(buffer, format='PNG')
-        image_base64 = base64.b64encode(buffer.getvalue()).decode()
-        
-        # 扣除积分
-        success, message = deduct_user_credits(user_id, 'background_remover')
-        if not success:
-            return jsonify({'error': message}), 400
-        
-        # 记录使用
-        record_tool_usage(
-            user_id, 'background_remover',
-            {'filename': file.filename, 'size': len(image_bytes)},
-            {'result_size': len(buffer.getvalue())},
-            required_credits
-        )
-        
-        return jsonify({
-            'success': True,
-            'message': '背景移除完成（测试版）',
-            'image_data': f'data:image/png;base64,{image_base64}',
-            'original_filename': file.filename,
-            'credits_used': required_credits,
-            'remaining_credits': user_profiles_db[user_id]['credits']
-        })
-        
-    except Exception as e:
-        return jsonify({'error': f'背景移除异常: {str(e)}'}), 500
-
-@app.route('/api/user/usage-stats', methods=['GET'])
-def get_usage_stats():
-    """获取使用统计"""
-    try:
-        user = get_user_from_token()
-        if not user:
-            return jsonify({'error': '未授权访问'}), 401
+            return jsonify({'error': '请先登录'}), 401
         
         user_id = user['id']
         
         if user_id not in tool_usage_db:
             return jsonify({
                 'total_usage': 0,
-                'tool_usage': {},
-                'credits_used': 0
+                'total_credits_used': 0,
+                'tool_breakdown': {}
             })
         
         usage_records = tool_usage_db[user_id]
         total_usage = len(usage_records)
-        tool_usage = {}
-        total_credits = 0
+        total_credits = sum(item.get('credits_used', 0) for item in usage_records)
         
-        for record in usage_records:
-            tool_name = record['tool_name']
-            credits = record['credits_used']
-            
-            if tool_name not in tool_usage:
-                tool_usage[tool_name] = {'count': 0, 'credits': 0}
-            
-            tool_usage[tool_name]['count'] += 1
-            tool_usage[tool_name]['credits'] += credits
-            total_credits += credits
+        # 按工具类型统计
+        tool_stats = {}
+        for item in usage_records:
+            tool_name = item.get('tool_name', 'unknown')
+            if tool_name not in tool_stats:
+                tool_stats[tool_name] = {'count': 0, 'credits': 0}
+            tool_stats[tool_name]['count'] += 1
+            tool_stats[tool_name]['credits'] += item.get('credits_used', 0)
         
         return jsonify({
             'total_usage': total_usage,
-            'tool_usage': tool_usage,
-            'total_credits_used': total_credits
+            'total_credits_used': total_credits,
+            'tool_breakdown': tool_stats
         })
-        
+            
     except Exception as e:
         return jsonify({'error': f'获取统计异常: {str(e)}'}), 500
 
+@app.route('/api/tools/remove-background', methods=['POST'])
+def remove_background():
+    """背景移除工具 - 简化版"""
+    try:
+        user = get_user_from_token()
+        if not user:
+            return jsonify({'error': '请先登录'}), 401
+        
+        user_id = user['id']
+        
+        # 检查积分
+        has_credits, current_credits, required_credits = check_user_credits(user_id, 'background_remover')
+        if not has_credits:
+            return jsonify({'error': f'积分不足，需要{required_credits}积分，当前{current_credits}积分'}), 400
+        
+        if 'file' not in request.files:
+            return jsonify({'error': '没有上传文件'}), 400
+        
+        file = request.files['file']
+        if file.filename == '':
+            return jsonify({'error': '没有选择文件'}), 400
+        
+        if not allowed_file(file.filename):
+            return jsonify({'error': '不支持的文件类型'}), 400
+        
+        # 扣除积分
+        success, message = deduct_user_credits(user_id, 'background_remover')
+        if not success:
+            return jsonify({'error': message}), 400
+        
+        # 模拟背景移除处理
+        filename = secure_filename(file.filename)
+        output_filename = f"processed_{uuid.uuid4().hex[:8]}_{filename}"
+        
+        # 记录使用
+        record_tool_usage(
+            user_id,
+            'background_remover',
+            {'filename': filename},
+            {'output_filename': output_filename, 'processed': True},
+            required_credits
+        )
+        
+        return jsonify({
+            'success': True,
+            'message': '背景移除完成（测试版）',
+            'output_filename': output_filename,
+            'credits_used': required_credits,
+            'download_url': f'/api/download/{output_filename}'
+        })
+        
+    except Exception as e:
+        return jsonify({'error': f'背景移除异常: {str(e)}'}), 500
+
+@app.route('/api/download/<filename>')
+def download_file(filename):
+    """下载处理后的文件"""
+    return jsonify({'message': f'下载文件 {filename}（测试版）'})
+
 # ==================== 错误处理 ====================
 
+@app.errorhandler(413)
+def too_large(e):
+    return jsonify({'error': '文件太大，最大支持16MB'}), 413
+
 @app.errorhandler(404)
-def not_found(error):
-    return jsonify({'error': '页面不存在'}), 404
+def not_found(e):
+    return jsonify({'error': 'API端点不存在'}), 404
 
 @app.errorhandler(500)
-def internal_error(error):
+def internal_error(e):
     return jsonify({'error': '服务器内部错误'}), 500
-
-@app.errorhandler(413)
-def too_large(error):
-    return jsonify({'error': '文件太大'}), 413
 
 # ==================== 启动应用 ====================
 
 if __name__ == '__main__':
-    print("🚀 启动PythonAnywhere适配版应用...")
+    print("🚀 启动独立测试版应用...")
     print("📊 数据库: 模拟内存数据库")
     print("🔧 背景移除功能：测试版")
-    print("🌐 访问地址: http://baifan7574.pythonanywhere.com")
-    print("📈 健康检查: http://baifan7574.pythonanywhere.com/health")
+    print("🌐 访问地址: http://localhost:5000")
+    print("📈 健康检查: http://localhost:5000/health")
+    print("🧪 测试命令: python test_supabase_simple.py")
+    
     app.run(debug=True, host='0.0.0.0', port=5000)

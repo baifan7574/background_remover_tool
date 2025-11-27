@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>跨境工具 - 会员升级</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .plans-section {
+            margin-bottom: 40px;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2rem;
+            color: white;
+            margin-bottom: 30px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+        }
+
+        #membershipPlans {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .plan-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .plan-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+
+        .plan-card.featured {
+            border: 3px solid #667eea;
+            transform: scale(1.05);
+        }
+
+        .plan-card.featured::before {
+            content: '推荐';
+            position: absolute;
+            top: 15px;
+            right: -30px;
+            background: #ff6b6b;
+            color: white;
+            padding: 5px 40px;
+            transform: rotate(45deg);
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .plan-header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .plan-header h3 {
+            font-size: 1.8rem;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .price {
+            display: flex;
+            align-items: baseline;
+            justify-content: center;
+            gap: 5px;
+        }
+
+        .currency {
+            font-size: 1.5rem;
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .amount {
+            font-size: 3rem;
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .period {
+            font-size: 1rem;
+            color: #666;
+        }
+
+        .plan-features {
+            margin-bottom: 30px;
+        }
+
+        .plan-features ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .plan-features li {
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .plan-features li:last-child {
+            border-bottom: none;
+        }
+
+        .plan-features li i {
+            color: #28a745;
+            font-size: 1.1rem;
+        }
+
+        .upgrade-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .upgrade-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        /* 支付模态框样式 */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 1000;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            position: relative;
+            background: white;
+            margin: 50px auto;
+            padding: 0;
+            width: 90%;
+            max-width: 600px;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            animation: slideIn 0.3s ease;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        @keyframes slideIn {
+            from { 
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to { 
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px 30px;
+            border-radius: 15px 15px 0 0;
+            position: relative;
+        }
+
+        .modal-header h2 {
+            margin: 0;
+            font-size: 1.5rem;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            background: none;
+            border: none;
+            opacity: 0.8;
+            transition: opacity 0.3s ease;
+        }
+
+        .close-modal:hover {
+            opacity: 1;
+        }
+
+        .modal-body {
+            padding: 30px;
+        }
+
+        .plan-summary {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+
+        .plan-summary h3 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .plan-summary .price {
+            font-size: 1.5rem;
+            color: #667eea;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .payment-methods {
+            margin-bottom: 30px;
+        }
+
+        .payment-methods h4 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .payment-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .payment-method {
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .payment-method:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+        }
+
+        .payment-method.selected {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+
+        .payment-method i {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .payment-method.alipay i {
+            color: #1677ff;
+        }
+
+        .payment-method.wechat i {
+            color: #07c160;
+        }
+
+        .payment-forms {
+            display: none;
+        }
+
+        .payment-forms.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .payment-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: flex-end;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        /* 二维码支付模态框 */
+        #qrPaymentModal .modal-content {
+            max-width: 400px;
+            text-align: center;
+        }
+
+        #qrCodeContainer {
+            margin: 20px 0;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+        }
+
+        #qrCodeContainer img {
+            max-width: 200px;
+            height: auto;
+        }
+
+        #paymentInfo {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        #paymentInfo p {
+            margin: 10px 0;
+            color: #333;
+        }
+
+        .payment-status {
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+
+        .payment-status.waiting {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .payment-status.success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .payment-status.failed {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .payment-status.timeout {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        /* 消息提示样式 */
+        #messageContainer {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 2000;
+        }
+
+        .message {
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            font-weight: bold;
+            animation: slideInRight 0.3s ease;
+            max-width: 300px;
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .message.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+
+            header h1 {
+                font-size: 2rem;
+            }
+
+            #membershipPlans {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .plan-card.featured {
+                transform: none;
+            }
+
+            .payment-options {
+                grid-template-columns: 1fr;
+            }
+
+            .modal-content {
+                width: 95%;
+                margin: 20px auto;
+            }
+
+            .payment-actions {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+
+        /* 加载动画 */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        /* 月付/年付切换样式 */
+        .period-btn.active {
+            background: white !important;
+            color: #667eea !important;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-magic"></i> 跨境工具</h1>
+            <p>选择适合您的会员计划，享受更多专业功能</p>
+        </header>
+
+        <section class="plans-section">
+            <h2 class="section-title">选择您的会员计划</h2>
+            <div id="membershipPlans">
+                <!-- 会员计划卡片将通过JavaScript动态生成 -->
+            </div>
+        </section>
+    </div>
+
+    <!-- 升级模态框 -->
+    <div id="upgradeModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>升级会员</h2>
+                <button class="close-modal close-payment-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="plan-summary">
+                    <h3 id="selectedPlanName">基础版</h3>
+                    
+                    <!-- 月付/年付切换 -->
+                    <div class="billing-period-selector" style="margin: 20px 0; text-align: center;">
+                        <div style="display: inline-flex; background: #f0f0f0; border-radius: 8px; padding: 4px;">
+                            <button id="monthlyBtn" class="period-btn active" data-period="monthly" style="padding: 10px 20px; border: none; background: transparent; border-radius: 6px; cursor: pointer; font-weight: bold; color: #333;">
+                                月付
+                            </button>
+                            <button id="yearlyBtn" class="period-btn" data-period="yearly" style="padding: 10px 20px; border: none; background: transparent; border-radius: 6px; cursor: pointer; font-weight: bold; color: #666; position: relative;">
+                                年付
+                                <span style="position: absolute; top: -8px; right: 5px; background: #ff6b6b; color: white; font-size: 10px; padding: 2px 6px; border-radius: 10px; font-weight: normal;">
+                                    省20%
+                                </span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="price" id="selectedPlanPrice">¥19/月</div>
+                    <div id="yearlySavings" style="text-align: center; color: #28a745; font-size: 0.9rem; margin-top: 5px; display: none;">
+                        <!-- 年付节省金额 -->
+                    </div>
+                    <ul id="selectedPlanFeatures">
+                        <!-- 功能列表将通过JavaScript动态生成 -->
+                    </ul>
+                </div>
+
+                <div class="payment-methods">
+                    <h4>选择支付方式</h4>
+                    <div class="payment-options">
+                        <div class="payment-method alipay" data-method="alipay_qrcode">
+                            <i class="fab fa-alipay"></i>
+                            <span>支付宝收款码</span>
+                        </div>
+                        <div class="payment-method wechat" data-method="wechat_qrcode">
+                            <i class="fab fa-weixin"></i>
+                            <span>微信收款码</span>
+                        </div>
+                    </div>
+                    <p style="margin-top: 10px; font-size: 12px; color: #999; text-align: center;">
+                        💡 请扫码支付，支付完成后点击"我已支付"按钮，等待管理员确认即可开通会员
+                    </p>
+                </div>
+
+                <div class="payment-forms" id="paymentForm">
+                    <div id="alipayForm" style="display: none;">
+                        <div class="form-group">
+                            <label>支付宝账号</label>
+                            <input type="text" placeholder="请输入支付宝账号" id="alipayAccount">
+                        </div>
+                    </div>
+                    <div id="wechatForm" style="display: none;">
+                        <div class="form-group">
+                            <label>微信账号</label>
+                            <input type="text" placeholder="请输入微信账号" id="wechatAccount">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="payment-actions">
+                    <button class="btn btn-secondary close-payment-modal">取消</button>
+                    <button class="btn btn-primary" id="confirmPaymentBtn">
+                        <span id="paymentButtonText">确认支付</span>
+                        <span class="loading" style="display: none;"></span>
+                    </button>
+                </div>
+
+                <div id="paymentStatus" class="payment-status" style="display: none;"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 二维码支付模态框 -->
+    <div id="qrPaymentModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>扫码支付</h2>
+                <button class="close-modal close-payment-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="qrCodeContainer">
+                    <!-- 二维码将通过JavaScript动态生成 -->
+                </div>
+                <div id="paymentInfo">
+                    <!-- 支付信息将通过JavaScript动态生成 -->
+                </div>
+                <div id="paymentStatus" class="payment-status" style="display: none;"></div>
+                <div class="payment-actions">
+                    <button class="btn btn-secondary close-payment-modal">取消支付</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 消息容器 -->
+    <div id="messageContainer"></div>
+
+    <!-- 引入JavaScript -->
+    <script src="/js/auth.js"></script>
+    <script src="/payment.js"></script>
+    <script>
+        // 初始化支付管理器
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof PaymentManager !== 'undefined') {
+                window.paymentManager = new PaymentManager();
+                console.log('✅ PaymentManager已初始化');
+            } else {
+                console.error('❌ PaymentManager未加载，请检查payment.js文件');
+            }
+        });
+    </script>
+</body>
+</html>

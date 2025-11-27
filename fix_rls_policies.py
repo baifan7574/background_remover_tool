@@ -1,0 +1,28 @@
+"""
+修复Supabase行级安全策略
+"""
+
+print("=== Supabase RLS策略修复指南 ===")
+print()
+print("请在Supabase SQL编辑器中执行以下命令来修复RLS策略：")
+print()
+print("-- 1. 禁用user_profiles表的RLS（临时方案）")
+print("ALTER TABLE user_profiles DISABLE ROW LEVEL SECURITY;")
+print()
+print("-- 2. 或者创建允许插入的RLS策略（推荐方案）")
+print("DROP POLICY IF EXISTS \"Users can insert their own profile\" ON user_profiles;")
+print("CREATE POLICY \"Users can insert their own profile\" ON user_profiles")
+print("  FOR INSERT WITH CHECK (true);")
+print()
+print("DROP POLICY IF EXISTS \"Users can view all profiles\" ON user_profiles;")
+print("CREATE POLICY \"Users can view all profiles\" ON user_profiles")
+print("  FOR SELECT USING (true);")
+print()
+print("DROP POLICY IF EXISTS \"Users can update own profile\" ON user_profiles;")
+print("CREATE POLICY \"Users can update own profile\" ON user_profiles")
+print("  FOR UPDATE USING (true);")
+print()
+print("-- 3. 确保tool_usage表也有正确的策略")
+print("ALTER TABLE tool_usage DISABLE ROW LEVEL SECURITY;")
+print()
+print("执行完这些命令后，用户注册应该就能正常工作了！")

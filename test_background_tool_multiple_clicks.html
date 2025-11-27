@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>背景移除工具多次点击测试</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .test-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-btn {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            margin: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .test-btn:hover {
+            background: #0056b3;
+        }
+        .test-btn:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+        }
+        .log {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .success { color: #28a745; }
+        .error { color: #dc3545; }
+        .info { color: #17a2b8; }
+        .warning { color: #ffc107; }
+        .test-status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        .status-running {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        .status-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .status-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🧪 背景移除工具多次点击测试</h1>
+        
+        <div class="test-status status-running" id="testStatus">
+            🔄 准备开始测试...
+        </div>
+        
+        <div>
+            <h3>测试控制</h3>
+            <button class="test-btn" onclick="startTest()" id="startBtn">开始测试</button>
+            <button class="test-btn" onclick="testManualClick()" id="manualBtn">手动点击测试</button>
+            <button class="test-btn" onclick="clearLog()">清空日志</button>
+        </div>
+
+        <div>
+            <h3>测试日志</h3>
+            <div id="log" class="log">等待测试开始...</div>
+        </div>
+    </div>
+
+    <script>
+        let testRunning = false;
+        let clickCount = 0;
+        let logElement = document.getElementById('log');
+        let statusElement = document.getElementById('testStatus');
+
+        // 模拟 appManager 和相关方法
+        window.appManager = {
+            currentTool: null,
+            
+            openTool: function(toolType) {
+                clickCount++;
+                const timestamp = new Date().toLocaleTimeString();
+                
+                if (this.currentTool === toolType) {
+                    log(`[${timestamp}] ⚠️ 重复打开相同工具: ${toolType}`, 'warning');
+                } else {
+                    this.currentTool = toolType;
+                    log(`[${timestamp}] ✓ 打开工具: ${toolType} (第${clickCount}次点击)`, 'success');
+                }
+                
+                // 模拟模态框操作
+                setTimeout(() => {
+                    log(`[${timestamp}] ℹ️ 模拟模态框已打开，可以进行文件上传`, 'info');
+                }, 100);
+                
+                return true;
+            },
+            
+            resetTool: function() {
+                const timestamp = new Date().toLocaleTimeString();
+                log(`[${timestamp}] 🔄 重置工具状态`, 'info');
+                this.currentTool = null;
+            },
+            
+            closeModal: function() {
+                const timestamp = new Date().toLocaleTimeString();
+                log(`[${timestamp}] ❌ 关闭模态框`, 'info');
+                this.currentTool = null;
+            }
+        };
+
+        function log(message, type = '') {
+            const timestamp = new Date().toLocaleTimeString();
+            let className = '';
+            if (type) className = ` class="${type}"`;
+            logElement.innerHTML += `<div${className}>${message}</div>`;
+            logElement.scrollTop = logElement.scrollHeight;
+        }
+
+        function updateStatus(message, type = 'running') {
+            statusElement.textContent = message;
+            statusElement.className = `test-status status-${type}`;
+        }
+
+        function clearLog() {
+            logElement.innerHTML = '日志已清空\n';
+            clickCount = 0;
+        }
+
+        async function startTest() {
+            if (testRunning) {
+                log('⚠️ 测试正在进行中，请等待完成', 'warning');
+                return;
+            }
+            
+            testRunning = true;
+            clickCount = 0;
+            document.getElementById('startBtn').disabled = true;
+            updateStatus('🔄 正在运行自动测试...', 'running');
+            
+            log('=== 开始自动多次点击测试 ===');
+            
+            // 查找背景移除按钮
+            const bgRemoverBtn = document.querySelector('button[data-tool="background-remover"]');
+            
+            if (!bgRemoverBtn) {
+                log('❌ 错误: 未找到背景移除工具按钮', 'error');
+                updateStatus('❌ 测试失败: 未找到按钮', 'error');
+                testRunning = false;
+                document.getElementById('startBtn').disabled = false;
+                return;
+            }
+            
+            log(`✓ 找到背景移除工具按钮: ${bgRemoverBtn.textContent}`);
+            
+            // 测试多次点击
+            const testRounds = 5;
+            for (let i = 1; i <= testRounds; i++) {
+                log(`--- 第${i}轮测试 ---`);
+                
+                // 点击按钮
+                bgRemoverBtn.click();
+                
+                // 等待处理
+                await new Promise(resolve => setTimeout(resolve, 500));
+                
+                // 模拟关闭模态框
+                appManager.closeModal();
+                
+                // 等待关闭完成
+                await new Promise(resolve => setTimeout(resolve, 300));
+                
+                log(`✓ 第${i}轮测试完成`);
+            }
+            
+            log('=== 自动测试完成 ===');
+            log(`总共点击次数: ${clickCount}`);
+            
+            if (clickCount === testRounds) {
+                log('🎉 所有点击都被正确处理！', 'success');
+                updateStatus('✅ 测试通过: 工具可以多次使用', 'success');
+            } else {
+                log(`❌ 预期${testRounds}次点击，实际${clickCount}次`, 'error');
+                updateStatus('❌ 测试失败: 点击次数不匹配', 'error');
+            }
+            
+            testRunning = false;
+            document.getElementById('startBtn').disabled = false;
+        }
+
+        async function testManualClick() {
+            updateStatus('🖱️ 手动点击模式: 请多次点击背景移除按钮', 'running');
+            log('=== 手动点击测试模式 ===');
+            log('请多次点击页面上的背景移除按钮进行测试');
+            
+            // 添加点击监听器来记录
+            const bgRemoverBtn = document.querySelector('button[data-tool="background-remover"]');
+            if (bgRemoverBtn) {
+                let manualClickCount = 0;
+                const originalClick = bgRemoverBtn.onclick;
+                
+                bgRemoverBtn.addEventListener('click', function() {
+                    manualClickCount++;
+                    log(`🖱️ 手动点击第${manualClickCount}次`);
+                });
+            }
+        }
+
+        // 页面加载完成
+        document.addEventListener('DOMContentLoaded', function() {
+            log('🚀 测试页面加载完成');
+            
+            // 检查按钮
+            const bgRemoverBtn = document.querySelector('button[data-tool="background-remover"]');
+            if (bgRemoverBtn) {
+                log(`✓ 背景移除按钮存在: data-tool="${bgRemoverBtn.dataset.tool}"`);
+            } else {
+                log('❌ 背景移除按钮不存在', 'error');
+            }
+            
+            updateStatus('✅ 准备就绪，可以开始测试', 'success');
+        });
+    </script>
+    
+    <!-- 添加测试按钮 -->
+    <div style="text-align: center; margin: 20px 0;">
+        <button class="test-btn tool-btn" data-tool="background-remover">
+            🎭 背景移除工具
+        </button>
+    </div>
+</body>
+</html>

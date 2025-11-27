@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>背景移除工具 - 修复验证</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .test-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            background: #f9f9f9;
+        }
+        
+        .test-button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 5px;
+            font-size: 14px;
+        }
+        
+        .test-button:hover {
+            background: #0056b3;
+        }
+        
+        .test-button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .status {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .status.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        
+        .upload-area {
+            border: 2px dashed #ccc;
+            border-radius: 8px;
+            padding: 40px;
+            text-align: center;
+            margin: 20px 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .upload-area:hover {
+            border-color: #007bff;
+            background: #f0f8ff;
+        }
+        
+        .upload-area.dragover {
+            border-color: #007bff;
+            background: #e3f2fd;
+        }
+        
+        .progress-container {
+            margin: 20px 0;
+            display: none;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #f0f0f0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #007bff, #28a745);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        
+        .log-container {
+            background: #1e1e1e;
+            color: #fff;
+            padding: 15px;
+            border-radius: 6px;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 300px;
+            overflow-y: auto;
+            margin: 20px 0;
+        }
+        
+        .test-image {
+            max-width: 200px;
+            max-height: 200px;
+            margin: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔧 背景移除工具修复验证</h1>
+            <p>测试第二次点击无反应问题的修复效果</p>
+        </div>
+
+        <!-- 状态监控 -->
+        <div class="test-section">
+            <h3>📊 状态监控</h3>
+            <button class="test-button" onclick="checkAuthStatus()">检查认证状态</button>
+            <button class="test-button" onclick="checkProcessingStatus()">检查处理状态</button>
+            <button class="test-button" onclick="resetProcessingState()">重置处理状态</button>
+            <div id="statusDisplay"></div>
+        </div>
+
+        <!-- 连续测试 -->
+        <div class="test-section">
+            <h3>🔄 连续处理测试</h3>
+            <p>这个测试将模拟用户连续上传多张图片的场景</p>
+            
+            <div class="upload-area" id="uploadArea">
+                <p>📁 点击或拖拽图片到这里进行测试</p>
+                <input type="file" id="fileInput" accept="image/*" style="display: none;">
+            </div>
+            
+            <div class="progress-container" id="progressContainer">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <div id="progressText">0% - 准备中...</div>
+            </div>
+            
+            <button class="test-button" onclick="testSequentialUploads()">自动连续测试 (3张)</button>
+            <button class="test-button" onclick="clearResults()">清除结果</button>
+            
+            <div id="testResults"></div>
+        </div>
+
+        <!-- 日志输出 -->
+        <div class="test-section">
+            <h3>📝 详细日志</h3>
+            <button class="test-button" onclick="clearLog()">清除日志</button>
+            <div class="log-container" id="logContainer"></div>
+        </div>
+    </div>
+
+    <script>
+        // 简化的AuthManager类
+        class TestAuthManager {
+            constructor() {
+                this.token = localStorage.getItem('authToken') || null;
+            }
+            
+            getToken() {
+                return this.token;
+            }
+            
+            setAuth(token) {
+                this.token = token;
+                localStorage.setItem('authToken', token);
+            }
+            
+            clearAuth() {
+                this.token = null;
+                localStorage.removeItem('authToken');
+            }
+        }
+
+        // 全局变量
+        const authManager = new TestAuthManager();
+        let isProcessing = false;
+        let testCounter = 0;
+        let successCount = 0;
+        let errorCount = 0;
+
+        // 日志函数
+        function log(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const logContainer = document.getElementById('logContainer');
+            const logEntry = document.createElement('div');
+            logEntry.style.color = type === 'error' ? '#ff6b6b' : type === 'success' ? '#51cf66' : '#fff';
+            logEntry.textContent = `[${timestamp}] ${message}`;
+            logContainer.appendChild(logEntry);
+            logContainer.scrollTop = logContainer.scrollHeight;
+        }
+
+        // 显示状态
+        function showStatus(message, type = 'info') {
+            const statusDisplay = document.getElementById('statusDisplay');
+            statusDisplay.innerHTML = `<div class="status ${type}">${message}</div>`;
+        }
+
+        // 检查认证状态
+        function checkAuthStatus() {
+            const token = authManager.getToken();
+            if (token) {
+                showStatus(`✅ 已登录，Token长度: ${token.length}`, 'success');
+                log(`认证状态: 已登录 (Token: ${token.substring(0, 20)}...)`);
+            } else {
+                showStatus(`❌ 未登录，将使用游客模式`, 'error');
+                log('认证状态: 未登录');
+            }
+        }
+
+        // 检查处理状态
+        function checkProcessingStatus() {
+            showStatus(`🔄 处理状态: ${isProcessing ? '正在处理' : '空闲'}`, 'info');
+            log(`处理状态检查: isProcessing = ${isProcessing}`);
+        }
+
+        // 重置处理状态
+        function resetProcessingState() {
+            isProcessing = false;
+            showStatus(`✅ 处理状态已重置`, 'success');
+            log('处理状态已手动重置');
+        }
+
+        // 文件上传设置
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('fileInput');
+
+        uploadArea.addEventListener('click', () => fileInput.click());
+        
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+        
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('dragover');
+        });
+        
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                processFile(files[0]);
+            }
+        });
+        
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                processFile(e.target.files[0]);
+            }
+        });
+
+        // 处理单个文件
+        async function processFile(file) {
+            testCounter++;
+            const testId = testCounter;
+            
+            log(`开始第 ${testId} 次测试: ${file.name}`);
+            
+            // 检查处理状态
+            if (isProcessing) {
+                const errorMsg = `第 ${testId} 次测试失败: 正在处理中，请等待`;
+                log(errorMsg, 'error');
+                showStatus(errorMsg, 'error');
+                errorCount++;
+                updateResults();
+                return;
+            }
+            
+            // 设置处理状态
+            isProcessing = true;
+            log(`第 ${testId} 次测试: 设置处理状态为 true`);
+            
+            try {
+                // 显示进度
+                showProgress();
+                updateProgress(10, '读取文件...');
+                
+                // 转换为base64
+                const base64 = await fileToBase64(file);
+                updateProgress(30, '准备发送请求...');
+                
+                // 构建请求
+                const requestData = {
+                    image: base64,
+                    format: 'png',
+                    platform_size: 'original'
+                };
+                
+                const headers = {
+                    'Content-Type': 'application/json'
+                };
+                
+                // 添加认证头（如果有token）
+                const token = authManager.getToken();
+                if (token) {
+                    headers['Authorization'] = `Bearer ${token}`;
+                    log(`第 ${testId} 次测试: 添加认证头`);
+                } else {
+                    log(`第 ${testId} 次测试: 无认证头，使用游客模式`);
+                }
+                
+                updateProgress(50, '发送API请求...');
+                
+                // 发送请求
+                const response = await fetch('/api/tools/background-remover', {
+                    method: 'POST',
+                    headers: headers,
+                    body: JSON.stringify(requestData)
+                });
+                
+                updateProgress(80, '处理响应...');
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    updateProgress(100, '完成！');
+                    successCount++;
+                    log(`第 ${testId} 次测试: ✅ 成功 - ${result.message || '处理完成'}`, 'success');
+                    showTestResult(testId, file, result, true);
+                } else {
+                    throw new Error(result.error || '处理失败');
+                }
+                
+            } catch (error) {
+                errorCount++;
+                log(`第 ${testId} 次测试: ❌ 失败 - ${error.message}`, 'error');
+                showTestResult(testId, file, null, false, error.message);
+            } finally {
+                // 重置处理状态
+                isProcessing = false;
+                log(`第 ${testId} 次测试: 重置处理状态为 false`);
+                hideProgress();
+                updateResults();
+            }
+        }
+
+        // 文件转base64
+        function fileToBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => {
+                    const base64 = reader.result.split(',')[1];
+                    resolve(base64);
+                };
+                reader.onerror = reject;
+                reader.readAsDataURL(file);
+            });
+        }
+
+        // 进度显示
+        function showProgress() {
+            document.getElementById('progressContainer').style.display = 'block';
+        }
+
+        function hideProgress() {
+            setTimeout(() => {
+                document.getElementById('progressContainer').style.display = 'none';
+            }, 1000);
+        }
+
+        function updateProgress(percent, text) {
+            document.getElementById('progressFill').style.width = percent + '%';
+            document.getElementById('progressText').textContent = `${percent}% - ${text}`;
+        }
+
+        // 显示测试结果
+        function showTestResult(testId, file, result, success, error = null) {
+            const resultsDiv = document.getElementById('testResults');
+            const resultDiv = document.createElement('div');
+            resultDiv.style.cssText = 'margin: 10px 0; padding: 10px; border: 1px solid #ddd; border-radius: 4px;';
+            
+            if (success) {
+                resultDiv.innerHTML = `
+                    <h4>✅ 测试 ${testId}: ${file.name} - 成功</h4>
+                    <p>消息: ${result.message || '处理完成'}</p>
+                    ${result.processed_image ? `<img src="data:image/png;base64,${result.processed_image}" class="test-image" />` : ''}
+                `;
+            } else {
+                resultDiv.innerHTML = `
+                    <h4>❌ 测试 ${testId}: ${file.name} - 失败</h4>
+                    <p>错误: ${error}</p>
+                `;
+            }
+            
+            resultsDiv.appendChild(resultDiv);
+        }
+
+        // 更新统计
+        function updateResults() {
+            const total = successCount + errorCount;
+            const successRate = total > 0 ? ((successCount / total) * 100).toFixed(1) : 0;
+            
+            showStatus(`📊 测试统计: 总计 ${total} 次，成功 ${successCount} 次，失败 ${errorCount} 次 (成功率: ${successRate}%)`, 'info');
+        }
+
+        // 自动连续测试
+        async function testSequentialUploads() {
+            log('开始自动连续测试');
+            
+            // 创建测试图片
+            const testImages = createTestImages();
+            
+            for (let i = 0; i < testImages.length; i++) {
+                log(`准备处理第 ${i + 1} 张测试图片`);
+                await processFile(testImages[i]);
+                
+                // 等待1秒再处理下一张
+                await new Promise(resolve => setTimeout(resolve, 1000));
+            }
+            
+            log('自动连续测试完成');
+        }
+
+        // 创建测试图片
+        function createTestImages() {
+            const images = [];
+            
+            // 创建3个不同颜色的测试图片
+            for (let i = 0; i < 3; i++) {
+                const canvas = document.createElement('canvas');
+                canvas.width = 200;
+                canvas.height = 200;
+                const ctx = canvas.getContext('2d');
+                
+                // 绘制不同颜色的背景
+                const colors = ['#ff6b6b', '#4ecdc4', '#45b7d1'];
+                ctx.fillStyle = colors[i];
+                ctx.fillRect(0, 0, 200, 200);
+                
+                // 添加文字
+                ctx.fillStyle = '#fff';
+                ctx.font = '20px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText(`测试 ${i + 1}`, 100, 100);
+                
+                // 转换为文件
+                canvas.toBlob((blob) => {
+                    const file = new File([blob], `test_${i + 1}.png`, { type: 'image/png' });
+                    images.push(file);
+                }, 'image/png');
+            }
+            
+            return images;
+        }
+
+        // 清除功能
+        function clearResults() {
+            document.getElementById('testResults').innerHTML = '';
+            testCounter = 0;
+            successCount = 0;
+            errorCount = 0;
+            updateResults();
+            log('测试结果已清除');
+        }
+
+        function clearLog() {
+            document.getElementById('logContainer').innerHTML = '';
+            log('日志已清除');
+        }
+
+        // 初始化
+        window.onload = function() {
+            log('背景移除工具修复验证页面已加载');
+            checkAuthStatus();
+            checkProcessingStatus();
+            updateResults();
+        };
+    </script>
+</body>
+</html>
