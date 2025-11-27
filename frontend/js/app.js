@@ -405,7 +405,10 @@ class AppManager {
     }
 
     openTool(toolType) {
-        console.log('openTool被调用，工具类型:', toolType);
+        console.log('🚀🚀🚀 openTool被调用，工具类型:', toolType);
+        if (toolType === 'add_watermark') {
+            console.log('🎯🎯🎯 这是水印工具！水印工具被打开了！');
+        }
         
         // 如果已经在处理中，不允许重复打开
         if (this.isProcessing) {
@@ -1521,20 +1524,35 @@ class AppManager {
                 if (toCurrency) options.to_currency = toCurrency.value;
                 break;
             case 'add_watermark':
+                console.log('🎯🎯🎯 [getToolOptions] 开始获取水印参数！');
                 const watermarkText = document.getElementById('watermarkText');
                 const watermarkPosition = document.getElementById('watermarkPosition');
                 const watermarkOpacity = document.getElementById('watermarkOpacity');
                 const watermarkFontSize = document.getElementById('watermarkFontSize');
                 const watermarkColor = document.getElementById('watermarkColor');
                 
+                console.log('🎯 [getToolOptions] 找到的元素:', {
+                    watermarkText: !!watermarkText,
+                    watermarkPosition: !!watermarkPosition,
+                    watermarkOpacity: !!watermarkOpacity,
+                    watermarkFontSize: !!watermarkFontSize,
+                    watermarkColor: !!watermarkColor
+                });
+                
                 if (watermarkText) options.watermark_text = watermarkText.value;
                 if (watermarkPosition) {
                     options.watermark_position = watermarkPosition.value;
-                    console.log('🔍 水印位置选择框的值:', watermarkPosition.value, '类型:', typeof watermarkPosition.value);
-                    console.log('🔍 水印位置选择框的选项:', Array.from(watermarkPosition.options).map(opt => ({value: opt.value, selected: opt.selected})));
+                    console.log('🎯🎯🎯 水印位置选择框的值:', watermarkPosition.value, '类型:', typeof watermarkPosition.value);
+                    console.log('🎯🎯🎯 水印位置选择框的选项:', Array.from(watermarkPosition.options).map(opt => ({value: opt.value, selected: opt.selected})));
                 } else {
-                    console.error('❌ 找不到水印位置选择框元素');
+                    console.error('❌❌❌ 找不到水印位置选择框元素！');
                 }
+                if (watermarkOpacity) options.opacity = parseFloat(watermarkOpacity.value);
+                if (watermarkFontSize) options.font_size = parseInt(watermarkFontSize.value);
+                if (watermarkColor) options.font_color = watermarkColor.value;
+                
+                console.log('🎯🎯🎯 [getToolOptions] 最终的水印选项:', options);
+                break;
                 if (watermarkOpacity) options.opacity = parseFloat(watermarkOpacity.value);
                 if (watermarkFontSize) options.font_size = parseInt(watermarkFontSize.value);
                 if (watermarkColor) options.font_color = watermarkColor.value;
