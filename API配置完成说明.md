@@ -11,7 +11,7 @@
 ### 1. Groq API配置 ✅
 
 **API密钥**：已直接配置在代码中
-- ✅ 密钥已配置：`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`
+- ✅ 密钥已配置：``
 - ✅ 代码已更新，自动使用Groq API
 - ✅ 适用于：关键词提取、长尾关键词挖掘
 
