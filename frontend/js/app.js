@@ -411,8 +411,8 @@ class AppManager {
 
     openTool(toolType) {
         console.log('🚀🚀🚀 openTool被调用，工具类型:', toolType);
-        if (toolType === 'add_watermark') {
-            console.log('🎯🎯🎯 这是水印工具！水印工具被打开了！');
+        if (toolType === 'add_watermark' || toolType === 'add_watermark_v2') {
+            console.log('🎯🎯🎯 这是水印工具！水印工具被打开了！工具类型:', toolType);
         }
         
         // 如果已经在处理中，不允许重复打开
@@ -481,6 +481,7 @@ class AppManager {
             'keyword_analyzer': '关键词分析工具',
             'currency_converter': '汇率换算工具',
             'add_watermark': '加水印工具',
+            'add_watermark_v2': '加水印工具（新版）',
             'remove_watermark': '去水印工具'
         };
         
@@ -1030,8 +1031,8 @@ class AppManager {
 
         // 自动开始处理
         console.log('🚀 [handleFileSelect] 开始处理文件，工具类型:', this.currentTool, '文件名:', file.name);
-        if (this.currentTool === 'add_watermark') {
-            console.log('🎯 [handleFileSelect] 这是水印工具，准备调用processImage');
+        if (this.currentTool === 'add_watermark' || this.currentTool === 'add_watermark_v2') {
+            console.log('🎯 [handleFileSelect] 这是水印工具，准备调用processImage，工具类型:', this.currentTool);
         }
         this.processImage(file);
     }
@@ -1221,8 +1222,8 @@ class AppManager {
     async processImage(file) {
         try {
             console.log('🚀 [processImage] 函数被调用，工具类型:', this.currentTool);
-            if (this.currentTool === 'add_watermark') {
-                console.log('🎯 [processImage] 这是水印工具！');
+            if (this.currentTool === 'add_watermark' || this.currentTool === 'add_watermark_v2') {
+                console.log('🎯 [processImage] 这是水印工具！工具类型:', this.currentTool);
             }
             this.isProcessing = true;
             this.showProcessingStatus(this.currentTool);
@@ -1364,11 +1365,30 @@ class AppManager {
             
             const result = await response.json();
             console.log('API响应:', { status: response.status, success: result.success, hasError: !!result.error });
+            
+            // 调试：新版水印功能的响应
+            if (this.currentTool === 'add_watermark_v2') {
+                console.log('🎯🎯🎯 [processImage] 新版水印 - 收到完整响应:', result);
+                console.log('🎯 processed_image存在:', !!result.processed_image);
+                if (result.processed_image) {
+                    console.log('🎯 processed_image长度:', result.processed_image.length, '前50字符:', result.processed_image.substring(0, 50));
+                }
+            }
 
             if (response.ok && result.success !== false) {
                 this.updateProgress(100, '处理完成！');
+                
+                // 调试：新版水印功能
+                if (this.currentTool === 'add_watermark_v2') {
+                    console.log('🎯🎯🎯 [processImage] 新版水印 - 准备显示结果');
+                    console.log('🎯 结果数据:', result);
+                }
+                
                 // 延迟显示成功结果，让用户看到100%进度
                 setTimeout(() => {
+                    if (this.currentTool === 'add_watermark_v2') {
+                        console.log('🎯🎯🎯 [processImage] 新版水印 - 调用showSuccessResult');
+                    }
                     this.showSuccessResult(result, this.currentTool);
                     // 更新使用统计
                     this.loadUsageStats();
@@ -1612,12 +1632,6 @@ class AppManager {
                 }
                 
                 console.log('🎯🎯🎯 [getToolOptions] 新版 - 最终选项:', options);
-                break;
-                if (watermarkOpacity) options.opacity = parseFloat(watermarkOpacity.value);
-                if (watermarkFontSize) options.font_size = parseInt(watermarkFontSize.value);
-                if (watermarkColor) options.font_color = watermarkColor.value;
-                
-                console.log('🔍 完整的水印选项:', options);
                 break;
             case 'remove_watermark':
                 // 去水印不需要额外选项
