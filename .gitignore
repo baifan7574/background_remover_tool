@@ -49,3 +49,9 @@ output/
 
 # Logs
 *.log
+
+# 敏感脚本（包含密钥或敏感信息，不应推送到仓库）
+fix_groq_installation.sh
+test_listing_api.sh
+*_secret.sh
+*_private.sh
