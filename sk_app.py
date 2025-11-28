@@ -2518,7 +2518,7 @@ Return only JSON, no other text."""
                 {"role": "system", "content": "You are a professional e-commerce Listing copywriter specializing in creating compelling product descriptions for online marketplaces. Always return valid JSON format only."},
                 {"role": "user", "content": prompt}
             ],
-            model="llama-3.1-70b-versatile",
+            model="llama-3.3-70b-versatile",
             temperature=0.7,
             max_tokens=2000
         )
@@ -2582,7 +2582,7 @@ def extract_keywords_with_groq(product_description, platform='amazon'):
                 {"role": "system", "content": "你是一个关键词提取专家，专门为电商平台提取产品关键词。请只返回JSON格式的数据。"},
                 {"role": "user", "content": prompt}
             ],
-            model="llama-3.1-70b-versatile",
+            model="llama-3.3-70b-versatile",
             temperature=0.7,
             max_tokens=1000
         )
