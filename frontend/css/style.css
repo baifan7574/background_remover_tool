@@ -184,6 +184,15 @@ body {
     }
 }
 
+@keyframes title-glow {
+    0%, 100% {
+        filter: drop-shadow(0 0 15px rgba(102, 126, 234, 0.4));
+    }
+    50% {
+        filter: drop-shadow(0 0 30px rgba(102, 126, 234, 0.7));
+    }
+}
+
 @keyframes shimmer {
     0% {
         left: -100%;
@@ -366,15 +375,17 @@ body {
 }
 
 .hero h1 {
-    font-size: 3.5rem; /* 增加标题字体 */
+    font-size: 4.5rem; /* 增大标题字体，更醒目 */
     font-weight: 900;
     margin-bottom: 2rem; /* 增加下边距 */
-    background: linear-gradient(135deg, #333 0%, #666 100%);
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
     background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     line-height: 1.1;
-    letter-spacing: -1px;
+    letter-spacing: -2px;
+    text-shadow: 0 0 30px rgba(102, 126, 234, 0.3);
+    animation: title-glow 3s ease-in-out infinite;
 }
 
 .hero-subtitle {
@@ -433,12 +444,14 @@ body {
 .description-tag {
     background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
     color: #333;
-    padding: 0.5rem 1.5rem;
-    border-radius: 25px;
-    font-weight: 700;
-    font-size: 0.9rem;
-    box-shadow: 0 3px 10px rgba(255, 215, 0, 0.3);
+    padding: 1rem 2.5rem; /* 增大内边距，更醒目 */
+    border-radius: 30px;
+    font-weight: 800; /* 更粗的字体 */
+    font-size: 1.2rem; /* 增大字体 */
+    box-shadow: 0 5px 20px rgba(255, 215, 0, 0.5), 0 0 30px rgba(255, 215, 0, 0.3);
     animation: glow-pulse 2s infinite;
+    letter-spacing: 1px; /* 增加字间距 */
+    transform: scale(1.05); /* 稍微放大 */
 }
 
 /* 工具展示区域 */
@@ -791,11 +804,16 @@ body {
     }
     
     .hero h1 {
-        font-size: 2rem;
+        font-size: 2.5rem; /* 移动端也增大字体，更醒目 */
     }
     
     .hero-subtitle {
         font-size: 1rem;
+    }
+    
+    .description-tag {
+        font-size: 1rem; /* 移动端调整标签字体 */
+        padding: 0.8rem 1.5rem;
     }
     
     .tools, .pricing, .about {
