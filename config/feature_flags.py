@@ -17,7 +17,7 @@ FEATURE_FLAGS = {
     'remove_watermark': False,       # 去水印（有问题）
     
     # ========== 新功能（开发中，默认关闭） ==========
-    'image_rotate_flip': False,      # 图片旋转/翻转（开发中）
+    'image_rotate_flip': True,       # 图片旋转/翻转（已开启）
     'brightness_contrast': False,    # 亮度/对比度调节（开发中）
     'batch_workflow': False,         # 批量处理工作流（开发中）
     'product_batch_processing': False,  # 产品图片批量处理（开发中）
