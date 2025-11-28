@@ -203,6 +203,7 @@ class DataManager:
     
     def get_default_usage_stats(self, plan='free'):
         """获取默认使用统计"""
+        # 注意：此配置必须与 sk_app.py 中的 PLAN_DAILY_LIMITS 保持一致
         # 直接定义套餐限制，避免循环导入
         PLAN_DAILY_LIMITS = {
             'free': {
@@ -210,8 +211,8 @@ class DataManager:
                 'image_compressor': 5,
                 'format_converter': 5,
                 'image_cropper': 5,
-                'keyword_analyzer': 5,  # 优化：从10次降至5次（降低50%）
-                'currency_converter': 3,  # 优化：从10次降至3次（降低70%，主要成本来源）
+                'keyword_analyzer': 5,
+                'currency_converter': 3,
                 'unit_converter': 10,
                 'shipping_calculator': 10,
                 'send_email': 5,
@@ -226,7 +227,7 @@ class DataManager:
                 'format_converter': 20,
                 'image_cropper': 20,
                 'keyword_analyzer': 50,
-                'currency_converter': -1,
+                'currency_converter': -1,  # -1表示无限制
                 'unit_converter': -1,
                 'shipping_calculator': 20,
                 'send_email': 20,

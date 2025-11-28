@@ -263,19 +263,23 @@ except ImportError as e:
     user_db = None
 
 # 会员计划每日使用次数配置
+# 统一的会员每日使用次数限制配置
+# 注意：所有前端显示（支付页面、首页定价卡片、用户资料页面）都必须与此配置保持一致
 PLAN_DAILY_LIMITS = {
     'free': {
         'background_remover': 3,
         'image_compressor': 5,
         'format_converter': 5,
         'image_cropper': 5,
-        'keyword_analyzer': 5,  # 优化：从10次降至5次（降低50%）
-        'currency_converter': 3,  # 优化：从10次降至3次（降低70%，主要成本来源）
+        'keyword_analyzer': 5,
+        'currency_converter': 3,
         'unit_converter': 10,
         'shipping_calculator': 10,
         'send_email': 5,
         'add_watermark': 10,
-        'remove_watermark': 10
+        'remove_watermark': 10,
+        'image_rotate_flip': 5,  # 图片旋转/翻转
+        'listing_generator': 3  # Listing文案生成（AI功能，限制较低）
     },
     'basic': {
         'background_remover': 10,
@@ -288,7 +292,9 @@ PLAN_DAILY_LIMITS = {
         'shipping_calculator': 20,
         'send_email': 20,
         'add_watermark': 50,
-        'remove_watermark': 50
+        'remove_watermark': 50,
+        'image_rotate_flip': 50,  # 图片旋转/翻转
+        'listing_generator': 20  # Listing文案生成
     },
     'professional': {
         'background_remover': 100,
@@ -301,7 +307,9 @@ PLAN_DAILY_LIMITS = {
         'shipping_calculator': -1,
         'send_email': -1,
         'add_watermark': -1,
-        'remove_watermark': -1
+        'remove_watermark': -1,
+        'image_rotate_flip': 200,  # 图片旋转/翻转
+        'listing_generator': 100  # Listing文案生成
     },
     'flagship': {
         'background_remover': -1,
@@ -314,7 +322,9 @@ PLAN_DAILY_LIMITS = {
         'shipping_calculator': -1,
         'send_email': -1,
         'add_watermark': -1,
-        'remove_watermark': -1
+        'remove_watermark': -1,
+        'image_rotate_flip': -1,  # 图片旋转/翻转
+        'listing_generator': -1  # Listing文案生成（无限）
     },
     'enterprise': {
         'background_remover': -1,
@@ -327,9 +337,34 @@ PLAN_DAILY_LIMITS = {
         'shipping_calculator': -1,
         'send_email': -1,
         'add_watermark': -1,
-        'remove_watermark': -1
+        'remove_watermark': -1,
+        'image_rotate_flip': -1,  # 图片旋转/翻转
+        'listing_generator': -1  # Listing文案生成（无限）
     }
 }
+
+# 工具名称到中文显示名称的映射（用于前端显示）
+TOOL_DISPLAY_NAMES = {
+    'background_remover': '背景移除',
+    'image_compressor': '图片压缩',
+    'format_converter': '格式转换',
+    'image_cropper': '图片裁剪',
+    'keyword_analyzer': '关键词分析',
+    'currency_converter': '汇率换算',
+    'unit_converter': '单位换算',
+    'shipping_calculator': '运费计算',
+    'send_email': '批量分享',
+    'add_watermark': '加水印',
+    'remove_watermark': '去水印',
+    'image_rotate_flip': '图片旋转/翻转',
+    'listing_generator': 'Listing文案生成'
+}
+
+def format_limit_display(limit):
+    """格式化限制显示：-1显示为"无限制"，其他显示为数字"""
+    if limit == -1:
+        return '无限制'
+    return f'{limit}次/天'
 
 def allowed_file(filename):
     """检查文件类型是否允许"""
@@ -3632,8 +3667,31 @@ def remove_watermark():
 
 @app.route('/api/payment/plans', methods=['GET'])
 def get_payment_plans():
-    """获取会员计划列表"""
+    """获取会员计划列表（从统一配置生成，确保前后端一致）"""
     try:
+        # 从统一配置生成功能列表
+        def generate_features(plan_id):
+            """根据计划ID生成功能列表"""
+            limits = PLAN_DAILY_LIMITS.get(plan_id, PLAN_DAILY_LIMITS['free'])
+            features = []
+            
+            # 按顺序显示主要功能
+            main_tools = [
+                'background_remover', 'image_compressor', 'format_converter', 
+                'image_cropper', 'keyword_analyzer', 'currency_converter',
+                'unit_converter', 'shipping_calculator', 'add_watermark',
+                'remove_watermark', 'image_rotate_flip', 'listing_generator',
+                'send_email'
+            ]
+            
+            for tool in main_tools:
+                if tool in limits:
+                    limit = limits[tool]
+                    tool_name = TOOL_DISPLAY_NAMES.get(tool, tool)
+                    features.append(f'{tool_name}：{format_limit_display(limit)}')
+            
+            return features
+        
         # 返回对象格式，键为planId，值为planInfo（匹配payment.js的期望格式）
         plans = {
             'free': {
@@ -3641,19 +3699,7 @@ def get_payment_plans():
                 'price_yuan': 0,
                 'price_monthly': 0,
                 'price_yearly': 0,
-                'features': [
-                    '背景移除：3次/天',
-                    '图片压缩：5次/天',
-                    '格式转换：5次/天',
-                    '图片裁剪：5次/天',
-                    '关键词分析：5次/天',
-                    '汇率换算：3次/天',
-                    '单位换算：10次/天',
-                    '运费计算：10次/天',
-                    '加水印：10次/天',
-                    '去水印：10次/天',
-                    '批量分享：5次/天'
-                ],
+                'features': generate_features('free'),
                 'popular': False
             },
             'basic': {
@@ -3661,19 +3707,7 @@ def get_payment_plans():
                 'price_yuan': 19,
                 'price_monthly': 19,
                 'price_yearly': 180,  # 年付¥180（节省¥48，相当于¥15/月，20%折扣）
-                'features': [
-                    '背景移除：10次/天',
-                    '图片压缩：20次/天',
-                    '格式转换：20次/天',
-                    '图片裁剪：20次/天',
-                    '关键词分析：50次/天',
-                    '汇率换算：无限制',
-                    '单位换算：无限制',
-                    '运费计算：20次/天',
-                    '加水印：50次/天',
-                    '去水印：50次/天',
-                    '批量分享：20次/天'
-                ],
+                'features': generate_features('basic'),
                 'popular': True
             },
             'professional': {
@@ -3681,19 +3715,7 @@ def get_payment_plans():
                 'price_yuan': 49,
                 'price_monthly': 49,
                 'price_yearly': 450,  # 年付¥450（节省¥138，相当于¥37.5/月，23%折扣）
-                'features': [
-                    '背景移除：100次/天',
-                    '图片压缩：200次/天',
-                    '格式转换：200次/天',
-                    '图片裁剪：200次/天',
-                    '关键词分析：500次/天',
-                    '汇率换算：无限制',
-                    '单位换算：无限制',
-                    '运费计算：无限制',
-                    '加水印：无限制',
-                    '去水印：无限制',
-                    '批量分享：无限制'
-                ],
+                'features': generate_features('professional'),
                 'popular': False
             },
             'flagship': {
