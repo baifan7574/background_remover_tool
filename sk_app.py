@@ -29,8 +29,8 @@ load_dotenv()
 try:
     from groq import Groq
     GROQ_AVAILABLE = True
-    # 优先使用环境变量，如果没有则使用默认密钥
-    GROQ_API_KEY = os.getenv('GROQ_API_KEY', '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')
+    # 从环境变量读取密钥（安全方式，不硬编码）
+    GROQ_API_KEY = os.getenv('GROQ_API_KEY', '')
     if GROQ_API_KEY:
         groq_client = Groq(api_key=GROQ_API_KEY)
         print("✅ Groq API已配置，将使用真实AI提取关键词")
@@ -38,6 +38,7 @@ try:
     else:
         groq_client = None
         print("⚠️ Groq API密钥未配置，将使用模拟数据")
+        print("   提示：请在服务器上设置环境变量 GROQ_API_KEY")
 except ImportError:
     GROQ_AVAILABLE = False
     groq_client = None
@@ -2351,6 +2352,211 @@ def keyword_analyzer():
     except Exception as e:
         import traceback
         return jsonify({'error': f'关键词分析异常: {str(e)}', 'traceback': traceback.format_exc()}), 500
+
+@app.route('/api/tools/generate-listing', methods=['POST'])
+def generate_listing():
+    """Listing文案生成工具"""
+    try:
+        # 检查功能开关
+        from config.feature_flags import is_feature_enabled
+        if not is_feature_enabled('listing_generator'):
+            return jsonify({'error': '该功能暂未开放'}), 403
+        
+        user = get_user_from_token()
+        if not user:
+            return jsonify({'error': '请先登录'}), 401
+        
+        user_id = user['id']
+        
+        # 检查每日使用次数限制
+        can_use, current_usage, daily_limit, message = check_daily_usage_limit(user_id, 'listing_generator')
+        if not can_use:
+            return jsonify({
+                'error': f'今日使用次数已达上限（{daily_limit}次）',
+                'current_usage': current_usage,
+                'daily_limit': daily_limit,
+                'message': message
+            }), 400
+        
+        # 获取请求数据
+        if not request.is_json:
+            return jsonify({'error': '请提供JSON数据'}), 400
+        
+        data = request.get_json()
+        product_info = data.get('product_info', '')
+        platform = data.get('platform', 'amazon')
+        language = data.get('language', 'en')  # en 或 zh
+        style = data.get('style', 'professional')  # professional, casual, marketing
+        
+        if not product_info:
+            return jsonify({'error': '请提供产品信息'}), 400
+        
+        print(f"📝 Listing文案生成请求 - 平台: {platform}, 语言: {language}, 风格: {style}")
+        print(f"   产品信息: {product_info[:100]}...")
+        
+        # 生成Listing文案（优先使用Groq API）
+        result = generate_listing_with_groq(product_info, platform, language, style)
+        
+        if not result:
+            # 如果Groq API失败，返回错误
+            return jsonify({
+                'error': 'AI生成失败，请稍后重试',
+                'hint': '请确保Groq API密钥已正确配置'
+            }), 500
+        
+        # 记录使用次数
+        success, usage_message = record_daily_usage(user_id, 'listing_generator')
+        if not success:
+            return jsonify({'error': usage_message}), 500
+        
+        # 记录工具使用情况
+        record_tool_usage(
+            user_id,
+            'listing_generator',
+            {'platform': platform, 'language': language, 'style': style, 'product_info': product_info[:100]},
+            {'title_length': len(result.get('title', '')), 'description_length': len(result.get('description', ''))}
+        )
+        
+        # 获取更新后的使用次数
+        updated_usage = check_daily_usage_limit(user_id, 'listing_generator')[1]
+        
+        # 返回结果
+        response_data = {
+            'success': True,
+            'message': 'Listing文案生成完成',
+            'platform': platform,
+            'language': language,
+            'style': style,
+            'current_usage': updated_usage,
+            'daily_limit': daily_limit,
+            'remaining_usage': daily_limit - updated_usage if daily_limit != -1 else -1,
+            **result
+        }
+        
+        print(f"✅ Listing文案生成成功 - 标题长度: {len(result.get('title', ''))}, 描述长度: {len(result.get('description', ''))}")
+        
+        return jsonify(response_data)
+        
+    except Exception as e:
+        import traceback
+        print(f"❌ Listing文案生成异常: {str(e)}")
+        print(traceback.format_exc())
+        return jsonify({'error': f'Listing文案生成异常: {str(e)}', 'traceback': traceback.format_exc()}), 500
+
+def generate_listing_with_groq(product_info, platform='amazon', language='en', style='professional'):
+    """使用Groq API生成Listing文案（真实AI）"""
+    if not groq_client:
+        print("⚠️ Groq客户端未初始化，无法生成Listing文案")
+        return None
+    
+    try:
+        # 根据语言和风格构建提示词
+        style_descriptions = {
+            'professional': '专业、正式、商务风格',
+            'casual': '轻松、友好、口语化风格',
+            'marketing': '营销、吸引人、促销风格'
+        }
+        
+        style_desc = style_descriptions.get(style, '专业风格')
+        
+        if language == 'zh':
+            prompt = f"""请为以下产品生成一个专业的{platform}平台Listing文案。
+
+产品信息：{product_info}
+
+要求：
+1. 生成中文的产品标题和描述
+2. 风格：{style_desc}
+3. 包含产品的主要特点、使用场景、优势
+4. 符合{platform}平台的Listing规范
+5. 字数：标题50-100字，描述200-500字
+
+请以JSON格式返回，格式如下：
+{{
+    "title": "产品标题",
+    "description": "产品描述（详细）",
+    "key_features": ["特点1", "特点2", "特点3"],
+    "keywords": ["关键词1", "关键词2", "关键词3"],
+    "word_count": {{
+        "title": 标题字数,
+        "description": 描述字数
+    }}
+}}
+
+只需返回JSON，不要其他文字。"""
+        else:
+            prompt = f"""Please generate a professional {platform} platform Listing copy for the following product.
+
+Product Information: {product_info}
+
+Requirements:
+1. Generate English product title and description
+2. Style: {style_desc} (professional/casual/marketing)
+3. Include main features, use cases, and advantages
+4. Comply with {platform} platform Listing guidelines
+5. Word count: Title 50-100 words, Description 200-500 words
+
+Please return in JSON format as follows:
+{{
+    "title": "Product Title",
+    "description": "Product Description (detailed)",
+    "key_features": ["Feature 1", "Feature 2", "Feature 3"],
+    "keywords": ["Keyword 1", "Keyword 2", "Keyword 3"],
+    "word_count": {{
+        "title": title word count,
+        "description": description word count
+    }}
+}}
+
+Return only JSON, no other text."""
+        
+        print(f"🤖 调用Groq API生成Listing文案...")
+        print(f"   平台: {platform}, 语言: {language}, 风格: {style}")
+        
+        chat_completion = groq_client.chat.completions.create(
+            messages=[
+                {"role": "system", "content": "You are a professional e-commerce Listing copywriter specializing in creating compelling product descriptions for online marketplaces. Always return valid JSON format only."},
+                {"role": "user", "content": prompt}
+            ],
+            model="mixtral-8x7b-32768",
+            temperature=0.7,
+            max_tokens=2000
+        )
+        
+        response_text = chat_completion.choices[0].message.content.strip()
+        
+        # 尝试解析JSON响应
+        try:
+            # 移除可能的markdown代码块标记
+            if response_text.startswith("```json"):
+                response_text = response_text[7:]
+            if response_text.startswith("```"):
+                response_text = response_text[3:]
+            if response_text.endswith("```"):
+                response_text = response_text[:-3]
+            response_text = response_text.strip()
+            
+            result = json.loads(response_text)
+            result['source'] = 'groq'
+            result['platform'] = platform
+            result['language'] = language
+            result['style'] = style
+            
+            print(f"✅ Groq API生成成功")
+            print(f"   标题: {result.get('title', '')[:50]}...")
+            print(f"   描述长度: {len(result.get('description', ''))} 字符")
+            
+            return result
+        except json.JSONDecodeError as e:
+            print(f"⚠️ Groq返回的不是标准JSON: {e}")
+            print(f"   响应内容: {response_text[:200]}...")
+            # 如果JSON解析失败，尝试从文本中提取
+            return None
+    except Exception as e:
+        print(f"⚠️ Groq API调用失败: {e}")
+        import traceback
+        print(traceback.format_exc())
+        return None
 
 def extract_keywords_with_groq(product_description, platform='amazon'):
     """使用Groq API提取关键词（真实AI）"""

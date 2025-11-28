@@ -217,7 +217,8 @@ class DataManager:
                 'send_email': 5,
                 'add_watermark': 10,
                 'remove_watermark': 10,
-                'image_rotate_flip': 5  # 图片旋转/翻转
+                'image_rotate_flip': 5,  # 图片旋转/翻转
+                'listing_generator': 3  # Listing文案生成（AI功能，限制较低）
             },
             'basic': {
                 'background_remover': 10,
@@ -231,7 +232,8 @@ class DataManager:
                 'send_email': 20,
                 'add_watermark': 50,
                 'remove_watermark': 50,
-                'image_rotate_flip': 50  # 图片旋转/翻转
+                'image_rotate_flip': 50,  # 图片旋转/翻转
+                'listing_generator': 20  # Listing文案生成
             },
             'professional': {
                 'background_remover': 100,
@@ -245,7 +247,8 @@ class DataManager:
                 'send_email': -1,
                 'add_watermark': -1,
                 'remove_watermark': -1,
-                'image_rotate_flip': 200  # 图片旋转/翻转
+                'image_rotate_flip': 200,  # 图片旋转/翻转
+                'listing_generator': 100  # Listing文案生成
             },
             'flagship': {
                 'background_remover': -1,
@@ -259,7 +262,8 @@ class DataManager:
                 'send_email': -1,
                 'add_watermark': -1,
                 'remove_watermark': -1,
-                'image_rotate_flip': -1  # 图片旋转/翻转
+                'image_rotate_flip': -1,  # 图片旋转/翻转
+                'listing_generator': -1  # Listing文案生成（无限）
             },
             'enterprise': {
                 'background_remover': -1,
@@ -273,7 +277,8 @@ class DataManager:
                 'send_email': -1,
                 'add_watermark': -1,
                 'remove_watermark': -1,
-                'image_rotate_flip': -1  # 图片旋转/翻转
+                'image_rotate_flip': -1,  # 图片旋转/翻转
+                'listing_generator': -1  # Listing文案生成（无限）
             }
         }
         

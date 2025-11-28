@@ -480,6 +480,7 @@ class AppManager {
             'image_cropper': '图片裁剪工具',
             'image_rotate_flip': '图片旋转/翻转工具',
             'keyword_analyzer': '关键词分析工具',
+            'listing_generator': 'Listing文案生成工具',
             'currency_converter': '汇率换算工具',
             'add_watermark': '加水印工具',
             'add_watermark_v2': '加水印工具（新版）',
@@ -509,8 +510,8 @@ class AppManager {
         // 根据工具类型设置不同的选项
         this.setupToolOptions(toolType);
 
-        // 关键词分析工具和汇率换算工具不需要文件上传，需要特殊处理
-        if (toolType === 'keyword_analyzer' || toolType === 'currency_converter') {
+        // 关键词分析工具、Listing文案生成和汇率换算工具不需要文件上传，需要特殊处理
+        if (toolType === 'keyword_analyzer' || toolType === 'listing_generator' || toolType === 'currency_converter') {
             // 隐藏文件上传区域，显示文本输入
             if (uploadArea) uploadArea.style.display = 'none';
             const modalBody = modal.querySelector('.modal-body');
@@ -547,6 +548,35 @@ class AppManager {
                         startButton = document.getElementById('keywordAnalyzeBtn');
                         if (startButton) {
                             startButton.onclick = () => this.processKeywordAnalysis();
+                        }
+                    }, 100);
+                } else if (toolType === 'listing_generator') {
+                    // 为Listing文案生成工具添加生成按钮
+                    setTimeout(() => {
+                        let startButton = document.getElementById('listingGenerateBtn');
+                        if (!startButton) {
+                            const btnContainer = document.createElement('div');
+                            btnContainer.className = 'tool-actions';
+                            btnContainer.id = 'listingGenerateBtnContainer';
+                            btnContainer.innerHTML = `
+                                <button id="listingGenerateBtn" class="btn btn-primary" style="margin-top: 20px; width: 100%; padding: 12px;">
+                                    <i class="fas fa-magic"></i> 生成文案
+                                </button>
+                            `;
+                            const toolOptions = document.getElementById('toolOptions');
+                            if (toolOptions && toolOptions.nextSibling) {
+                                toolOptions.parentNode.insertBefore(btnContainer, toolOptions.nextSibling);
+                            } else if (toolOptions) {
+                                toolOptions.parentNode.appendChild(btnContainer);
+                            } else {
+                                modalBody.appendChild(btnContainer);
+                            }
+                        }
+                        
+                        // 绑定生成按钮事件
+                        startButton = document.getElementById('listingGenerateBtn');
+                        if (startButton) {
+                            startButton.onclick = () => this.processListingGeneration();
                         }
                     }, 100);
                 } else if (toolType === 'currency_converter') {
@@ -693,6 +723,40 @@ class AppManager {
                         <div class="option-group" id="competitorAsinGroup" style="display: none;">
                             <label for="competitorAsin">竞品ASIN:</label>
                             <input type="text" id="competitorAsin" class="form-input" placeholder="输入竞品的ASIN，例如：B08XYZ1234">
+                        </div>
+                    </div>
+                `;
+                break;
+            case 'listing_generator':
+                optionsHTML = `
+                    <div class="tool-options">
+                        <div class="option-group">
+                            <label for="listingProductInfo">产品信息:</label>
+                            <textarea id="listingProductInfo" class="form-textarea" rows="4" placeholder="输入产品信息，例如：无线蓝牙耳机，支持主动降噪，30小时续航，快速充电，适合运动健身使用"></textarea>
+                        </div>
+                        <div class="option-group">
+                            <label for="listingPlatform">目标平台:</label>
+                            <select id="listingPlatform" class="form-select">
+                                <option value="amazon">亚马逊 (Amazon)</option>
+                                <option value="ebay">eBay</option>
+                                <option value="temu">Temu</option>
+                                <option value="shopee">虾皮 (Shopee)</option>
+                            </select>
+                        </div>
+                        <div class="option-group">
+                            <label for="listingLanguage">输出语言:</label>
+                            <select id="listingLanguage" class="form-select">
+                                <option value="en">英文 (English)</option>
+                                <option value="zh">中文 (Chinese)</option>
+                            </select>
+                        </div>
+                        <div class="option-group">
+                            <label for="listingStyle">文案风格:</label>
+                            <select id="listingStyle" class="form-select">
+                                <option value="professional">专业风格</option>
+                                <option value="casual">轻松风格</option>
+                                <option value="marketing">营销风格</option>
+                            </select>
                         </div>
                     </div>
                 `;
@@ -1596,6 +1660,17 @@ class AppManager {
                 
                 console.log('🔍 getToolOptions - 最终平台值:', options.platform);
                 break;
+            case 'listing_generator':
+                const listingProductInfo = document.getElementById('listingProductInfo');
+                const listingPlatform = document.getElementById('listingPlatform');
+                const listingLanguage = document.getElementById('listingLanguage');
+                const listingStyle = document.getElementById('listingStyle');
+                
+                if (listingProductInfo) options.product_info = listingProductInfo.value;
+                if (listingPlatform) options.platform = listingPlatform.value;
+                if (listingLanguage) options.language = listingLanguage.value;
+                if (listingStyle) options.style = listingStyle.value;
+                break;
             case 'currency_converter':
                 const currencyAmount = document.getElementById('currencyAmount');
                 const fromCurrency = document.getElementById('fromCurrency');
@@ -1812,6 +1887,117 @@ class AppManager {
         return platformMap[platformCode] || platformCode || '未知平台';
     }
 
+    async processListingGeneration() {
+        // Listing文案生成专用处理函数（不需要文件上传）
+        if (!this.currentTool || this.currentTool !== 'listing_generator') {
+            return;
+        }
+
+        const productInfo = document.getElementById('listingProductInfo');
+        const platform = document.getElementById('listingPlatform');
+        const language = document.getElementById('listingLanguage');
+        const style = document.getElementById('listingStyle');
+        
+        if (!productInfo || !platform || !language || !style) {
+            alert('请先填写完整信息');
+            return;
+        }
+
+        const productInfoText = productInfo.value.trim();
+        const selectedPlatform = platform.value;
+        const selectedLanguage = language.value;
+        const selectedStyle = style.value;
+
+        if (!productInfoText) {
+            alert('请输入产品信息');
+            return;
+        }
+
+        try {
+            this.isProcessing = true;
+            this.showProcessingStatus(this.currentTool);
+
+            const requestData = {
+                product_info: productInfoText,
+                platform: selectedPlatform,
+                language: selectedLanguage,
+                style: selectedStyle
+            };
+
+            const apiUrl = `${this.apiBaseUrl}/api/tools/generate-listing`;
+            
+            this.updateProgress(20, '准备生成文案...');
+
+            const headers = {
+                'Content-Type': 'application/json'
+            };
+
+            const token = this.authManager.getToken();
+            if (token) {
+                headers['Authorization'] = `Bearer ${token}`;
+            } else {
+                throw new Error('请先登录');
+            }
+
+            this.updateProgress(40, 'AI正在生成文案...');
+            
+            const response = await fetch(apiUrl, {
+                method: 'POST',
+                headers: headers,
+                body: JSON.stringify(requestData)
+            });
+
+            this.updateProgress(80, '处理结果...');
+
+            if (response.status === 401) {
+                this.authManager.logout();
+                alert('登录已过期，请重新登录');
+                this.closeModal('toolModal');
+                this.showLoginModal();
+                this.isProcessing = false;
+                return;
+            }
+
+            const result = await response.json();
+
+            if (response.ok && result.success !== false) {
+                this.updateProgress(100, '生成完成！');
+                setTimeout(() => {
+                    this.showListingGenerationResult(result);
+                    this.loadUsageStats();
+                    this.isProcessing = false;
+                }, 500);
+            } else {
+                const errorMsg = result.error || '生成失败';
+                
+                // 检查是否是使用次数达到上限
+                if (response.status === 400 && (errorMsg.includes('今日使用次数已达上限') || errorMsg.includes('使用次数已达上限'))) {
+                    this.isProcessing = false;
+                    this.closeModal('toolModal');
+                    
+                    const userConfirmed = confirm(
+                        `今日使用次数已达上限！\n\n` +
+                        `免费版用户每日使用次数有限，升级会员可享受更多使用次数。\n\n` +
+                        `是否前往升级会员？`
+                    );
+                    
+                    if (userConfirmed) {
+                        window.location.href = 'payment.html';
+                    }
+                    return;
+                }
+                
+                this.showError(errorMsg);
+                this.isProcessing = false;
+            }
+        } catch (error) {
+            console.error('Listing文案生成失败:', error);
+            this.isProcessing = false;
+            this.showError(`生成失败: ${error.message}`);
+            this.hideProcessingStatus();
+        }
+    }
+
     async processCurrencyConversion() {
         // 汇率换算专用处理函数（不需要文件上传）
         if (!this.currentTool || this.currentTool !== 'currency_converter') {
@@ -1924,6 +2110,94 @@ class AppManager {
             this.showError(`汇率换算失败: ${error.message}`);
             this.isProcessing = false;
         }
+    }
+
+    showListingGenerationResult(result) {
+        const modal = document.getElementById('toolModal');
+        const modalBody = modal.querySelector('.modal-body');
+        
+        if (!modalBody) return;
+
+        const title = result.title || '未生成标题';
+        const description = result.description || '未生成描述';
+        const keyFeatures = result.key_features || [];
+        const keywords = result.keywords || [];
+        const platform = this.getPlatformName(result.platform || 'amazon');
+        const language = result.language === 'zh' ? '中文' : '英文';
+        const style = result.style === 'professional' ? '专业风格' : 
+                     result.style === 'casual' ? '轻松风格' : '营销风格';
+
+        const featuresHTML = keyFeatures.length > 0 
+            ? `<div style="margin-top: 15px;">
+                <strong>主要特点：</strong>
+                <ul style="margin: 10px 0; padding-left: 20px;">
+                    ${keyFeatures.map(feature => `<li>${feature}</li>`).join('')}
+                </ul>
+               </div>`
+            : '';
+
+        const keywordsHTML = keywords.length > 0
+            ? `<div style="margin-top: 15px;">
+                <strong>关键词：</strong>
+                <div style="margin-top: 10px;">
+                    ${keywords.map(keyword => `<span style="display: inline-block; margin: 5px; padding: 5px 10px; background: #e9ecef; border-radius: 4px; font-size: 0.9rem;">${keyword}</span>`).join('')}
+                </div>
+               </div>`
+            : '';
+
+        const resultHTML = `
+            <div class="result-container">
+                <h3>Listing文案生成完成！</h3>
+                <div class="result-info" style="margin: 20px 0; padding: 20px; background: #f8f9fa; border-radius: 8px;">
+                    <div style="margin-bottom: 15px; color: #666; font-size: 0.9rem;">
+                        <span>平台：${platform}</span> | 
+                        <span>语言：${language}</span> | 
+                        <span>风格：${style}</span>
+                    </div>
+                    
+                    <div style="margin-top: 20px;">
+                        <strong style="display: block; margin-bottom: 10px; color: #333;">产品标题：</strong>
+                        <div style="padding: 15px; background: white; border-left: 4px solid #007bff; border-radius: 4px; font-size: 1.1rem; line-height: 1.6;">
+                            ${title}
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 20px;">
+                        <strong style="display: block; margin-bottom: 10px; color: #333;">产品描述：</strong>
+                        <div style="padding: 15px; background: white; border-left: 4px solid #28a745; border-radius: 4px; line-height: 1.8; white-space: pre-wrap;">
+                            ${description}
+                        </div>
+                    </div>
+                    
+                    ${featuresHTML}
+                    ${keywordsHTML}
+                    
+                    <div style="margin-top: 20px; padding-top: 15px; border-top: 1px solid #dee2e6;">
+                        <button onclick="this.nextElementSibling.select(); document.execCommand('copy'); alert('已复制到剪贴板！');" 
+                                class="btn btn-outline" style="margin-right: 10px;">
+                            <i class="fas fa-copy"></i> 复制标题
+                        </button>
+                        <textarea readonly style="position: absolute; left: -9999px;">${title}</textarea>
+                        
+                        <button onclick="this.nextElementSibling.select(); document.execCommand('copy'); alert('已复制到剪贴板！');" 
+                                class="btn btn-outline">
+                            <i class="fas fa-copy"></i> 复制描述
+                        </button>
+                        <textarea readonly style="position: absolute; left: -9999px;">${description}</textarea>
+                    </div>
+                </div>
+                
+                ${result.current_usage !== undefined ? `
+                <div style="margin-top: 15px; padding: 10px; background: #e7f3ff; border-radius: 4px; font-size: 0.9rem; color: #0066cc;">
+                    <i class="fas fa-info-circle"></i> 
+                    今日已使用 ${result.current_usage} / ${result.daily_limit === -1 ? '∞' : result.daily_limit} 次
+                    ${result.remaining_usage !== undefined && result.remaining_usage >= 0 ? `（剩余 ${result.remaining_usage} 次）` : ''}
+                </div>
+                ` : ''}
+            </div>
+        `;
+
+        modalBody.innerHTML = resultHTML;
     }
 
     showCurrencyConversionResult(result) {

@@ -1,0 +1,59 @@
+# ========================================
+# 服务器手动配置 Groq API 密钥
+# ========================================
+# 直接在服务器上执行以下命令即可，无需脚本文件
+# ========================================
+
+# 步骤1：进入项目目录
+cd /var/www/background_remover_tool
+
+# 步骤2：创建或编辑 .env 文件
+nano .env
+
+# 步骤3：在文件中添加以下内容（如果文件已存在，添加或更新这一行）：
+# GROQ_API_KEY=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
+
+# 步骤4：保存文件
+# nano编辑器：按 Ctrl+X，然后按 Y，然后按 Enter
+
+# 步骤5：设置文件权限（非常重要！）
+chmod 600 .env
+
+# 步骤6：重启服务
+sudo systemctl restart background_remover_tool
+
+# 步骤7：查看日志确认配置成功
+sudo journalctl -u background_remover_tool -n 30 --no-pager
+
+# ========================================
+# 或者使用 echo 命令一键添加（更简单）
+# ========================================
+
+cd /var/www/background_remover_tool
+
+# 如果 .env 文件不存在，创建它
+if [ ! -f .env ]; then
+    touch .env
+    chmod 600 .env
+fi
+
+# 检查是否已存在 GROQ_API_KEY，如果存在则更新，否则添加
+if grep -q "^GROQ_API_KEY=" .env; then
+    # 更新现有密钥
+    sed -i 's|^GROQ_API_KEY=.*|GROQ_API_KEY=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|' .env
+    echo "✅ 已更新 GROQ_API_KEY"
+else
+    # 添加新密钥
+    echo "GROQ_API_KEY=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" >> .env
+    echo "✅ 已添加 GROQ_API_KEY"
+fi
+
+# 设置文件权限
+chmod 600 .env
+
+# 重启服务
+sudo systemctl restart background_remover_tool
+
+# 查看日志
+sudo journalctl -u background_remover_tool -n 30 --no-pager
+

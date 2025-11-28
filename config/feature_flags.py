@@ -21,7 +21,7 @@ FEATURE_FLAGS = {
     'brightness_contrast': False,    # 亮度/对比度调节（开发中）
     'batch_workflow': False,         # 批量处理工作流（开发中）
     'product_batch_processing': False,  # 产品图片批量处理（开发中）
-    'ai_product_description': False, # AI产品描述生成（开发中）
+    'listing_generator': False,     # Listing文案生成（开发中，需要Groq API密钥）
 }
 
 def is_feature_enabled(feature_name):
