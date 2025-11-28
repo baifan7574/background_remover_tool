@@ -146,39 +146,73 @@ class AuthManager {
         }
     }
 
-    // 微信登录
-    async wechatLogin(code = null, state = null) {
+    // 获取微信登录二维码
+    async getWechatQRCode() {
         try {
-            // 如果没有提供code，使用模拟的授权码（用于测试）
-            const mockCode = code || 'mock_wechat_code_' + Date.now();
-            const mockState = state || 'mock_wechat_state_' + Math.random().toString(36).substr(2, 9);
-            
-            console.log('开始微信登录，code:', mockCode);
-            
-            const response = await fetch(`${this.apiBaseUrl}/api/auth/wechat-login`, {
-                method: 'POST',
+            const response = await fetch(`${this.apiBaseUrl}/api/auth/wechat-qrcode`, {
+                method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ code: mockCode, state: mockState })
+                }
             });
 
             const data = await response.json();
             
-            if (response.ok && data.user && data.token) {
-                // 登录成功，保存认证信息
-                this.setAuth(data.user, data.token);
-                console.log('微信登录成功:', data.user);
-                return { success: true, data };
+            if (response.ok && data.success) {
+                return { 
+                    success: true, 
+                    session_id: data.session_id,
+                    qrcode: data.qrcode,
+                    auth_url: data.auth_url
+                };
             } else {
-                const errorMsg = data.error || data.message || '微信登录失败';
-                console.error('微信登录失败:', errorMsg);
+                const errorMsg = data.error || '获取二维码失败';
+                console.error('获取二维码失败:', errorMsg);
                 return { success: false, error: errorMsg };
             }
         } catch (error) {
-            console.error('微信登录异常:', error);
-            return { success: false, error: '微信登录失败，请重试: ' + error.message };
+            console.error('获取二维码异常:', error);
+            return { success: false, error: '获取二维码失败: ' + error.message };
         }
+    }
+
+    // 检查微信登录状态（轮询）
+    async checkWechatLogin(sessionId) {
+        try {
+            const response = await fetch(`${this.apiBaseUrl}/api/auth/wechat-check-login`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ session_id: sessionId })
+            });
+
+            const data = await response.json();
+            
+            if (data.success && data.status === 'success' && data.user && data.token) {
+                // 登录成功，保存认证信息
+                this.setAuth(data.user, data.token);
+                console.log('微信登录成功:', data.user);
+                return { success: true, status: 'success', data };
+            } else if (data.status === 'waiting') {
+                // 等待中
+                return { success: false, status: 'waiting', message: data.message };
+            } else if (data.status === 'failed') {
+                // 失败
+                return { success: false, status: 'failed', error: data.error };
+            } else {
+                return { success: false, status: 'unknown', error: '未知状态' };
+            }
+        } catch (error) {
+            console.error('检查登录状态异常:', error);
+            return { success: false, error: '检查登录状态失败: ' + error.message };
+        }
+    }
+
+    // 微信登录（兼容旧接口，已废弃）
+    async wechatLogin(code = null, state = null) {
+        console.warn('wechatLogin方法已废弃，请使用二维码登录方式');
+        return { success: false, error: '请使用二维码登录方式' };
     }
 
     // 设置认证信息

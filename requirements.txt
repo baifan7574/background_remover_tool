@@ -10,3 +10,4 @@ werkzeug==2.3.7
 groq==0.4.1
 pytrends==4.9.2
 requests==2.31.0
+qrcode[pil]==7.4.2

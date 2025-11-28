@@ -747,7 +747,8 @@
                     </div>
                     <button type="submit" class="btn btn-primary btn-full">登录</button>
                     
-                    <!-- 社交登录 -->
+                    <!-- 微信登录功能暂时隐藏（需要微信开放平台认证，费用300元） -->
+                    <!-- 等后续开通微信登录后再取消注释
                     <div class="social-login">
                         <div class="social-divider">或使用其他方式登录</div>
                         <div class="social-buttons">
@@ -756,6 +757,7 @@
                             </button>
                         </div>
                     </div>
+                    -->
                     
                     <p class="form-switch">
                         还没有账号？<a href="#" onclick="appManager.switchToRegister()">立即注册</a>
@@ -765,7 +767,8 @@
         </div>
     </div>
 
-    <!-- 微信登录模态框 -->
+    <!-- 微信登录模态框 - 暂时隐藏（需要微信开放平台认证，费用300元） -->
+    <!-- 等后续开通微信登录后再取消注释
     <div id="wechatLoginModal" class="modal">
         <div class="modal-content modal-small">
             <div class="modal-header">
@@ -792,11 +795,7 @@
                     </div>
                     
                     <div class="wechat-alternatives">
-                        <p>或使用模拟登录：</p>
-                        <button class="btn btn-primary btn-full" onclick="simulateWechatLogin()">
-                            模拟微信登录
-                        </button>
-                        <p style="margin-top: 1rem;">
+                        <p style="margin-top: 1rem; text-align: center;">
                             <a href="#" onclick="appManager.switchToTraditionalLogin()">使用账号密码登录</a>
                         </p>
                     </div>
@@ -804,6 +803,7 @@
             </div>
         </div>
     </div>
+    -->
 
     <!-- 注册模态框 -->
     <div id="registerModal" class="modal">
@@ -837,7 +837,8 @@
                     </div>
                     <button type="submit" class="btn btn-primary btn-full">注册</button>
                     
-                    <!-- 社交注册 -->
+                    <!-- 微信登录功能暂时隐藏（需要微信开放平台认证，费用300元） -->
+                    <!-- 等后续开通微信登录后再取消注释
                     <div class="social-login">
                         <div class="social-divider">或使用其他方式注册</div>
                         <div class="social-buttons">
@@ -846,6 +847,7 @@
                             </button>
                         </div>
                     </div>
+                    -->
                     
                     <p class="form-switch">
                         已有账号？<a href="#" onclick="appManager.switchToLogin()">立即登录</a>

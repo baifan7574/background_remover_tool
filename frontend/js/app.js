@@ -122,7 +122,10 @@ class AppManager {
         }
     }
     
-    showWechatLoginModal() {
+    // 微信登录功能暂时隐藏（需要微信开放平台认证，费用300元）
+    // 等后续开通微信登录后再取消注释
+    /*
+    async showWechatLoginModal() {
         // 关闭其他模态框
         this.closeModal('loginModal');
         this.closeModal('registerModal');
@@ -131,15 +134,164 @@ class AppManager {
         const modal = document.getElementById('wechatLoginModal');
         if (modal) {
             this.showModal(modal);
+            
+            // 获取并显示二维码
+            await this.loadWechatQRCode();
         } else {
             console.error('未找到微信登录模态框');
         }
     }
     
-    switchToTraditionalLogin() {
-        // 关闭微信登录模态框
-        this.closeModal('wechatLoginModal');
+    async loadWechatQRCode() {
+        const qrCodeContainer = document.querySelector('#wechatLoginModal .qr-code');
+        const qrPlaceholder = document.querySelector('#wechatLoginModal .qr-placeholder');
         
+        if (!qrCodeContainer) {
+            console.error('未找到二维码容器');
+            return;
+        }
+        
+        // 显示加载状态
+        if (qrPlaceholder) {
+            qrPlaceholder.innerHTML = '<div class="qr-icon">⏳</div><p>正在生成二维码...</p>';
+            qrPlaceholder.style.display = 'block';
+        }
+        
+        try {
+            // 获取二维码
+            const result = await this.authManager.getWechatQRCode();
+            
+            if (result.success) {
+                // 显示二维码
+                if (qrPlaceholder) {
+                    qrPlaceholder.style.display = 'none';
+                }
+                
+                const img = document.createElement('img');
+                img.src = result.qrcode;
+                img.style.width = '100%';
+                img.style.height = 'auto';
+                img.style.maxWidth = '300px';
+                img.style.margin = '0 auto';
+                img.style.display = 'block';
+                
+                // 清空容器并添加二维码图片
+                qrCodeContainer.innerHTML = '';
+                qrCodeContainer.appendChild(img);
+                
+                // 保存session_id并开始轮询
+                this.wechatSessionId = result.session_id;
+                this.startWechatLoginPolling();
+            } else {
+                // 显示错误
+                if (qrPlaceholder) {
+                    qrPlaceholder.innerHTML = `
+                        <div class="qr-icon">❌</div>
+                        <p>${result.error || '获取二维码失败'}</p>
+                        <button class="btn btn-primary" onclick="window.appManager.loadWechatQRCode()" style="margin-top: 10px;">重试</button>
+                    `;
+                    qrPlaceholder.style.display = 'block';
+                }
+                console.error('获取二维码失败:', result.error);
+            }
+        } catch (error) {
+            console.error('获取二维码异常:', error);
+            if (qrPlaceholder) {
+                qrPlaceholder.innerHTML = `
+                    <div class="qr-icon">❌</div>
+                    <p>获取二维码失败</p>
+                    <button class="btn btn-primary" onclick="window.appManager.loadWechatQRCode()" style="margin-top: 10px;">重试</button>
+                `;
+                qrPlaceholder.style.display = 'block';
+            }
+        }
+    }
+    
+    startWechatLoginPolling() {
+        // 清除之前的轮询
+        if (this.wechatPollingInterval) {
+            clearInterval(this.wechatPollingInterval);
+        }
+        
+        // 更新提示文字
+        const instructions = document.querySelector('#wechatLoginModal .qr-instructions');
+        if (instructions) {
+            instructions.innerHTML = `
+                <h4>扫码登录步骤：</h4>
+                <ol>
+                    <li>打开微信扫一扫</li>
+                    <li>扫描上方二维码</li>
+                    <li>确认登录授权</li>
+                </ol>
+                <p style="color: #1890ff; margin-top: 10px;">⏳ 等待扫码中...</p>
+            `;
+        }
+        
+        // 开始轮询检查登录状态
+        let pollCount = 0;
+        const maxPolls = 120; // 最多轮询2分钟（每1秒一次）
+        
+        this.wechatPollingInterval = setInterval(async () => {
+            pollCount++;
+            
+            if (!this.wechatSessionId) {
+                clearInterval(this.wechatPollingInterval);
+                return;
+            }
+            
+            // 检查登录状态
+            const result = await this.authManager.checkWechatLogin(this.wechatSessionId);
+            
+            if (result.success && result.status === 'success') {
+                // 登录成功
+                clearInterval(this.wechatPollingInterval);
+                this.wechatSessionId = null;
+                
+                // 更新提示
+                if (instructions) {
+                    instructions.innerHTML = '<p style="color: #52c41a; font-weight: bold;">✅ 登录成功！</p>';
+                }
+                
+                // 关闭模态框
+                setTimeout(() => {
+                    this.closeModal('wechatLoginModal');
+                    
+                    // 显示成功提示
+                    alert('✅ 微信登录成功！\n\n欢迎 ' + (result.data?.user?.name || result.data?.user?.email || '用户'));
+                    
+                    // 刷新页面以更新UI
+                    window.location.reload();
+                }, 1000);
+            } else if (result.status === 'failed') {
+                // 登录失败
+                clearInterval(this.wechatPollingInterval);
+                this.wechatSessionId = null;
+                
+                if (instructions) {
+                    instructions.innerHTML = `
+                        <p style="color: #ff4d4f; font-weight: bold;">❌ 登录失败</p>
+                        <p>${result.error || '授权失败'}</p>
+                        <button class="btn btn-primary" onclick="window.appManager.loadWechatQRCode()" style="margin-top: 10px;">重新获取二维码</button>
+                    `;
+                }
+            } else if (pollCount >= maxPolls) {
+                // 超时
+                clearInterval(this.wechatPollingInterval);
+                this.wechatSessionId = null;
+                
+                if (instructions) {
+                    instructions.innerHTML = `
+                        <p style="color: #ff9800; font-weight: bold;">⏰ 二维码已过期</p>
+                        <button class="btn btn-primary" onclick="window.appManager.loadWechatQRCode()" style="margin-top: 10px;">重新获取二维码</button>
+                    `;
+                }
+            }
+        }, 1000); // 每1秒检查一次
+    }
+    */
+    
+    // switchToTraditionalLogin 方法保留，但简化（不涉及微信登录）
+    switchToTraditionalLogin() {
         // 显示传统登录模态框
         setTimeout(() => {
             this.showLoginModal();
@@ -3170,6 +3322,17 @@ class AppManager {
             modal.style.display = 'none';
             document.body.style.overflow = 'auto';
             
+            // 微信登录相关代码暂时注释（等后续开通后再启用）
+            /*
+            if (modal.id === 'wechatLoginModal') {
+                if (this.wechatPollingInterval) {
+                    clearInterval(this.wechatPollingInterval);
+                    this.wechatPollingInterval = null;
+                }
+                this.wechatSessionId = null;
+            }
+            */
+            
             // 如果是工具模态框，清除结果内容
             if (modal.id === 'toolModal') {
                 this.resetTool();
@@ -3198,7 +3361,10 @@ class AppManager {
         this.showModal(modal);
     }
     
-    showWechatLoginModal() {
+    // 微信登录功能暂时隐藏（需要微信开放平台认证，费用300元）
+    // 等后续开通微信登录后再取消注释
+    /*
+    async showWechatLoginModal() {
         // 关闭其他模态框
         this.closeModal('loginModal');
         this.closeModal('registerModal');
@@ -3207,15 +3373,17 @@ class AppManager {
         const modal = document.getElementById('wechatLoginModal');
         if (modal) {
             this.showModal(modal);
+            
+            // 获取并显示二维码
+            await this.loadWechatQRCode();
         } else {
             console.error('未找到微信登录模态框');
         }
     }
+    */
     
+    // switchToTraditionalLogin 方法保留，但简化（不涉及微信登录）
     switchToTraditionalLogin() {
-        // 关闭微信登录模态框
-        this.closeModal('wechatLoginModal');
-        
         // 显示传统登录模态框
         setTimeout(() => {
             this.showLoginModal();
@@ -3924,55 +4092,12 @@ if (typeof window !== 'undefined') {
     }
 }
 
-// 全局微信登录函数（供HTML直接调用）
+// 微信登录功能暂时隐藏（需要微信开放平台认证，费用300元）
+// 等后续开通微信登录后再取消注释
+/*
+// 全局微信登录函数（已废弃，使用二维码登录）
 async function simulateWechatLogin() {
-    try {
-        if (!window.appManager || !window.appManager.authManager) {
-            alert('系统正在初始化，请稍候再试');
-            return;
-        }
-        
-        // 显示加载状态
-        const button = event?.target || document.querySelector('#wechatLoginModal button[onclick*="simulateWechatLogin"]');
-        const originalText = button?.textContent || '模拟微信登录';
-        if (button) {
-            button.disabled = true;
-            button.textContent = '登录中...';
-        }
-        
-        // 调用微信登录
-        const result = await window.appManager.authManager.wechatLogin();
-        
-        if (result.success) {
-            // 登录成功，关闭模态框
-            window.appManager.closeModal('wechatLoginModal');
-            
-            // 显示成功提示
-            alert('✅ 微信登录成功！\n\n欢迎 ' + (result.data?.user?.name || result.data?.user?.email || '用户'));
-            
-            // 刷新页面以更新UI
-            setTimeout(() => {
-                window.location.reload();
-            }, 500);
-        } else {
-            // 登录失败
-            alert('❌ 微信登录失败：' + (result.error || '未知错误'));
-            
-            // 恢复按钮状态
-            if (button) {
-                button.disabled = false;
-                button.textContent = originalText;
-            }
-        }
-    } catch (error) {
-        console.error('微信登录异常:', error);
-        alert('❌ 微信登录失败：' + (error.message || '网络错误'));
-        
-        // 恢复按钮状态
-        const button = event?.target || document.querySelector('#wechatLoginModal button[onclick*="simulateWechatLogin"]');
-        if (button) {
-            button.disabled = false;
-            button.textContent = '模拟微信登录';
-        }
-    }
+    console.warn('simulateWechatLogin已废弃，请使用二维码登录');
+    alert('请使用微信扫码登录');
 }
+*/

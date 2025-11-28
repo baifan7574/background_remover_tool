@@ -1007,78 +1007,359 @@ def login():
         print(f"登录异常: {str(e)}")
         return jsonify({'error': f'登录失败: {str(e)}'}), 500
 
-@app.route('/api/auth/wechat-login', methods=['POST'])
-def wechat_login():
-    """微信登录"""
+# 微信登录状态存储（临时存储，用于轮询检查）
+wechat_login_sessions = {}  # {session_id: {code, openid, user_info, status}}
+
+@app.route('/api/auth/wechat-qrcode', methods=['GET'])
+def get_wechat_qrcode():
+    """获取微信登录二维码"""
     try:
-        data = request.get_json()
-        code = data.get('code')
+        import secrets
+        import qrcode
+        import io
+        import base64
         
-        if not code:
-            return jsonify({'error': '微信授权码不能为空'}), 400
+        # 从环境变量获取微信开放平台配置
+        WECHAT_APPID = os.getenv('WECHAT_APPID', '')
+        WECHAT_APPSECRET = os.getenv('WECHAT_APPSECRET', '')
         
-        # 模拟微信授权码验证
-        print(f"收到微信授权码: {code}")
+        if not WECHAT_APPID or not WECHAT_APPSECRET:
+            return jsonify({
+                'error': '微信登录未配置，请在环境变量中设置 WECHAT_APPID 和 WECHAT_APPSECRET'
+            }), 500
         
-        # 模拟微信用户信息
-        wechat_user_info = {
-            'openid': f'wx_openid_{code[:8]}',
-            'nickname': f'微信用户_{code[:4]}',
-            'avatar': 'https://via.placeholder.com/100x100?text=微信头像'
+        # 生成唯一的session_id
+        session_id = secrets.token_urlsafe(32)
+        
+        # 构建微信授权URL
+        # 获取当前域名
+        base_url = request.host_url.rstrip('/')
+        redirect_uri = f"{base_url}/api/auth/wechat-callback"
+        
+        # 微信网页授权URL
+        wechat_auth_url = (
+            f"https://open.weixin.qq.com/connect/qrconnect?"
+            f"appid={WECHAT_APPID}&"
+            f"redirect_uri={redirect_uri}&"
+            f"response_type=code&"
+            f"scope=snsapi_login&"
+            f"state={session_id}#wechat_redirect"
+        )
+        
+        # 生成二维码
+        qr = qrcode.QRCode(version=1, box_size=10, border=4)
+        qr.add_data(wechat_auth_url)
+        qr.make(fit=True)
+        
+        img = qr.make_image(fill_color="black", back_color="white")
+        
+        # 转换为base64
+        buffer = io.BytesIO()
+        img.save(buffer, format='PNG')
+        img_str = base64.b64encode(buffer.getvalue()).decode()
+        
+        # 初始化登录会话
+        wechat_login_sessions[session_id] = {
+            'status': 'waiting',  # waiting, success, failed
+            'created_at': datetime.now().isoformat()
         }
         
-        # 检查用户是否已存在
-        user_id = None
-        for uid, profile in user_profiles_db.items():
-            if profile.get('wechat_openid') == wechat_user_info['openid']:
-                user_id = uid
-                break
-        
-        # 如果用户不存在，创建新用户
-        if not user_id:
-            user_id = str(uuid.uuid4())
-            token = f"mock_token_{user_id[:8]}"
-            
-            users_db[user_id] = {
-                'email': f"{wechat_user_info['openid']}@wechat.local",
-                'password': 'wechat_oauth',
-                'token': token
-            }
-            
-            user_profiles_db[user_id] = {
-                'user_id': user_id,
-                'email': f"{wechat_user_info['openid']}@wechat.local",
-                'name': wechat_user_info['nickname'],
-                'wechat_openid': wechat_user_info['openid'],
-                'avatar': wechat_user_info['avatar'],
-                'plan': 'free',
-                'credits': 10,
-                'created_at': datetime.now().isoformat(),
-                'updated_at': datetime.now().isoformat()
-            }
-        else:
-            # 更新现有用户token
-            token = f"mock_token_{user_id[:8]}"
-            users_db[user_id]['token'] = token
-            user_profiles_db[user_id]['updated_at'] = datetime.now().isoformat()
-        
-        profile = user_profiles_db[user_id]
-        
         return jsonify({
-            'message': '微信登录成功',
-            'user': {
-                'id': user_id,
-                'email': profile['email'],
-                'name': profile['name'],
-                'avatar': profile.get('avatar', ''),
-                'plan': profile['plan'],
-                'credits': profile['credits']
-            },
-            'token': token
+            'success': True,
+            'session_id': session_id,
+            'qrcode': f'data:image/png;base64,{img_str}',
+            'auth_url': wechat_auth_url
         })
+        
+    except Exception as e:
+        print(f"生成微信二维码失败: {e}")
+        import traceback
+        traceback.print_exc()
+        return jsonify({'error': f'生成二维码失败: {str(e)}'}), 500
+
+@app.route('/api/auth/wechat-callback', methods=['GET'])
+def wechat_callback():
+    """微信授权回调"""
+    try:
+        code = request.args.get('code')
+        state = request.args.get('state')  # session_id
+        error = request.args.get('error')
+        
+        if error:
+            if state and state in wechat_login_sessions:
+                wechat_login_sessions[state]['status'] = 'failed'
+                wechat_login_sessions[state]['error'] = error
+            return '<html><body><h1>授权失败</h1><p>用户取消了授权</p></body></html>', 400
+        
+        if not code or not state:
+            return '<html><body><h1>参数错误</h1></body></html>', 400
+        
+        # 检查session是否存在
+        if state not in wechat_login_sessions:
+            return '<html><body><h1>会话已过期</h1></body></html>', 400
+        
+        # 用code换取access_token
+        WECHAT_APPID = os.getenv('WECHAT_APPID', '')
+        WECHAT_APPSECRET = os.getenv('WECHAT_APPSECRET', '')
+        
+        token_url = (
+            f"https://api.weixin.qq.com/sns/oauth2/access_token?"
+            f"appid={WECHAT_APPID}&"
+            f"secret={WECHAT_APPSECRET}&"
+            f"code={code}&"
+            f"grant_type=authorization_code"
+        )
+        
+        import requests
+        token_response = requests.get(token_url, timeout=10)
+        token_data = token_response.json()
+        
+        if 'errcode' in token_data:
+            wechat_login_sessions[state]['status'] = 'failed'
+            wechat_login_sessions[state]['error'] = token_data.get('errmsg', '获取token失败')
+            return f'<html><body><h1>获取token失败</h1><p>{token_data.get("errmsg")}</p></body></html>', 400
+        
+        access_token = token_data.get('access_token')
+        openid = token_data.get('openid')
+        unionid = token_data.get('unionid', '')
+        
+        # 获取用户信息
+        userinfo_url = (
+            f"https://api.weixin.qq.com/sns/userinfo?"
+            f"access_token={access_token}&"
+            f"openid={openid}"
+        )
+        
+        userinfo_response = requests.get(userinfo_url, timeout=10)
+        userinfo_data = userinfo_response.json()
+        
+        if 'errcode' in userinfo_data:
+            wechat_login_sessions[state]['status'] = 'failed'
+            wechat_login_sessions[state]['error'] = userinfo_data.get('errmsg', '获取用户信息失败')
+            return f'<html><body><h1>获取用户信息失败</h1><p>{userinfo_data.get("errmsg")}</p></body></html>', 400
+        
+        # 保存用户信息到session
+        wechat_login_sessions[state].update({
+            'status': 'success',
+            'code': code,
+            'openid': openid,
+            'unionid': unionid,
+            'user_info': {
+                'nickname': userinfo_data.get('nickname', '微信用户'),
+                'avatar': userinfo_data.get('headimgurl', ''),
+                'openid': openid,
+                'unionid': unionid
+            }
+        })
+        
+        # 返回成功页面
+        return '''
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>授权成功</title>
+            <style>
+                body {
+                    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    height: 100vh;
+                    margin: 0;
+                    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                }
+                .success-box {
+                    background: white;
+                    padding: 40px;
+                    border-radius: 12px;
+                    text-align: center;
+                    box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+                }
+                .success-icon {
+                    font-size: 64px;
+                    margin-bottom: 20px;
+                }
+                h1 {
+                    color: #333;
+                    margin-bottom: 10px;
+                }
+                p {
+                    color: #666;
+                }
+            </style>
+        </head>
+        <body>
+            <div class="success-box">
+                <div class="success-icon">✅</div>
+                <h1>授权成功</h1>
+                <p>请返回原页面完成登录</p>
+            </div>
+        </body>
+        </html>
+        '''
+        
+    except Exception as e:
+        print(f"微信回调处理失败: {e}")
+        import traceback
+        traceback.print_exc()
+        if state and state in wechat_login_sessions:
+            wechat_login_sessions[state]['status'] = 'failed'
+            wechat_login_sessions[state]['error'] = str(e)
+        return f'<html><body><h1>处理失败</h1><p>{str(e)}</p></body></html>', 500
+
+@app.route('/api/auth/wechat-check-login', methods=['POST'])
+def check_wechat_login():
+    """检查微信登录状态（轮询接口）"""
+    try:
+        data = request.get_json()
+        session_id = data.get('session_id')
+        
+        if not session_id:
+            return jsonify({'error': 'session_id不能为空'}), 400
+        
+        if session_id not in wechat_login_sessions:
+            return jsonify({'error': '会话不存在或已过期'}), 404
+        
+        session = wechat_login_sessions[session_id]
+        
+        if session['status'] == 'waiting':
+            return jsonify({
+                'success': False,
+                'status': 'waiting',
+                'message': '等待用户扫码...'
+            })
+        
+        elif session['status'] == 'success':
+            # 登录成功，创建或更新用户
+            user_info = session['user_info']
+            openid = user_info['openid']
+            
+            # 检查用户是否已存在
+            user_id = None
+            if data_manager:
+                # 使用数据管理器查找用户
+                for uid, profile in data_manager.user_profiles_db.items():
+                    if profile.get('wechat_openid') == openid:
+                        user_id = uid
+                        break
+            else:
+                # 使用内存数据库查找用户
+                for uid, profile in user_profiles_db.items():
+                    if profile.get('wechat_openid') == openid:
+                        user_id = uid
+                        break
+            
+            # 如果用户不存在，创建新用户
+            if not user_id:
+                user_id = str(uuid.uuid4())
+                token = f"mock_token_{user_id[:8]}"
+                
+                email = f"wechat_{openid[:8]}@wechat.local"
+                
+                if data_manager:
+                    # 使用数据管理器创建用户
+                    data_manager.user_profiles_db[user_id] = {
+                        'user_id': user_id,
+                        'email': email,
+                        'name': user_info['nickname'],
+                        'wechat_openid': openid,
+                        'wechat_unionid': user_info.get('unionid', ''),
+                        'avatar': user_info.get('avatar', ''),
+                        'plan': 'free',
+                        'credits': 10,
+                        'created_at': datetime.now().isoformat(),
+                        'updated_at': datetime.now().isoformat()
+                    }
+                    data_manager.users_db[user_id] = {
+                        'email': email,
+                        'password': 'wechat_oauth',
+                        'token': token
+                    }
+                    data_manager.save_all()
+                else:
+                    # 使用内存数据库创建用户
+                    users_db[user_id] = {
+                        'email': email,
+                        'password': 'wechat_oauth',
+                        'token': token
+                    }
+                    
+                    user_profiles_db[user_id] = {
+                        'user_id': user_id,
+                        'email': email,
+                        'name': user_info['nickname'],
+                        'wechat_openid': openid,
+                        'wechat_unionid': user_info.get('unionid', ''),
+                        'avatar': user_info.get('avatar', ''),
+                        'plan': 'free',
+                        'credits': 10,
+                        'created_at': datetime.now().isoformat(),
+                        'updated_at': datetime.now().isoformat()
+                    }
+            else:
+                # 更新现有用户token
+                token = f"mock_token_{user_id[:8]}"
+                if data_manager:
+                    if user_id in data_manager.users_db:
+                        data_manager.users_db[user_id]['token'] = token
+                    if user_id in data_manager.user_profiles_db:
+                        data_manager.user_profiles_db[user_id]['updated_at'] = datetime.now().isoformat()
+                        data_manager.user_profiles_db[user_id]['avatar'] = user_info.get('avatar', '')
+                        data_manager.user_profiles_db[user_id]['name'] = user_info['nickname']
+                    data_manager.save_all()
+                else:
+                    if user_id in users_db:
+                        users_db[user_id]['token'] = token
+                    if user_id in user_profiles_db:
+                        user_profiles_db[user_id]['updated_at'] = datetime.now().isoformat()
+                        user_profiles_db[user_id]['avatar'] = user_info.get('avatar', '')
+                        user_profiles_db[user_id]['name'] = user_info['nickname']
+            
+            # 获取用户资料
+            if data_manager:
+                profile = data_manager.user_profiles_db.get(user_id, {})
+            else:
+                profile = user_profiles_db.get(user_id, {})
+            
+            # 清理session（登录成功后）
+            del wechat_login_sessions[session_id]
+            
+            return jsonify({
+                'success': True,
+                'status': 'success',
+                'user': {
+                    'id': user_id,
+                    'email': profile.get('email', ''),
+                    'name': profile.get('name', user_info['nickname']),
+                    'avatar': profile.get('avatar', user_info.get('avatar', '')),
+                    'plan': profile.get('plan', 'free'),
+                    'credits': profile.get('credits', 10)
+                },
+                'token': token
+            })
+        
+        else:  # failed
+            error_msg = session.get('error', '登录失败')
+            # 清理失败的session
+            del wechat_login_sessions[session_id]
+            return jsonify({
+                'success': False,
+                'status': 'failed',
+                'error': error_msg
+            })
             
     except Exception as e:
-        return jsonify({'error': f'微信登录异常: {str(e)}'}), 500
+        print(f"检查微信登录状态失败: {e}")
+        import traceback
+        traceback.print_exc()
+        return jsonify({'error': f'检查登录状态失败: {str(e)}'}), 500
+
+@app.route('/api/auth/wechat-login', methods=['POST'])
+def wechat_login():
+    """微信登录（兼容旧接口，用于模拟登录）"""
+    # 这个接口保留用于向后兼容，但建议使用新的二维码登录流程
+    return jsonify({'error': '请使用二维码登录方式'}), 400
 
 @app.route('/api/auth/profile', methods=['GET'])
 def get_profile():
