@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>帮助中心 - PixelMagic</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .help-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        .help-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        .help-header h1 {
+            font-size: 2.5rem;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .help-header p {
+            font-size: 1.1rem;
+            color: #666;
+        }
+        .help-categories {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+        .help-category {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 10px;
+            transition: transform 0.3s;
+        }
+        .help-category:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .help-category-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+        .help-category h3 {
+            font-size: 1.5rem;
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+        .help-category p {
+            color: #666;
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
+        .help-category a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .help-category a:hover {
+            text-decoration: underline;
+        }
+        .quick-links {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 10px;
+            margin-bottom: 50px;
+        }
+        .quick-links h2 {
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .quick-links-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        .quick-link-item {
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 5px;
+            text-align: center;
+        }
+        .quick-link-item a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .quick-link-item a:hover {
+            text-decoration: underline;
+        }
+        .back-link {
+            display: inline-block;
+            margin-top: 30px;
+            color: #667eea;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="help-container">
+        <div class="help-header">
+            <h1>帮助中心</h1>
+            <p>快速找到您需要的帮助和资源</p>
+        </div>
+
+        <div class="quick-links">
+            <h2>🔗 快速链接</h2>
+            <div class="quick-links-grid">
+                <div class="quick-link-item">
+                    <a href="tutorial.html">📖 使用教程</a>
+                </div>
+                <div class="quick-link-item">
+                    <a href="faq.html">❓ 常见问题</a>
+                </div>
+                <div class="quick-link-item">
+                    <a href="contact.html">📧 联系我们</a>
+                </div>
+                <div class="quick-link-item">
+                    <a href="about.html">ℹ️ 关于我们</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="help-categories">
+            <div class="help-category">
+                <div class="help-category-icon">🚀</div>
+                <h3>快速开始</h3>
+                <p>新用户指南，帮助您快速了解和使用PixelMagic的各项功能。</p>
+                <a href="tutorial.html">查看教程 →</a>
+            </div>
+
+            <div class="help-category">
+                <div class="help-category-icon">🎭</div>
+                <h3>功能使用</h3>
+                <p>详细了解每个工具的使用方法，包括背景移除、图片压缩、格式转换等。</p>
+                <a href="tutorial.html">查看功能说明 →</a>
+            </div>
+
+            <div class="help-category">
+                <div class="help-category-icon">💳</div>
+                <h3>账户和会员</h3>
+                <p>了解如何注册账号、升级会员、管理账户信息等。</p>
+                <a href="faq.html#account">查看账户帮助 →</a>
+            </div>
+
+            <div class="help-category">
+                <div class="help-category-icon">💰</div>
+                <h3>支付和退款</h3>
+                <p>了解支付方式、退款政策、会员续费等支付相关问题。</p>
+                <a href="refund.html">查看退款政策 →</a>
+            </div>
+
+            <div class="help-category">
+                <div class="help-category-icon">🔒</div>
+                <h3>隐私和安全</h3>
+                <p>了解我们如何保护您的数据安全和隐私信息。</p>
+                <a href="privacy.html">查看隐私政策 →</a>
+            </div>
+
+            <div class="help-category">
+                <div class="help-category-icon">📞</div>
+                <h3>联系支持</h3>
+                <p>遇到问题？我们的客服团队随时为您提供帮助。</p>
+                <a href="contact.html">联系客服 →</a>
+            </div>
+        </div>
+
+        <div style="background: #f8f9fa; padding: 30px; border-radius: 10px; margin-top: 50px;">
+            <h2 style="color: #333; margin-bottom: 20px;">📚 更多资源</h2>
+            <ul style="line-height: 2; color: #555;">
+                <li><a href="tutorial.html" style="color: #667eea;">使用教程</a> - 详细的功能使用指南</li>
+                <li><a href="faq.html" style="color: #667eea;">常见问题</a> - 快速找到常见问题的答案</li>
+                <li><a href="terms.html" style="color: #667eea;">服务条款</a> - 了解使用规则和条件</li>
+                <li><a href="privacy.html" style="color: #667eea;">隐私政策</a> - 了解我们如何保护您的隐私</li>
+                <li><a href="cookie.html" style="color: #667eea;">Cookie政策</a> - 了解Cookie使用情况</li>
+                <li><a href="refund.html" style="color: #667eea;">退款政策</a> - 了解退款条件和流程</li>
+                <li><a href="about.html" style="color: #667eea;">关于我们</a> - 了解我们的团队和使命</li>
+            </ul>
+        </div>
+
+        <a href="index.html" class="back-link">← 返回首页</a>
+    </div>
+</body>
+</html>
+

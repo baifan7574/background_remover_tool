@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>关于我们 - PixelMagic</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .about-page {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        .about-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        .about-header h1 {
+            font-size: 2.5rem;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .about-header p {
+            font-size: 1.1rem;
+            color: #666;
+        }
+        .about-section {
+            margin-bottom: 50px;
+        }
+        .about-section h2 {
+            font-size: 1.8rem;
+            color: #333;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+        }
+        .about-section p {
+            line-height: 1.8;
+            color: #555;
+            margin-bottom: 15px;
+        }
+        .mission-vision {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        .mission-card, .vision-card {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 10px;
+        }
+        .mission-card h3, .vision-card h3 {
+            color: #667eea;
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+        }
+        .team-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+        }
+        .team-member {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        .team-member-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+        .team-member h4 {
+            color: #333;
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+        .team-member p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .stat-label {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+        .contact-info {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 10px;
+            margin-top: 30px;
+        }
+        .contact-info h3 {
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+        .contact-info p {
+            margin-bottom: 10px;
+            line-height: 1.8;
+        }
+        .contact-info a {
+            color: #667eea;
+            text-decoration: none;
+        }
+        .contact-info a:hover {
+            text-decoration: underline;
+        }
+        .back-link {
+            display: inline-block;
+            margin-top: 30px;
+            color: #667eea;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="about-page">
+        <div class="about-header">
+            <h1>关于 PixelMagic</h1>
+            <p>专为跨境电商卖家打造的图像处理平台</p>
+        </div>
+
+        <div class="about-section">
+            <h2>🎯 我们的使命</h2>
+            <div class="mission-vision">
+                <div class="mission-card">
+                    <h3>使命</h3>
+                    <p>为全球跨境电商卖家提供专业、高效、易用的图像处理工具，帮助卖家快速处理产品图片，提升店铺形象，提高转化率，让每一个卖家都能轻松打造专业的产品展示。</p>
+                </div>
+                <div class="vision-card">
+                    <h3>愿景</h3>
+                    <p>成为全球最受跨境电商卖家信赖的图像处理平台，通过技术创新和优质服务，帮助百万卖家提升业务效率，实现商业成功。</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="about-section">
+            <h2>📊 我们的成就</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number">10万+</div>
+                    <div class="stat-label">处理图片</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">5000+</div>
+                    <div class="stat-label">活跃用户</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">99.9%</div>
+                    <div class="stat-label">满意度</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">50+</div>
+                    <div class="stat-label">国家/地区</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="about-section">
+            <h2>💡 为什么选择我们？</h2>
+            <p><strong>专业专注：</strong>我们深度了解跨境电商卖家的需求，专注于为卖家提供最实用的图像处理工具。从背景移除到Listing生成，我们提供一站式解决方案。</p>
+            <p><strong>技术先进：</strong>采用最新的AI技术，确保处理效果专业、快速。我们的背景移除技术采用先进的深度学习模型，能够精准识别并移除背景。</p>
+            <p><strong>价格实惠：</strong>我们相信好工具不应该昂贵。相比竞品动辄数百元的月费，我们提供更实惠的价格，让更多卖家能够使用专业工具。</p>
+            <p><strong>持续优化：</strong>我们不断听取用户反馈，持续优化产品功能，确保用户获得最佳使用体验。每周都有新功能上线，每月都有重大更新。</p>
+        </div>
+
+        <div class="about-section" id="team">
+            <h2>👥 我们的团队</h2>
+            <div class="team-section">
+                <div class="team-member">
+                    <div class="team-member-icon">🎨</div>
+                    <h4>产品团队</h4>
+                    <p>专注于用户体验和产品创新，不断推出新功能，优化现有工具，确保产品始终满足用户需求。</p>
+                </div>
+                <div class="team-member">
+                    <div class="team-member-icon">💻</div>
+                    <h4>技术团队</h4>
+                    <p>采用最新的AI和图像处理技术，确保处理效果专业、快速。持续优化算法，提升处理质量。</p>
+                </div>
+                <div class="team-member">
+                    <div class="team-member-icon">🎯</div>
+                    <h4>运营团队</h4>
+                    <p>深入了解跨境电商行业，为卖家提供专业的运营建议和支持，帮助卖家提升业务效率。</p>
+                </div>
+                <div class="team-member">
+                    <div class="team-member-icon">💬</div>
+                    <h4>客服团队</h4>
+                    <p>7×24小时在线支持，快速响应用户问题，确保用户获得及时、专业的帮助。</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="about-section">
+            <h2>🚀 发展历程</h2>
+            <p><strong>2024年初：</strong>PixelMagic项目启动，专注于为跨境电商卖家提供图像处理工具。</p>
+            <p><strong>2024年中：</strong>核心功能上线，包括背景移除、图片压缩、格式转换等基础工具。</p>
+            <p><strong>2024年底：</strong>新增Listing生成、关键词分析等高级功能，用户突破5000人。</p>
+            <p><strong>未来：</strong>持续优化产品，扩展功能，服务更多跨境电商卖家，成为行业领先的图像处理平台。</p>
+        </div>
+
+        <div class="about-section">
+            <h2>📞 联系我们</h2>
+            <div class="contact-info">
+                <h3>联系方式</h3>
+                <p><strong>邮箱：</strong><a href="mailto:baifan7574@gmail.com">baifan7574@gmail.com</a></p>
+                <p><strong>电话：</strong>400-888-8888（工作日 9:00-18:00）</p>
+                <p><strong>地址：</strong>北京市朝阳区建国路88号SOHO现代城A座1001室</p>
+                <p><strong>工作时间：</strong>周一至周五 9:00-18:00（节假日除外）</p>
+                <p>您也可以通过<a href="contact.html">联系我们页面</a>提交反馈或问题，我们会在24小时内回复。</p>
+            </div>
+        </div>
+
+        <a href="index.html" class="back-link">← 返回首页</a>
+    </div>
+</body>
+</html>
+
