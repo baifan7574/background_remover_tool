@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>常见问题 - PixelMagic</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .faq-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        .faq-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        .faq-header h1 {
+            font-size: 2.5rem;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .faq-header p {
+            font-size: 1.1rem;
+            color: #666;
+        }
+        .faq-category {
+            margin-bottom: 40px;
+        }
+        .faq-category h2 {
+            font-size: 1.8rem;
+            color: #333;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+        }
+        .faq-item {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .faq-item:hover {
+            background: #e9ecef;
+        }
+        .faq-question {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .faq-answer {
+            color: #555;
+            line-height: 1.8;
+            margin-top: 10px;
+            display: none;
+        }
+        .faq-item.active .faq-answer {
+            display: block;
+        }
+        .faq-toggle {
+            font-size: 1.5rem;
+            color: #667eea;
+        }
+        .back-link {
+            display: inline-block;
+            margin-top: 30px;
+            color: #667eea;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="faq-container">
+        <div class="faq-header">
+            <h1>常见问题</h1>
+            <p>快速找到您需要的答案</p>
+        </div>
+
+        <div class="faq-category">
+            <h2>💳 账户和会员</h2>
+            
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>如何注册账号？</span>
+                    <span class="faq-toggle">+</span>
+                </div>
+                <div class="faq-answer">
+                    点击首页右上角的"注册"按钮，填写姓名、邮箱和密码即可完成注册。注册后自动登录，可以立即使用免费功能。
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>免费版有什么限制？</span>
+                    <span class="faq-toggle">+</span>
+                </div>
+                <div class="faq-answer">
+                    免费版用户每天可以使用：背景移除3次、图片压缩5次、格式转换5次、图片裁剪5次、关键词分析5次、汇率换算3次等。所有功能都可以免费使用，只是有使用次数限制。
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>如何升级会员？</span>
+                    <span class="faq-toggle">+</span>
+                </div>
+                <div class="faq-answer">
+                    登录后点击"定价"或"升级会员"，选择您需要的会员套餐，完成支付即可立即升级。升级后使用次数立即生效。
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>会员到期后怎么办？</span>
+                    <span class="faq-toggle">+</span>
+                </div>
+                <div class="faq-answer">
+                    会员到期后会自动降级为免费版，您可以继续使用免费功能。如果需要继续使用会员功能，可以续费或重新购买会员。
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>如何获得更多使用次数？</span>
+                    <span class="faq-toggle">+</span>
+                </div>
+                <div class="faq-answer">
+                    有三种方式：1) 升级会员获得更多使用次数；2) 邀请好友注册，双方都能获得额外使用次数；3) 等待第二天使用次数重置。
+                </div>
+            </div>
+        </div>
+
+        <div class="faq-category">
+            <h2>🛠️ 功能使用</h2>
+            
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>支持哪些图片格式？</span>
+                    <span class="faq-toggle">+</span>
+                </div>
+                <div class="faq-answer">
+                    支持JPG、PNG、GIF、WebP等主流图片格式。上传时系统会自动识别格式，处理后会保持或转换为您选择的格式。
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>图片大小有限制吗？</span>
+                    <span class="faq-toggle">+</span>
+                </div>
+                <div class="faq-answer">
+                    单个图片最大支持10MB。如果图片过大，建议先使用图片压缩功能压缩后再处理。
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>背景移除效果不好怎么办？</span>
+                    <span class="faq-toggle">+</span>
+                </div>
+                <div class="faq-answer">
+                    背景移除效果取决于原图质量。建议使用背景与主体对比明显的图片，主体清晰的图片效果会更好。如果效果不理想，可以尝试调整图片或使用其他工具辅助处理。
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>可以批量处理图片吗？</span>
+                    <span class="faq-toggle">+</span>
+                </div>
+                <div class="faq-answer">
+                    可以！背景移除、图片压缩、格式转换等工具都支持批量处理，一次最多可以上传20张图片。批量处理会消耗相应的使用次数。
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>处理后的图片会保存多久？</span>
+                    <span class="faq-toggle">+</span>
+                </div>
+                <div class="faq-answer">
+                    处理后的图片会临时保存，建议及时下载。我们不会长期保存您的图片，处理完成后请尽快下载保存到本地。
+                </div>
+            </div>
+        </div>
+
+        <div class="faq-category">
+            <h2>💰 支付和退款</h2>
+            
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>支持哪些支付方式？</span>
+                    <span class="faq-toggle">+</span>
+                </div>
+                <div class="faq-answer">
+                    目前支持支付宝、微信支付等主流支付方式。支付完成后会员立即生效。
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>可以退款吗？</span>
+                    <span class="faq-toggle">+</span>
+                </div>
+                <div class="faq-answer">
+                    会员服务为虚拟商品，购买后立即生效。如果遇到问题，请联系客服，我们会根据具体情况处理。
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>支付失败怎么办？</span>
+                    <span class="faq-toggle">+</span>
+                </div>
+                <div class="faq-answer">
+                    如果支付失败，请检查网络连接和账户余额。如果问题持续，请联系客服或稍后重试。
+                </div>
+            </div>
+        </div>
+
+        <div class="faq-category">
+            <h2>🔗 邀请和推荐</h2>
+            
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>如何邀请好友？</span>
+                    <span class="faq-toggle">+</span>
+                </div>
+                <div class="faq-answer">
+                    登录后点击"邀请好友"或用户资料中的"邀请推荐"，复制邀请链接或邀请码发送给好友。好友注册后，双方都能获得使用次数奖励。
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>邀请奖励是多少？</span>
+                    <span class="faq-toggle">+</span>
+                </div>
+                <div class="faq-answer">
+                    老用户推荐好友注册可获得50次使用次数奖励，新用户注册可获得20次使用次数奖励。奖励在30天内有效，所有工具通用。
+                </div>
+            </div>
+        </div>
+
+        <div class="faq-category">
+            <h2>❓ 其他问题</h2>
+            
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>数据安全吗？</span>
+                    <span class="faq-toggle">+</span>
+                </div>
+                <div class="faq-answer">
+                    我们非常重视用户数据安全。所有图片处理都在服务器端完成，处理完成后会自动删除，不会长期保存。您的账户信息也经过加密保护。
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>如何联系客服？</span>
+                    <span class="faq-toggle">+</span>
+                </div>
+                <div class="faq-answer">
+                    您可以通过"联系我们"页面发送邮件，或通过网站内的反馈功能联系我们。我们会在24小时内回复您的问题。
+                </div>
+            </div>
+        </div>
+
+        <a href="index.html" class="back-link">← 返回首页</a>
+    </div>
+
+    <script>
+        // FAQ展开/收起功能
+        document.querySelectorAll('.faq-item').forEach(item => {
+            item.addEventListener('click', function() {
+                const isActive = this.classList.contains('active');
+                // 关闭所有其他项
+                document.querySelectorAll('.faq-item').forEach(i => {
+                    i.classList.remove('active');
+                    i.querySelector('.faq-toggle').textContent = '+';
+                });
+                // 切换当前项
+                if (!isActive) {
+                    this.classList.add('active');
+                    this.querySelector('.faq-toggle').textContent = '−';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+

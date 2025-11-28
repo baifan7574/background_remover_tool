@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>联系我们 - PixelMagic</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .contact-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        .contact-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        .contact-header h1 {
+            font-size: 2.5rem;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .contact-header p {
+            font-size: 1.1rem;
+            color: #666;
+        }
+        .contact-methods {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+        .contact-card {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        .contact-card-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+        .contact-card h3 {
+            font-size: 1.5rem;
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+        .contact-card p {
+            color: #666;
+            line-height: 1.8;
+            margin-bottom: 15px;
+        }
+        .contact-card a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .contact-card a:hover {
+            text-decoration: underline;
+        }
+        .contact-form {
+            background: #f8f9fa;
+            padding: 40px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+        .contact-form h2 {
+            font-size: 1.8rem;
+            color: #333;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 8px;
+        }
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+            box-sizing: border-box;
+        }
+        .form-group textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        .submit-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 40px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            transition: transform 0.2s;
+        }
+        .submit-btn:hover {
+            transform: translateY(-2px);
+        }
+        .back-link {
+            display: inline-block;
+            margin-top: 30px;
+            color: #667eea;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="contact-container">
+        <div class="contact-header">
+            <h1>联系我们</h1>
+            <p>我们随时为您提供帮助和支持</p>
+        </div>
+
+        <div class="contact-methods">
+            <div class="contact-card">
+                <div class="contact-card-icon">📧</div>
+                <h3>邮箱联系</h3>
+                <p>发送邮件到我们的客服邮箱，我们会在24小时内回复您的问题。</p>
+                <a href="mailto:support@pixelmagic.com">support@pixelmagic.com</a>
+            </div>
+
+            <div class="contact-card">
+                <div class="contact-card-icon">💬</div>
+                <h3>在线反馈</h3>
+                <p>通过下方的反馈表单提交您的问题或建议，我们会及时处理。</p>
+                <p style="color: #999; font-size: 0.9rem;">（请填写下方表单）</p>
+            </div>
+
+            <div class="contact-card">
+                <div class="contact-card-icon">⏰</div>
+                <h3>服务时间</h3>
+                <p>我们的客服团队工作时间为：<br>周一至周五 9:00 - 18:00<br>（节假日除外）</p>
+            </div>
+        </div>
+
+        <div class="contact-form">
+            <h2>📝 反馈表单</h2>
+            <div class="success-message" id="successMessage">
+                ✅ 感谢您的反馈！我们会尽快处理并回复您。
+            </div>
+            <form id="contactForm">
+                <div class="form-group">
+                    <label for="name">姓名 *</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">邮箱 *</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="subject">问题类型 *</label>
+                    <select id="subject" name="subject" required>
+                        <option value="">请选择问题类型</option>
+                        <option value="功能问题">功能问题</option>
+                        <option value="账户问题">账户问题</option>
+                        <option value="支付问题">支付问题</option>
+                        <option value="建议反馈">建议反馈</option>
+                        <option value="其他">其他</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="message">详细描述 *</label>
+                    <textarea id="message" name="message" placeholder="请详细描述您的问题或建议..." required></textarea>
+                </div>
+                <button type="submit" class="submit-btn">提交反馈</button>
+            </form>
+        </div>
+
+        <a href="index.html" class="back-link">← 返回首页</a>
+    </div>
+
+    <script>
+        document.getElementById('contactForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // 获取表单数据
+            const formData = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                subject: document.getElementById('subject').value,
+                message: document.getElementById('message').value
+            };
+            
+            // 这里可以发送到后端API
+            // 现在先显示成功消息
+            document.getElementById('successMessage').style.display = 'block';
+            document.getElementById('contactForm').reset();
+            
+            // 3秒后隐藏成功消息
+            setTimeout(() => {
+                document.getElementById('successMessage').style.display = 'none';
+            }, 5000);
+            
+            // 实际项目中，这里应该发送到后端
+            console.log('反馈内容:', formData);
+        });
+    </script>
+</body>
+</html>
+
