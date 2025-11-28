@@ -15,6 +15,50 @@ const getAppApiBaseUrl = () => {
     return window.location.origin; // 或者改为：'https://your-api-domain.com'
 };
 
+/**
+ * 安全地解析API响应为JSON
+ * 如果响应不是JSON格式（比如HTML错误页面），会返回友好的错误信息
+ * @param {Response} response - Fetch API响应对象
+ * @param {string} apiUrl - 请求的API URL（用于错误提示）
+ * @returns {Promise<Object>} 解析后的JSON对象
+ */
+async function safeParseJsonResponse(response, apiUrl = '') {
+    const contentType = response.headers.get('content-type') || '';
+    
+    if (contentType.includes('application/json')) {
+        try {
+            return await response.json();
+        } catch (jsonError) {
+            console.error('❌ JSON解析失败:', jsonError);
+            const errorText = await response.text();
+            console.error('响应内容（前500字符）:', errorText.substring(0, 500));
+            throw new Error(`服务器返回了无效的JSON响应（状态码: ${response.status}）。请检查网络连接或联系客服。`);
+        }
+    } else {
+        // 非JSON响应（可能是HTML错误页面）
+        const responseText = await response.text();
+        console.error('❌ 服务器返回了非JSON响应');
+        console.error('响应类型:', contentType);
+        console.error('响应状态:', response.status, response.statusText);
+        console.error('响应内容（前500字符）:', responseText.substring(0, 500));
+        console.error('请求URL:', apiUrl);
+        
+        // 根据状态码提供友好的错误信息
+        let errorMessage = '服务器返回了意外的响应格式';
+        if (response.status === 404) {
+            errorMessage = `API接口不存在（404）。\n\n可能的原因：\n1. 服务器配置错误\n2. API路径不正确\n3. 网络连接问题\n\n请求URL: ${apiUrl}`;
+        } else if (response.status === 500) {
+            errorMessage = '服务器内部错误（500）。请稍后重试或联系客服。';
+        } else if (response.status === 403) {
+            errorMessage = '访问被拒绝（403）。请检查您的权限或联系客服。';
+        } else if (response.status >= 400) {
+            errorMessage = `服务器错误（${response.status}）。请检查网络连接或联系客服。`;
+        }
+        
+        throw new Error(errorMessage);
+    }
+}
+
 class AppManager {
     constructor() {
         this.authManager = new AuthManager();
@@ -1571,7 +1615,7 @@ class AppManager {
             if (response.status === 401) {
                 console.error('❌ 认证失败(401)，可能需要重新登录');
                 try {
-                    const errorData = await response.json();
+                    const errorData = await safeParseJsonResponse(response, apiUrl).catch(() => ({}));
                     console.error('401错误详情:', errorData);
                 } catch (e) {
                     console.error('无法解析401响应:', e);
@@ -1584,7 +1628,9 @@ class AppManager {
                 return;
             }
             
-            const result = await response.json();
+            // 使用安全的JSON解析函数，避免解析HTML错误页面
+            const result = await safeParseJsonResponse(response, apiUrl);
+            
             console.log('API响应:', { status: response.status, success: result.success, hasError: !!result.error });
             
             // 调试：新版水印功能的响应
@@ -1727,7 +1773,7 @@ class AppManager {
             body: JSON.stringify(requestData)
         });
 
-        const result = await response.json();
+        const result = await safeParseJsonResponse(response, apiUrl);
 
         if (response.ok) {
             // 新版水印功能也返回 processed_image
@@ -1983,7 +2029,7 @@ class AppManager {
                 return;
             }
 
-            const result = await response.json();
+            const result = await safeParseJsonResponse(response, apiUrl);
 
             if (response.ok && result.success !== false) {
                 this.updateProgress(100, '分析完成！');
@@ -2110,7 +2156,7 @@ class AppManager {
                 return;
             }
 
-            const result = await response.json();
+            const result = await safeParseJsonResponse(response, apiUrl);
 
             if (response.ok && result.success !== false) {
                 this.updateProgress(100, '生成完成！');
@@ -2225,7 +2271,7 @@ class AppManager {
                 return;
             }
 
-            const result = await response.json();
+            const result = await safeParseJsonResponse(response, apiUrl);
 
             if (response.ok && result.success !== false) {
                 this.updateProgress(100, '换算完成！');
