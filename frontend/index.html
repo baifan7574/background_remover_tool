@@ -126,12 +126,15 @@
                         </a>
                     </div>
                     <!-- 邀请推荐提示（已登录用户显示） -->
-                    <div id="inviteBanner" style="display: none; margin-top: 30px; padding: 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 15px; color: white; text-align: center;">
-                        <div style="font-size: 1.2rem; font-weight: bold; margin-bottom: 10px;">🎁 推荐好友，双方各得免费使用次数奖励！</div>
-                        <div style="margin-bottom: 15px; font-size: 0.95rem; opacity: 0.9;">
+                    <div id="inviteBanner" style="display: none; margin-top: 40px; padding: 28px 32px; background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(20px); border-radius: 20px; text-align: center; box-shadow: 0 8px 32px rgba(102, 126, 234, 0.12), 0 0 0 1px rgba(102, 126, 234, 0.08) inset; border: 1px solid rgba(102, 126, 234, 0.1); max-width: 600px; margin-left: auto; margin-right: auto;">
+                        <div style="font-size: 1.15rem; font-weight: 600; margin-bottom: 12px; color: #1e293b; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                            <span style="font-size: 1.3rem;">🎁</span>
+                            <span>推荐好友，双方各得免费使用次数奖励</span>
+                        </div>
+                        <div style="margin-bottom: 20px; font-size: 0.9rem; color: #64748b; line-height: 1.6;">
                             老用户+50次，新用户+20次，30天内有效，所有工具通用
                         </div>
-                        <button class="btn" onclick="if(window.appManager) { window.appManager.showInviteModal(); }" style="background: white; color: #667eea; padding: 10px 30px; border: none; border-radius: 25px; font-weight: bold; cursor: pointer; font-size: 1rem;">
+                        <button class="btn" onclick="if(window.appManager) { window.appManager.showInviteModal(); }" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 12px 32px; border: none; border-radius: 12px; font-weight: 600; cursor: pointer; font-size: 0.95rem; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3); transition: all 0.3s ease;">
                             立即邀请 →
                         </button>
                     </div>
