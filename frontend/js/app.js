@@ -622,7 +622,7 @@ class AppManager {
         // 检查用户权限 - 必须已登录
         if (!this.authManager.isAuthenticated()) {
             console.warn('用户未登录，显示登录对话框');
-            alert('请先登录后再使用工具');
+            // 直接显示登录模态框，不使用alert（避免阻塞和多次点击问题）
             this.showLoginModal();
             return;
         }
@@ -631,7 +631,7 @@ class AppManager {
         const token = this.authManager.getToken();
         if (!token) {
             console.error('用户已登录但token不存在，需要重新登录');
-            alert('登录状态异常，请重新登录');
+            // 直接显示登录模态框，不使用alert（避免阻塞和多次点击问题）
             this.authManager.logout();
             this.showLoginModal();
             return;
@@ -3422,6 +3422,10 @@ class AppManager {
         this.clearLoginError();
         const modal = document.getElementById('loginModal');
         if (modal) {
+            // 如果模态框已经显示，不重复打开（避免重复点击问题）
+            if (modal.style.display === 'flex') {
+                return;
+            }
             // 清空表单
             const emailInput = document.getElementById('loginEmail');
             const passwordInput = document.getElementById('loginPassword');
