@@ -640,6 +640,16 @@ def index():
     """主页"""
     return send_file('frontend/index.html')
 
+@app.route('/sitemap.xml')
+def sitemap():
+    """网站地图"""
+    return send_file('frontend/sitemap.xml', mimetype='application/xml')
+
+@app.route('/robots.txt')
+def robots():
+    """robots.txt文件"""
+    return send_file('frontend/robots.txt', mimetype='text/plain')
+
 @app.route('/simple_register.html')
 def register_page():
     """注册页面"""
