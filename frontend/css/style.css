@@ -1287,7 +1287,7 @@ body {
     font-size: 0.875rem;
 }
 
-/* 移动端优化 */
+/* 移动端优化 - 增强版 */
 @media (max-width: 480px) {
     .hero h1 {
         font-size: 1.75rem;
@@ -1296,6 +1296,7 @@ body {
     .hero-buttons {
         flex-direction: column;
         align-items: center;
+        gap: 0.75rem;
     }
     
     .btn-large {
@@ -1310,10 +1311,89 @@ body {
     
     .process-controls {
         flex-direction: column;
+        gap: 0.75rem;
     }
     
     .profile-stats {
         grid-template-columns: 1fr;
+    }
+    
+    /* 移动端导航栏优化 */
+    .nav-container {
+        flex-wrap: wrap;
+    }
+    
+    .nav-auth {
+        width: 100%;
+        margin-top: 0.5rem;
+        justify-content: center;
+    }
+    
+    .user-info {
+        flex-direction: column;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .user-actions {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    
+    /* 移动端工具卡片优化 */
+    .tool-card {
+        padding: 1rem;
+    }
+    
+    .tool-card h3 {
+        font-size: 1.1rem;
+    }
+    
+    /* 移动端模态框优化 */
+    .modal-content {
+        width: 95%;
+        max-width: 95%;
+        padding: 1.5rem;
+        max-height: 85vh;
+    }
+    
+    /* 移动端表单优化 */
+    .form-group {
+        margin-bottom: 1rem;
+    }
+    
+    .form-input,
+    .form-textarea,
+    .form-select {
+        font-size: 16px; /* 防止iOS自动缩放 */
+        padding: 0.75rem;
+    }
+    
+    /* 移动端按钮优化 */
+    .btn {
+        padding: 0.75rem 1.5rem;
+        font-size: 14px;
+        min-height: 44px; /* iOS推荐的最小触摸目标 */
+    }
+    
+    /* 移动端上传区域优化 */
+    .upload-area {
+        padding: 2rem 1rem;
+        min-height: 200px;
+    }
+    
+    .upload-text {
+        font-size: 1rem;
+    }
+    
+    /* 移动端结果展示优化 */
+    .result-container {
+        padding: 1rem;
+    }
+    
+    .result-image {
+        max-width: 100%;
+        height: auto;
     }
 }
 

@@ -49,6 +49,8 @@ async function safeParseJsonResponse(response, apiUrl = '') {
             errorMessage = `API接口不存在（404）。\n\n可能的原因：\n1. 服务器配置错误\n2. API路径不正确\n3. 网络连接问题\n\n请求URL: ${apiUrl}`;
         } else if (response.status === 500) {
             errorMessage = '服务器内部错误（500）。请稍后重试或联系客服。';
+        } else if (response.status === 401) {
+            errorMessage = '认证失败（401）。请重新登录。';
         } else if (response.status === 403) {
             errorMessage = '访问被拒绝（403）。请检查您的权限或联系客服。';
         } else if (response.status >= 400) {
@@ -1611,7 +1613,7 @@ class AppManager {
 
             this.updateProgress(80, '等待服务器响应...');
             
-            // 检查响应状态
+            // 检查响应状态（移动端优化）
             if (response.status === 401) {
                 console.error('❌ 认证失败(401)，可能需要重新登录');
                 try {
@@ -1620,10 +1622,37 @@ class AppManager {
                 } catch (e) {
                     console.error('无法解析401响应:', e);
                 }
-                this.authManager.logout();
-                this.closeModal('toolModal');
-                alert('登录已过期，请重新登录');
-                this.showLoginModal();
+                // 移动端优化：延迟清除，避免频繁操作
+                setTimeout(() => {
+                    this.authManager.logout();
+                    this.closeModal('toolModal');
+                    // 移动端优化：使用更友好的提示
+                    const isMobile = window.innerWidth <= 768;
+                    if (isMobile) {
+                        // 移动端：使用确认对话框
+                        if (confirm('登录已过期，是否重新登录？')) {
+                            this.showLoginModal();
+                        }
+                    } else {
+                        // 桌面端：使用alert
+                        alert('登录已过期，请重新登录');
+                        this.showLoginModal();
+                    }
+                }, 500);
+                this.isProcessing = false;
+                return;
+            }
+            
+            if (response.status === 403) {
+                console.error('❌ 权限不足(403)');
+                // 移动端优化：显示友好提示
+                const errorMsg = '权限不足，请检查您的会员等级或联系客服';
+                const isMobile = window.innerWidth <= 768;
+                if (isMobile) {
+                    alert(errorMsg);
+                } else {
+                    this.showNotification(errorMsg, 'error');
+                }
                 this.isProcessing = false;
                 return;
             }

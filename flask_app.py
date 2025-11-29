@@ -18,7 +18,16 @@ import base64
 app = Flask(__name__, 
     static_folder='../static',
     template_folder='../templates')
-CORS(app)
+
+# CORS配置 - 支持移动端访问
+CORS(app, 
+     resources={r"/api/*": {
+         "origins": "*",  # 允许所有来源（包括移动端）
+         "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+         "allow_headers": ["Content-Type", "Authorization"],
+         "supports_credentials": True
+     }},
+     supports_credentials=True)
 
 # 配置
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max file size

@@ -19,26 +19,36 @@ class AuthManager {
         this.init();
     }
 
-    // 初始化 - 从localStorage恢复认证状态
+    // 初始化 - 从localStorage恢复认证状态（移动端优化）
     init() {
         try {
-            // 统一使用auth_token作为key
-            const savedToken = localStorage.getItem('auth_token');
-            const savedUser = localStorage.getItem('user_info');
+            // 移动端兼容：使用统一的读取方法
+            const savedToken = this.getFromStorage('auth_token');
+            const savedUser = this.getFromStorage('user_info');
             
             if (savedToken && savedUser) {
                 this.token = savedToken;
-                this.user = JSON.parse(savedUser);
-                console.log('AuthManager: 从localStorage恢复认证状态', {
-                    token: this.token,
-                    user: this.user
-                });
+                try {
+                    this.user = JSON.parse(savedUser);
+                    console.log('AuthManager: 从存储恢复认证状态', {
+                        hasToken: !!this.token,
+                        userId: this.user?.id
+                    });
+                } catch (e) {
+                    console.error('解析用户信息失败:', e);
+                    // 清除损坏的数据
+                    this.clearStorage();
+                }
             }
             
             // 加载会员信息
-            const savedPlanInfo = localStorage.getItem('plan_info');
-            if (savedPlanInfo) {
-                this.planInfo = JSON.parse(savedPlanInfo);
+            try {
+                const savedPlanInfo = this.getFromStorage('plan_info');
+                if (savedPlanInfo) {
+                    this.planInfo = JSON.parse(savedPlanInfo);
+                }
+            } catch (e) {
+                console.warn('加载会员信息失败:', e);
             }
             
             // 更新UI
@@ -48,6 +58,24 @@ class AuthManager {
             console.error('AuthManager初始化失败:', error);
             // 清除可能损坏的数据
             this.logout();
+        }
+    }
+    
+    // 清除存储（移动端兼容）
+    clearStorage() {
+        try {
+            localStorage.removeItem('auth_token');
+            localStorage.removeItem('user_info');
+            localStorage.removeItem('plan_info');
+        } catch (e) {
+            console.warn('清除localStorage失败:', e);
+        }
+        try {
+            sessionStorage.removeItem('auth_token');
+            sessionStorage.removeItem('user_info');
+            sessionStorage.removeItem('plan_info');
+        } catch (e) {
+            console.warn('清除sessionStorage失败:', e);
         }
     }
 
@@ -215,6 +243,41 @@ class AuthManager {
         return { success: false, error: '请使用二维码登录方式' };
     }
 
+    // 保存到存储（移动端兼容）
+    saveToStorage(key, value) {
+        try {
+            localStorage.setItem(key, value);
+            // 同时保存到sessionStorage作为备份（移动端兼容）
+            try {
+                sessionStorage.setItem(key, value);
+            } catch (e) {
+                // sessionStorage也可能失败，忽略
+            }
+        } catch (e) {
+            // 移动端某些情况下localStorage可能不可用，使用sessionStorage
+            console.warn('localStorage不可用，使用sessionStorage:', e);
+            try {
+                sessionStorage.setItem(key, value);
+            } catch (e2) {
+                console.error('存储不可用:', e2);
+            }
+        }
+    }
+    
+    // 从存储读取（移动端兼容）
+    getFromStorage(key) {
+        try {
+            return localStorage.getItem(key) || sessionStorage.getItem(key);
+        } catch (e) {
+            try {
+                return sessionStorage.getItem(key);
+            } catch (e2) {
+                console.error('存储读取失败:', e2);
+                return null;
+            }
+        }
+    }
+    
     // 设置认证信息
     setAuth(user, token) {
         console.log('AuthManager.setAuth 被调用:', { user, token });
@@ -222,28 +285,24 @@ class AuthManager {
         this.user = user;
         this.token = token;
         
-        // 统一使用固定的key保存到localStorage
-        localStorage.setItem('auth_token', token);
-        localStorage.setItem('user_info', JSON.stringify(user));
+        // 统一使用固定的key保存（移动端兼容）
+        this.saveToStorage('auth_token', token);
+        this.saveToStorage('user_info', JSON.stringify(user));
         
-        console.log('AuthManager: 认证信息已保存到localStorage:', {
+        console.log('AuthManager: 认证信息已保存:', {
             savedToken: token,
-            savedUser: user,
-            localStorageToken: localStorage.getItem('auth_token'),
-            localStorageUser: localStorage.getItem('user_info')
+            savedUser: user
         });
         
         this.updateUI();
     }
 
-    // 退出登录
+    // 退出登录（移动端兼容）
     logout() {
         this.user = null;
         this.token = null;
         this.planInfo = null;
-        localStorage.removeItem('auth_token');
-        localStorage.removeItem('user_info');
-        localStorage.removeItem('plan_info');
+        this.clearStorage();
         this.updateUI();
         window.location.href = '#login';
     }
@@ -258,9 +317,17 @@ class AuthManager {
         return this.user;
     }
 
-    // 获取token
+    // 获取token（移动端兼容）
     getToken() {
-        return this.token;
+        if (this.token) {
+            return this.token;
+        }
+        // 移动端兼容：从存储读取
+        const savedToken = this.getFromStorage('auth_token');
+        if (savedToken) {
+            this.token = savedToken;
+        }
+        return savedToken;
     }
 
     // 获取认证头
@@ -288,7 +355,7 @@ class AuthManager {
             if (response.ok) {
                 const data = await response.json();
                 this.planInfo = data.plan_info;
-                localStorage.setItem('plan_info', JSON.stringify(data.plan_info));
+                this.saveToStorage('plan_info', JSON.stringify(data.plan_info));
                 return data.plan_info;
             }
         } catch (error) {
@@ -312,7 +379,7 @@ class AuthManager {
             if (response.ok) {
                 const data = await response.json();
                 this.user = data.user;
-                localStorage.setItem('user_info', JSON.stringify(this.user));
+                this.saveToStorage('user_info', JSON.stringify(this.user));
                 this.updateUI();
             }
         } catch (error) {
@@ -338,7 +405,7 @@ class AuthManager {
             if (response.ok) {
                 // 更新用户信息
                 this.user.plan = newPlan;
-                localStorage.setItem('user_info', JSON.stringify(this.user));
+                this.saveToStorage('user_info', JSON.stringify(this.user));
                 
                 // 重新加载使用统计
                 await this.loadUserUsageStats();
@@ -461,7 +528,7 @@ class AuthManager {
                     this.user.plan = 'free';
                 }
                 
-                localStorage.setItem('user_info', JSON.stringify(this.user));
+                this.saveToStorage('user_info', JSON.stringify(this.user));
                 
                 // 更新使用统计显示
                 if (data.usage_stats) {
@@ -479,18 +546,30 @@ class AuthManager {
                     membership_type: this.user.membership_type
                 });
             } else if (response.status === 401) {
-                // Token无效，清除认证信息
-                console.warn('Token无效，清除认证信息');
-                this.logout();
+                // Token无效，清除认证信息（移动端优化：延迟清除，避免频繁操作）
+                console.warn('Token无效（401），清除认证信息');
+                // 移动端优化：延迟清除，避免影响用户体验
+                setTimeout(() => {
+                    this.logout();
+                }, 1000);
+            } else if (response.status === 403) {
+                // 权限不足（移动端优化：显示友好提示）
+                console.warn('权限不足（403）');
+                // 不清除认证信息，可能是临时权限问题
             } else {
                 console.error('加载用户使用统计失败:', response.status, response.statusText);
             }
         } catch (error) {
             console.error('加载用户使用统计异常:', error);
-            // 如果是401错误，清除认证信息
+            // 移动端优化：网络错误不立即清除认证信息
             if (error.message && error.message.includes('401')) {
                 console.warn('Token无效，清除认证信息');
-                this.logout();
+                setTimeout(() => {
+                    this.logout();
+                }, 1000);
+            } else if (error.message && error.message.includes('网络')) {
+                // 网络错误，不清除认证信息，可能是临时网络问题
+                console.warn('网络错误，保留认证信息');
             }
         }
     }
