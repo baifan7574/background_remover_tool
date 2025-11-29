@@ -4597,7 +4597,31 @@ def get_admin_orders():
         orders_list = []
         for order_no, order in payment_orders.items():
             if status == 'all' or order.get('status') == status:
-                orders_list.append(order)
+                # 复制订单数据，添加额外信息
+                order_info = order.copy()
+                
+                # 获取用户信息（用户名、邮箱、到期时间）
+                user_id = order.get('user_id')
+                if user_id:
+                    # 优先从data_manager获取
+                    if data_manager:
+                        profile = data_manager.get_user_profile(user_id)
+                        if profile:
+                            order_info['user_name'] = profile.get('name', '')
+                            order_info['user_email'] = profile.get('email', '')
+                            order_info['membership_expires_at'] = profile.get('membership_expires_at', '')
+                    # 备用：从内存数据库获取
+                    elif user_id in user_profiles_db:
+                        profile = user_profiles_db[user_id]
+                        order_info['user_name'] = profile.get('name', '')
+                        order_info['user_email'] = profile.get('email', '')
+                        order_info['membership_expires_at'] = profile.get('membership_expires_at', '')
+                    else:
+                        order_info['user_name'] = ''
+                        order_info['user_email'] = ''
+                        order_info['membership_expires_at'] = ''
+                
+                orders_list.append(order_info)
         
         # 按创建时间排序（最新的在前）
         orders_list.sort(key=lambda x: x.get('created_at', ''), reverse=True)

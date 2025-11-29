@@ -100,11 +100,15 @@
         
         .order-details {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 10px;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 12px;
             margin-bottom: 15px;
             color: #666;
             font-size: 14px;
+            padding: 15px;
+            background: white;
+            border-radius: 6px;
+            border: 1px solid #f0f0f0;
         }
         
         .order-detail-item {
@@ -113,15 +117,17 @@
         }
         
         .order-detail-label {
-            font-weight: 500;
+            font-weight: 600;
             margin-right: 8px;
-            color: #999;
+            color: #666;
+            min-width: 80px;
         }
         
         .order-amount {
-            font-size: 20px;
+            font-size: 24px;
             font-weight: bold;
             color: #1890ff;
+            text-align: right;
         }
         
         .order-actions {
@@ -576,8 +582,20 @@
                         </div>
                         <div class="order-details">
                             <div class="order-detail-item">
+                                <span class="order-detail-label">用户名:</span>
+                                <span>${order.user_name || order.user_email || order.user_id || '未知用户'}</span>
+                            </div>
+                            <div class="order-detail-item">
+                                <span class="order-detail-label">用户邮箱:</span>
+                                <span>${order.user_email || '-'}</span>
+                            </div>
+                            <div class="order-detail-item">
                                 <span class="order-detail-label">会员计划:</span>
                                 <span>${order.plan_name || order.plan}</span>
+                            </div>
+                            <div class="order-detail-item">
+                                <span class="order-detail-label">付费金额:</span>
+                                <span style="color: #1890ff; font-weight: bold;">¥${order.amount}</span>
                             </div>
                             <div class="order-detail-item">
                                 <span class="order-detail-label">支付方式:</span>
@@ -588,12 +606,16 @@
                                 <span>${createdTime}</span>
                             </div>
                             <div class="order-detail-item">
-                                <span class="order-detail-label">确认时间:</span>
+                                <span class="order-detail-label">付费时间:</span>
                                 <span>${paidTime}</span>
                             </div>
                             <div class="order-detail-item">
+                                <span class="order-detail-label">到期时间:</span>
+                                <span>${order.membership_expires_at ? new Date(order.membership_expires_at).toLocaleString('zh-CN') : (order.status === 'paid' ? '未设置' : '-')}</span>
+                            </div>
+                            <div class="order-detail-item">
                                 <span class="order-detail-label">用户ID:</span>
-                                <span>${order.user_id}</span>
+                                <span style="font-size: 12px; color: #999;">${order.user_id}</span>
                             </div>
                         </div>
                         ${status === 'pending' ? `
