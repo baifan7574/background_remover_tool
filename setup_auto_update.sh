@@ -47,7 +47,8 @@ fi
 
 # 5. 添加新的定时任务
 echo "➕ 添加定时任务..."
-(crontab -l 2>/dev/null; echo "*/5 * * * * $PROJECT_DIR/auto_update.sh >> $PROJECT_DIR/auto_update.log 2>&1") | crontab -
+# 设置为每2分钟检查一次（可根据需要修改为 */1 表示1分钟，或 */5 表示5分钟）
+(crontab -l 2>/dev/null; echo "*/2 * * * * $PROJECT_DIR/auto_update.sh >> $PROJECT_DIR/auto_update.log 2>&1") | crontab -
 
 if [ $? -eq 0 ]; then
     echo "✅ 定时任务已添加"
@@ -79,7 +80,7 @@ echo ""
 echo "📝 使用说明："
 echo "  1. 在本地修改代码"
 echo "  2. 用GitHub Desktop推送到仓库"
-echo "  3. 等待5分钟，服务器会自动更新"
+echo "  3. 等待2分钟，服务器会自动更新（已优化为2分钟）"
 echo "  4. 或手动执行：bash $PROJECT_DIR/auto_update.sh"
 echo ""
 echo "📋 查看日志："
