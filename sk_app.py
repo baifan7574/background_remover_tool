@@ -4596,9 +4596,12 @@ def confirm_payment():
 @app.route('/api/admin/orders', methods=['GET'])
 @require_admin_login
 def get_admin_orders():
-    """获取后台订单列表"""
+    """获取后台订单列表（支持多维度查询）"""
     try:
         status = request.args.get('status', 'pending')  # pending, paid, all
+        start_date = request.args.get('start_date', '')  # 开始日期 YYYY-MM-DD
+        end_date = request.args.get('end_date', '')  # 结束日期 YYYY-MM-DD
+        user = request.args.get('user', '').strip()  # 用户名或邮箱
         
         # 检查并取消超时订单
         check_and_cancel_expired_orders()
@@ -4606,32 +4609,63 @@ def get_admin_orders():
         # 获取订单列表
         orders_list = []
         for order_no, order in payment_orders.items():
-            if status == 'all' or order.get('status') == status:
-                # 复制订单数据，添加额外信息
-                order_info = order.copy()
-                
-                # 获取用户信息（用户名、邮箱、到期时间）
-                user_id = order.get('user_id')
-                if user_id:
-                    # 优先从data_manager获取
-                    if data_manager:
-                        profile = data_manager.get_user_profile(user_id)
-                        if profile:
-                            order_info['user_name'] = profile.get('name', '')
-                            order_info['user_email'] = profile.get('email', '')
-                            order_info['membership_expires_at'] = profile.get('membership_expires_at', '')
-                    # 备用：从内存数据库获取
-                    elif user_id in user_profiles_db:
-                        profile = user_profiles_db[user_id]
+            # 状态筛选
+            if status != 'all' and order.get('status') != status:
+                continue
+            
+            # 复制订单数据，添加额外信息
+            order_info = order.copy()
+            
+            # 获取用户信息（用户名、邮箱、到期时间）
+            user_id = order.get('user_id')
+            if user_id:
+                # 优先从data_manager获取
+                if data_manager:
+                    profile = data_manager.get_user_profile(user_id)
+                    if profile:
                         order_info['user_name'] = profile.get('name', '')
                         order_info['user_email'] = profile.get('email', '')
                         order_info['membership_expires_at'] = profile.get('membership_expires_at', '')
-                    else:
-                        order_info['user_name'] = ''
-                        order_info['user_email'] = ''
-                        order_info['membership_expires_at'] = ''
+                # 备用：从内存数据库获取
+                elif user_id in user_profiles_db:
+                    profile = user_profiles_db[user_id]
+                    order_info['user_name'] = profile.get('name', '')
+                    order_info['user_email'] = profile.get('email', '')
+                    order_info['membership_expires_at'] = profile.get('membership_expires_at', '')
+                else:
+                    order_info['user_name'] = ''
+                    order_info['user_email'] = ''
+                    order_info['membership_expires_at'] = ''
+            
+            # 时间筛选
+            if start_date or end_date:
+                created_at = order_info.get('created_at', '')
+                if created_at:
+                    try:
+                        # 解析日期（支持多种格式）
+                        if 'T' in created_at:
+                            order_date = created_at.split('T')[0]
+                        else:
+                            order_date = created_at.split(' ')[0]
+                        
+                        # 日期比较
+                        if start_date and order_date < start_date:
+                            continue
+                        if end_date and order_date > end_date:
+                            continue
+                    except:
+                        pass  # 如果日期解析失败，不筛选
+            
+            # 用户筛选（用户名或邮箱）
+            if user:
+                user_name = order_info.get('user_name', '').lower()
+                user_email = order_info.get('user_email', '').lower()
+                search_user = user.lower()
                 
-                orders_list.append(order_info)
+                if search_user not in user_name and search_user not in user_email:
+                    continue
+            
+            orders_list.append(order_info)
         
         # 按创建时间排序（最新的在前）
         orders_list.sort(key=lambda x: x.get('created_at', ''), reverse=True)
@@ -4639,7 +4673,13 @@ def get_admin_orders():
         return jsonify({
             'success': True,
             'orders': orders_list,
-            'total': len(orders_list)
+            'total': len(orders_list),
+            'filters': {
+                'status': status,
+                'start_date': start_date,
+                'end_date': end_date,
+                'user': user
+            }
         })
         
     except Exception as e:
