@@ -615,18 +615,27 @@ def deduct_user_credits(user_id, tool_name):
 # 静态文件路由
 @app.route('/css/<path:filename>')
 def serve_css(filename):
-    """提供CSS文件"""
-    return send_from_directory('frontend/css', filename)
+    """提供CSS文件（性能优化：设置长期缓存）"""
+    response = send_from_directory('frontend/css', filename)
+    # 静态资源缓存1年（文件名变化时会自动失效）
+    response.headers['Cache-Control'] = 'public, max-age=31536000'
+    return response
 
 @app.route('/js/<path:filename>')
 def serve_js(filename):
-    """提供JavaScript文件"""
-    return send_from_directory('frontend/js', filename)
+    """提供JavaScript文件（性能优化：设置长期缓存）"""
+    response = send_from_directory('frontend/js', filename)
+    # 静态资源缓存1年（文件名变化时会自动失效）
+    response.headers['Cache-Control'] = 'public, max-age=31536000'
+    return response
 
 @app.route('/images/<path:filename>')
 def serve_images(filename):
-    """提供图片文件"""
-    return send_from_directory('frontend/images', filename)
+    """提供图片文件（性能优化：设置长期缓存）"""
+    response = send_from_directory('frontend/images', filename)
+    # 图片文件缓存1年
+    response.headers['Cache-Control'] = 'public, max-age=31536000'
+    return response
 
 @app.route('/payment.js')
 def serve_payment_js():
@@ -638,7 +647,10 @@ def serve_payment_js():
 @app.route('/')
 def index():
     """主页"""
-    return send_file('frontend/index.html')
+    response = send_file('frontend/index.html')
+    # 性能优化：设置缓存头（HTML文件缓存1小时）
+    response.headers['Cache-Control'] = 'public, max-age=3600'
+    return response
 
 @app.route('/sitemap.xml')
 def sitemap():

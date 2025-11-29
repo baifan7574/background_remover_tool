@@ -32,20 +32,41 @@
     
     <!-- 360站长验证（可选，如果需要） -->
     <!-- <meta name="360-site-verification" content="您的验证码"> -->
+    
+    <!-- 性能优化：资源预加载和缓存策略 -->
+    <meta http-equiv="Cache-Control" content="public, max-age=31536000">
+    <link rel="preload" href="css/style.css" as="style">
+    <link rel="preload" href="js/auth.js" as="script">
+    <link rel="preload" href="js/app.js" as="script">
+    
+    <!-- CSS样式表 -->
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <script src="https://unpkg.com/jszip@3.10.1/dist/jszip.min.js"></script>
+    
+    <!-- JavaScript库（异步加载，不阻塞页面渲染） -->
+    <script src="https://unpkg.com/jszip@3.10.1/dist/jszip.min.js" defer></script>
     <script>
+        // 性能优化：延迟检查JSZip，不阻塞页面加载
         // 检查JSZip是否加载成功，如果失败则设置fallback
-        window.addEventListener('DOMContentLoaded', function() {
-            if (typeof JSZip === 'undefined') {
-                console.warn('JSZip库加载失败，批量下载功能将不可用');
-                window.JSZipAvailable = false;
-            } else {
-                console.log('JSZip库加载成功');
-                window.JSZipAvailable = true;
+        (function() {
+            function checkJSZip() {
+                if (typeof JSZip === 'undefined') {
+                    console.warn('JSZip库加载失败，批量下载功能将不可用');
+                    window.JSZipAvailable = false;
+                } else {
+                    console.log('JSZip库加载成功');
+                    window.JSZipAvailable = true;
+                }
             }
-        });
+            
+            // 延迟检查，确保JSZip已加载
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', checkJSZip);
+            } else {
+                // DOM已加载，延迟一点再检查
+                setTimeout(checkJSZip, 100);
+            }
+        })();
     </script>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎨</text></svg>">
 </head>
@@ -944,8 +965,9 @@
     </div>
 
     <!-- JavaScript -->
-    <script src="js/auth.js"></script>
-    <script src="js/app.js"></script>
+    <!-- 核心JavaScript（延迟加载，不阻塞页面渲染） -->
+    <script src="js/auth.js" defer></script>
+    <script src="js/app.js" defer></script>
     <script>
         // 确保页面加载完成后初始化
         (function() {
