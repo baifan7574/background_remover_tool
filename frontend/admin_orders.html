@@ -433,21 +433,30 @@
                 <div style="font-size: 28px; font-weight: bold; margin-top: 5px;" id="statTotalRevenue">¥0</div>
                 <div style="font-size: 12px; opacity: 0.8; margin-top: 5px;">点击查看已支付订单</div>
             </div>
-            <div style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); color: white; padding: 20px; border-radius: 8px;">
+            <div onclick="queryByStat('users')" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); color: white; padding: 20px; border-radius: 8px; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;" onmouseover="this.style.transform='scale(1.05)'; this.style.boxShadow='0 4px 12px rgba(0,0,0,0.15)'" onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='none'">
                 <div style="font-size: 14px; opacity: 0.9;">总用户数</div>
                 <div style="font-size: 28px; font-weight: bold; margin-top: 5px;" id="statTotalUsers">0</div>
+                <div style="font-size: 12px; opacity: 0.8; margin-top: 5px;">点击查看所有用户</div>
             </div>
         </div>
         
         <!-- 查询筛选区域 -->
         <div id="searchPanel" style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #e9ecef;">
             <div style="display: flex; flex-wrap: wrap; gap: 15px; align-items: flex-end;">
-                <div style="flex: 1; min-width: 200px;">
+                <div style="flex: 1; min-width: 200px;" id="orderStatusFilter">
                     <label style="display: block; margin-bottom: 5px; font-weight: 500; color: #333;">订单状态</label>
                     <select id="searchStatus" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px;">
                         <option value="all">全部订单</option>
                         <option value="pending">待处理</option>
                         <option value="paid">已支付</option>
+                    </select>
+                </div>
+                <div id="userPlanFilter" style="flex: 1; min-width: 200px; display: none;">
+                    <label style="display: block; margin-bottom: 5px; font-weight: 500; color: #333;">用户类型</label>
+                    <select id="searchPlan" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px;">
+                        <option value="all">全部用户（免费+付费）</option>
+                        <option value="free">免费用户</option>
+                        <option value="paid">付费用户</option>
                     </select>
                 </div>
                 <div style="flex: 1; min-width: 200px;">
@@ -502,6 +511,12 @@
         
         // 点击统计卡片查询
         function queryByStat(statType) {
+            if (statType === 'users') {
+                // 显示用户列表
+                loadUsers();
+                return;
+            }
+            
             if (statType === 'all') {
                 currentTab = 'all';
                 currentFilters.status = 'all';
@@ -539,6 +554,15 @@
         
         // 执行查询
         function performSearch() {
+            // 检查是否在用户查询模式
+            const userPlanFilter = document.getElementById('userPlanFilter');
+            if (userPlanFilter && userPlanFilter.style.display !== 'none') {
+                // 用户查询模式
+                loadUsers();
+                return;
+            }
+            
+            // 订单查询模式
             currentFilters.status = document.getElementById('searchStatus').value;
             currentFilters.startDate = document.getElementById('searchStartDate').value;
             currentFilters.endDate = document.getElementById('searchEndDate').value;
@@ -561,6 +585,16 @@
         
         // 重置查询
         function resetSearch() {
+            // 隐藏用户查询相关的筛选条件
+            const userPlanFilter = document.getElementById('userPlanFilter');
+            if (userPlanFilter) {
+                userPlanFilter.style.display = 'none';
+            }
+            const orderStatusFilter = document.getElementById('orderStatusFilter');
+            if (orderStatusFilter) {
+                orderStatusFilter.style.display = 'block';
+            }
+            
             currentFilters = {
                 status: 'pending',
                 startDate: '',
@@ -571,6 +605,9 @@
             document.getElementById('searchStartDate').value = '';
             document.getElementById('searchEndDate').value = '';
             document.getElementById('searchUser').value = '';
+            if (document.getElementById('searchPlan')) {
+                document.getElementById('searchPlan').value = 'all';
+            }
             currentTab = 'pending';
             
             // 更新标签页
@@ -648,6 +685,16 @@
                 return;
             }
             
+            // 隐藏用户查询相关的筛选条件，显示订单查询条件
+            const userPlanFilter = document.getElementById('userPlanFilter');
+            if (userPlanFilter) {
+                userPlanFilter.style.display = 'none';
+            }
+            const orderStatusFilter = document.getElementById('orderStatusFilter');
+            if (orderStatusFilter) {
+                orderStatusFilter.style.display = 'block';
+            }
+            
             // 加载统计数据
             loadStats();
             
@@ -697,6 +744,142 @@
             } catch (error) {
                 container.innerHTML = `<div class="empty-state">加载失败: ${error.message}</div>`;
             }
+        }
+        
+        // 加载用户列表
+        async function loadUsers() {
+            // 先检查登录状态
+            const isLoggedIn = await checkLoginStatus();
+            if (!isLoggedIn) {
+                return;
+            }
+            
+            // 显示用户查询相关的筛选条件
+            const userPlanFilter = document.getElementById('userPlanFilter');
+            if (userPlanFilter) {
+                userPlanFilter.style.display = 'block';
+            }
+            const searchStatus = document.getElementById('searchStatus');
+            if (searchStatus) {
+                searchStatus.parentElement.style.display = 'none';
+            }
+            
+            const container = document.getElementById('orders-container');
+            container.innerHTML = '<div class="loading">加载中...</div>';
+            
+            try {
+                // 构建查询参数
+                const planFilter = document.getElementById('searchPlan') ? document.getElementById('searchPlan').value : 'all';
+                let queryParams = `plan=${planFilter}`; // 显示所有用户（免费+付费）
+                const userQuery = document.getElementById('searchUser').value.trim();
+                const startDate = document.getElementById('searchStartDate').value;
+                const endDate = document.getElementById('searchEndDate').value;
+                
+                if (userQuery) {
+                    queryParams += `&user_query=${encodeURIComponent(userQuery)}`;
+                }
+                if (startDate) {
+                    queryParams += `&start_date=${startDate}`;
+                }
+                if (endDate) {
+                    queryParams += `&end_date=${endDate}`;
+                }
+                
+                const response = await fetch(`/api/admin/users?${queryParams}`);
+                const result = await response.json();
+                
+                if (result.success) {
+                    // 显示查询结果信息
+                    let resultInfo = '';
+                    if (userQuery || startDate || endDate) {
+                        let filterText = [];
+                        if (startDate || endDate) {
+                            filterText.push(`注册时间: ${startDate || '不限'} 至 ${endDate || '不限'}`);
+                        }
+                        if (userQuery) {
+                            filterText.push(`用户: ${userQuery}`);
+                        }
+                        resultInfo = `<div style="background: #e3f2fd; padding: 10px; border-radius: 4px; margin-bottom: 15px; color: #1976d2;">
+                            <strong>查询条件：</strong>${filterText.join(' | ')} | <strong>结果：</strong>找到 ${result.users.length} 个用户
+                        </div>`;
+                    } else {
+                        resultInfo = `<div style="background: #e3f2fd; padding: 10px; border-radius: 4px; margin-bottom: 15px; color: #1976d2;">
+                            <strong>显示所有用户（免费+付费）</strong> | <strong>总数：</strong>${result.users.length} 个用户
+                        </div>`;
+                    }
+                    
+                    container.innerHTML = resultInfo;
+                    displayUsers(result.users);
+                } else {
+                    container.innerHTML = `<div class="empty-state">加载失败: ${result.error}</div>`;
+                }
+            } catch (error) {
+                container.innerHTML = `<div class="empty-state">加载失败: ${error.message}</div>`;
+            }
+        }
+        
+        // 显示用户列表
+        function displayUsers(users) {
+            const container = document.getElementById('orders-container');
+            
+            if (users.length === 0) {
+                container.innerHTML += `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">👤</div>
+                        <div>暂无用户</div>
+                    </div>
+                `;
+                return;
+            }
+            
+            const usersHtml = users.map(user => {
+                const plan = user.plan || 'free';
+                const planText = plan === 'free' ? '免费用户' : (plan === 'entry' ? '入门版' : (plan === 'professional' ? '专业版' : plan));
+                const planColor = plan === 'free' ? '#999' : (plan === 'entry' ? '#1890ff' : '#52c41a');
+                
+                const createdTime = user.created_at ? new Date(user.created_at).toLocaleString('zh-CN') : '-';
+                const expiresAt = user.membership_expires_at ? new Date(user.membership_expires_at).toLocaleString('zh-CN') : '-';
+                
+                return `
+                    <div class="order-card" style="border-left: 4px solid ${planColor};">
+                        <div class="order-header">
+                            <div class="order-info">
+                                <div class="order-no">用户ID: ${user.user_id}</div>
+                                <span class="status-badge" style="background: ${planColor}; color: white;">${planText}</span>
+                            </div>
+                            <div class="order-amount" style="color: ${planColor}; font-weight: bold;">${user.credits || 0} 积分</div>
+                        </div>
+                        <div class="order-details">
+                            <div class="order-detail-item">
+                                <span class="order-detail-label">用户名:</span>
+                                <span>${user.name || '未知用户'}</span>
+                            </div>
+                            <div class="order-detail-item">
+                                <span class="order-detail-label">用户邮箱:</span>
+                                <span>${user.email || '-'}</span>
+                            </div>
+                            <div class="order-detail-item">
+                                <span class="order-detail-label">会员计划:</span>
+                                <span style="color: ${planColor}; font-weight: bold;">${planText}</span>
+                            </div>
+                            <div class="order-detail-item">
+                                <span class="order-detail-label">当前积分:</span>
+                                <span style="color: #1890ff; font-weight: bold;">${user.credits || 0}</span>
+                            </div>
+                            <div class="order-detail-item">
+                                <span class="order-detail-label">注册时间:</span>
+                                <span>${createdTime}</span>
+                            </div>
+                            <div class="order-detail-item">
+                                <span class="order-detail-label">会员到期时间:</span>
+                                <span>${expiresAt || '-'}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            container.innerHTML += usersHtml;
         }
         
         function displayOrders(orders) {

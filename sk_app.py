@@ -4748,6 +4748,142 @@ def get_admin_stats():
         print(f"❌ 获取统计数据失败: {str(e)}")
         return jsonify({'error': f'获取统计数据失败: {str(e)}'}), 500
 
+@app.route('/api/admin/users', methods=['GET'])
+@require_admin_login
+def get_admin_users():
+    """获取所有用户列表（包括免费和付费用户）"""
+    try:
+        # 查询参数
+        plan_filter = request.args.get('plan', 'all')  # all, free, paid
+        user_query = request.args.get('user_query', '').strip().lower()  # 用户名或邮箱
+        start_date_str = request.args.get('start_date')
+        end_date_str = request.args.get('end_date')
+        
+        users_list = []
+        
+        # 从data_manager获取所有用户
+        if data_manager and hasattr(data_manager, 'user_profiles_db'):
+            for user_id, profile in data_manager.user_profiles_db.items():
+                user_info = {
+                    'user_id': user_id,
+                    'email': profile.get('email', ''),
+                    'name': profile.get('name', '未知用户'),
+                    'plan': profile.get('plan', 'free'),
+                    'credits': profile.get('credits', 0),
+                    'created_at': profile.get('created_at', ''),
+                    'updated_at': profile.get('updated_at', ''),
+                    'membership_expires_at': profile.get('membership_expires_at', ''),
+                    'membership_type': profile.get('membership_type', 'free')
+                }
+                
+                # 计划筛选
+                if plan_filter != 'all':
+                    if plan_filter == 'free' and user_info['plan'] != 'free':
+                        continue
+                    elif plan_filter == 'paid' and user_info['plan'] == 'free':
+                        continue
+                
+                # 用户查询（用户名或邮箱）
+                if user_query:
+                    name_match = user_info['name'].lower() if user_info['name'] else ''
+                    email_match = user_info['email'].lower() if user_info['email'] else ''
+                    user_id_match = user_id.lower() if user_id else ''
+                    
+                    if (user_query not in name_match and 
+                        user_query not in email_match and 
+                        user_query not in user_id_match):
+                        continue
+                
+                # 时间筛选（注册时间）
+                if start_date_str or end_date_str:
+                    created_at = user_info.get('created_at', '')
+                    if created_at:
+                        try:
+                            if 'T' in created_at:
+                                user_date = created_at.split('T')[0]
+                            else:
+                                user_date = created_at.split(' ')[0]
+                            
+                            if start_date_str and user_date < start_date_str:
+                                continue
+                            if end_date_str and user_date > end_date_str:
+                                continue
+                        except:
+                            pass
+                
+                users_list.append(user_info)
+        
+        # 如果没有data_manager，从内存数据库获取
+        elif user_profiles_db:
+            for user_id, profile in user_profiles_db.items():
+                user_info = {
+                    'user_id': user_id,
+                    'email': profile.get('email', ''),
+                    'name': profile.get('name', '未知用户'),
+                    'plan': profile.get('plan', 'free'),
+                    'credits': profile.get('credits', 0),
+                    'created_at': profile.get('created_at', ''),
+                    'updated_at': profile.get('updated_at', ''),
+                    'membership_expires_at': profile.get('membership_expires_at', ''),
+                    'membership_type': profile.get('membership_type', 'free')
+                }
+                
+                # 计划筛选
+                if plan_filter != 'all':
+                    if plan_filter == 'free' and user_info['plan'] != 'free':
+                        continue
+                    elif plan_filter == 'paid' and user_info['plan'] == 'free':
+                        continue
+                
+                # 用户查询
+                if user_query:
+                    name_match = user_info['name'].lower() if user_info['name'] else ''
+                    email_match = user_info['email'].lower() if user_info['email'] else ''
+                    user_id_match = user_id.lower() if user_id else ''
+                    
+                    if (user_query not in name_match and 
+                        user_query not in email_match and 
+                        user_query not in user_id_match):
+                        continue
+                
+                # 时间筛选
+                if start_date_str or end_date_str:
+                    created_at = user_info.get('created_at', '')
+                    if created_at:
+                        try:
+                            if 'T' in created_at:
+                                user_date = created_at.split('T')[0]
+                            else:
+                                user_date = created_at.split(' ')[0]
+                            
+                            if start_date_str and user_date < start_date_str:
+                                continue
+                            if end_date_str and user_date > end_date_str:
+                                continue
+                        except:
+                            pass
+                
+                users_list.append(user_info)
+        
+        # 按注册时间排序（最新的在前）
+        users_list.sort(key=lambda x: x.get('created_at', ''), reverse=True)
+        
+        return jsonify({
+            'success': True,
+            'users': users_list,
+            'total': len(users_list),
+            'filters': {
+                'plan': plan_filter,
+                'user_query': user_query,
+                'start_date': start_date_str,
+                'end_date': end_date_str
+            }
+        })
+        
+    except Exception as e:
+        print(f"❌ 获取用户列表失败: {str(e)}")
+        return jsonify({'error': f'获取用户列表失败: {str(e)}'}), 500
+
 @app.route('/api/admin/batch-confirm', methods=['POST'])
 @require_admin_login
 def batch_confirm_orders():
