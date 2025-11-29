@@ -260,6 +260,28 @@ def get_profile():
         
         profile = user_profiles_db[user_id]
         
+        # 获取使用统计（如果存在）
+        usage_stats = {}
+        if user_id in tool_usage_db:
+            usage_records = tool_usage_db[user_id]
+            total_usage = len(usage_records)
+            total_credits = sum(item.get('credits_used', 0) for item in usage_records)
+            
+            # 按工具类型统计
+            tool_stats = {}
+            for item in usage_records:
+                tool_name = item.get('tool_name', 'unknown')
+                if tool_name not in tool_stats:
+                    tool_stats[tool_name] = {'count': 0, 'credits': 0}
+                tool_stats[tool_name]['count'] += 1
+                tool_stats[tool_name]['credits'] += item.get('credits_used', 0)
+            
+            usage_stats = {
+                'total_usage': total_usage,
+                'total_credits_used': total_credits,
+                'tool_stats': tool_stats
+            }
+        
         return jsonify({
             'user': {
                 'id': user_id,
@@ -269,7 +291,8 @@ def get_profile():
                 'credits': profile['credits'],
                 'created_at': profile['created_at'],
                 'updated_at': profile['updated_at']
-            }
+            },
+            'usage_stats': usage_stats  # 添加使用统计，前端需要这个字段
         })
             
     except Exception as e:

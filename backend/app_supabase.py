@@ -31,7 +31,9 @@ logger = logging.getLogger('crossborder_tools_api')
 from supabase_db import db, user_db, usage_db, storage_db
 
 # 初始化应用
-app = Flask(__name__)
+app = Flask(__name__, 
+    static_folder='../frontend',
+    template_folder='../frontend')
 CORS(app)
 
 # Pro版配置
@@ -293,10 +295,11 @@ def login():
 
 # 获取用户资料 (Pro版增强)
 @app.route('/api/user/profile', methods=['GET'])
+@app.route('/api/auth/profile', methods=['GET'])  # 添加前端调用的路由别名
 @require_auth
 def get_user_profile():
     """获取用户个人资料 (Pro版增强)"""
-    route = '/api/user/profile'
+    route = request.path  # 使用实际请求的路径
     log_request(route, request.user_id)
     
     try:
@@ -307,12 +310,21 @@ def get_user_profile():
         
         if user_profile['success']:
             # Pro版增强：添加使用统计
-            usage_stats = usage_db.get_user_usage_stats(request.user_id)
+            usage_stats_result = usage_db.get_user_usage_stats(request.user_id)
+            
+            # 兼容前端期望的格式 - 提取统计数据，移除success包装
+            user_data = user_profile['user']
+            usage_stats = usage_stats_result if usage_stats_result.get('success') else {}
+            # 如果usage_stats有success字段，移除它（前端不需要）
+            if isinstance(usage_stats, dict) and 'success' in usage_stats:
+                usage_stats_clean = {k: v for k, v in usage_stats.items() if k != 'success'}
+            else:
+                usage_stats_clean = usage_stats
             
             return jsonify({
                 'success': True,
-                'user': user_profile['user'],
-                'usage_stats': usage_stats.get('stats', {}),
+                'user': user_data,
+                'usage_stats': usage_stats_clean,
                 'is_pro_user': IS_PRO_MODE
             })
         else:
@@ -767,6 +779,43 @@ def download_file(filename):
         return jsonify({'error': f'下载失败: {str(e)}'}), 500
 
 # 健康检查
+# 提供静态HTML页面
+@app.route('/terms.html')
+def terms():
+    """服务条款页面"""
+    try:
+        frontend_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'frontend', 'terms.html')
+        if os.path.exists(frontend_path):
+            with open(frontend_path, 'r', encoding='utf-8') as f:
+                return f.read()
+        return "页面不存在", 404
+    except Exception as e:
+        return f"加载页面失败: {str(e)}", 500
+
+@app.route('/privacy.html')
+def privacy():
+    """隐私政策页面"""
+    try:
+        frontend_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'frontend', 'privacy.html')
+        if os.path.exists(frontend_path):
+            with open(frontend_path, 'r', encoding='utf-8') as f:
+                return f.read()
+        return "页面不存在", 404
+    except Exception as e:
+        return f"加载页面失败: {str(e)}", 500
+
+@app.route('/cookie.html')
+def cookie():
+    """Cookie政策页面"""
+    try:
+        frontend_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'frontend', 'cookie.html')
+        if os.path.exists(frontend_path):
+            with open(frontend_path, 'r', encoding='utf-8') as f:
+                return f.read()
+        return "页面不存在", 404
+    except Exception as e:
+        return f"加载页面失败: {str(e)}", 500
+
 @app.route('/api/health')
 def health_check():
     try:
