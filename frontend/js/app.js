@@ -1208,7 +1208,12 @@ class AppManager {
             
             const files = e.dataTransfer.files;
             if (files.length > 0) {
-                this.handleFileSelect(files[0]);
+                // 显示上传加载动画
+                this.showUploadLoading(uploadArea);
+                // 延迟处理，让用户看到加载动画
+                setTimeout(() => {
+                    this.handleFileSelect(files[0]);
+                }, 300);
             }
         });
     }
@@ -1690,6 +1695,8 @@ class AppManager {
                     this.loadUsageStats();
                     // 重置处理状态
                     this.isProcessing = false;
+                    // 恢复按钮
+                    this.disableButtons(false);
                 }, 500);
             } else {
                 const errorMsg = result.error || result.message || '处理失败';
@@ -1717,7 +1724,25 @@ class AppManager {
             }
         } catch (error) {
             this.isProcessing = false;
+            this.disableButtons(false);
             this.showError(error.message);
+        }
+    }
+    
+    disableButtons(disable) {
+        // 禁用/启用模态框内的所有按钮
+        const modal = document.getElementById('toolModal');
+        if (modal) {
+            const buttons = modal.querySelectorAll('button, .btn, a.btn');
+            buttons.forEach(btn => {
+                if (disable) {
+                    btn.classList.add('processing');
+                    btn.disabled = true;
+                } else {
+                    btn.classList.remove('processing');
+                    btn.disabled = false;
+                }
+            });
         }
     }
 
@@ -2902,11 +2927,29 @@ class AppManager {
         const progressText = document.getElementById('progressText');
         
         if (progressFill) {
+            // 平滑过渡动画
+            progressFill.style.transition = 'width 0.5s ease-out';
             progressFill.style.width = `${progress}%`;
+            
+            // 根据进度改变颜色
+            if (progress < 30) {
+                progressFill.style.background = 'linear-gradient(90deg, #007bff, #0056b3)';
+            } else if (progress < 70) {
+                progressFill.style.background = 'linear-gradient(90deg, #28a745, #1e7e34)';
+            } else {
+                progressFill.style.background = 'linear-gradient(90deg, #ffd700, #ffed4e)';
+            }
         }
         
         if (progressText) {
-            progressText.textContent = status;
+            progressText.textContent = `${progress}% - ${status}`;
+            // 添加闪烁效果提示用户
+            progressText.style.animation = 'none';
+            setTimeout(() => {
+                if (progressText) {
+                    progressText.style.animation = 'pulse 1s ease-in-out';
+                }
+            }, 10);
         }
     }
 
@@ -2968,68 +3011,95 @@ class AppManager {
                     padding: 40px 20px;
                 }
                 .processing-animation {
-                    width: 80px;
-                    height: 80px;
-                    margin: 0 auto 20px;
+                    width: 100px;
+                    height: 100px;
+                    margin: 0 auto 30px;
                     position: relative;
                 }
                 .processing-animation .spinner {
                     width: 100%;
                     height: 100%;
-                    border: 4px solid #f3f3f3;
-                    border-top: 4px solid #007bff;
+                    border: 5px solid rgba(255, 215, 0, 0.2);
+                    border-top: 5px solid #ffd700;
+                    border-right: 5px solid #ffed4e;
                     border-radius: 50%;
-                    animation: spin 1s linear infinite;
+                    animation: spin 0.8s linear infinite;
+                    box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
                 }
                 @keyframes spin {
                     0% { transform: rotate(0deg); }
                     100% { transform: rotate(360deg); }
                 }
+                @keyframes pulse {
+                    0%, 100% { opacity: 1; }
+                    50% { opacity: 0.6; }
+                }
                 .processing-text {
                     margin-top: 20px;
                 }
                 .processing-title {
-                    font-size: 18px;
+                    font-size: 20px;
                     font-weight: bold;
                     color: #333;
                     margin-bottom: 10px;
+                    animation: pulse 2s ease-in-out infinite;
                 }
                 .processing-subtitle {
-                    font-size: 14px;
+                    font-size: 15px;
                     color: #666;
-                    margin-bottom: 15px;
+                    margin-bottom: 20px;
                 }
                 .processing-progress {
-                    margin: 20px 0;
+                    margin: 25px 0;
                 }
                 .progress-bar {
                     width: 100%;
-                    height: 8px;
+                    height: 12px;
                     background-color: #f0f0f0;
-                    border-radius: 4px;
+                    border-radius: 10px;
                     overflow: hidden;
-                    margin-bottom: 10px;
+                    margin-bottom: 12px;
+                    box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
                 }
                 .progress-fill {
                     height: 100%;
-                    background: linear-gradient(90deg, #007bff, #28a745);
+                    background: linear-gradient(90deg, #007bff, #28a745, #ffd700);
                     width: 0%;
-                    transition: width 0.3s ease;
+                    transition: width 0.5s ease-out;
+                    border-radius: 10px;
+                    position: relative;
+                    overflow: hidden;
+                }
+                .progress-fill::after {
+                    content: '';
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    bottom: 0;
+                    right: 0;
+                    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+                    animation: shimmer 2s infinite;
+                }
+                @keyframes shimmer {
+                    0% { transform: translateX(-100%); }
+                    100% { transform: translateX(100%); }
                 }
                 .progress-text {
-                    font-size: 14px;
-                    color: #666;
-                    font-weight: bold;
+                    font-size: 15px;
+                    color: #333;
+                    font-weight: 600;
                 }
                 .processing-tips {
-                    margin-top: 20px;
+                    margin-top: 25px;
                     padding: 15px;
-                    background-color: #f8f9fa;
-                    border-radius: 8px;
+                    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+                    border-radius: 10px;
+                    border-left: 4px solid #ffd700;
                 }
                 .tip {
                     font-size: 13px;
                     color: #666;
+                    line-height: 1.6;
                 }
             </style>
             <div class="processing-container">
@@ -3043,7 +3113,7 @@ class AppManager {
                         <div class="progress-bar">
                             <div class="progress-fill" id="progressFill"></div>
                         </div>
-                        <div class="progress-text" id="progressText">0%</div>
+                        <div class="progress-text" id="progressText">0% - 准备中...</div>
                     </div>
                 </div>
                 <div class="processing-tips">
@@ -3268,11 +3338,63 @@ class AppManager {
         const modal = document.getElementById('toolModal');
         const modalBody = modal.querySelector('.modal-body');
         
+        // 友好的错误提示
+        let friendlyMessage = message;
+        if (message.includes('网络') || message.includes('Network') || message.includes('fetch')) {
+            friendlyMessage = '网络连接失败，请检查您的网络连接后重试';
+        } else if (message.includes('超时') || message.includes('timeout')) {
+            friendlyMessage = '处理超时，请稍后重试或尝试使用较小的图片';
+        } else if (message.includes('大小') || message.includes('size')) {
+            friendlyMessage = '图片文件过大，请使用小于16MB的图片';
+        } else if (message.includes('格式') || message.includes('format')) {
+            friendlyMessage = '不支持的图片格式，请使用JPG、PNG或WebP格式';
+        } else if (message.includes('登录') || message.includes('auth')) {
+            friendlyMessage = '登录已过期，请重新登录';
+        }
+        
         modalBody.innerHTML = `
+            <style>
+                .error-container {
+                    text-align: center;
+                    padding: 40px 20px;
+                }
+                .error-icon {
+                    font-size: 64px;
+                    margin-bottom: 20px;
+                    animation: shake 0.5s ease-in-out;
+                }
+                @keyframes shake {
+                    0%, 100% { transform: translateX(0); }
+                    25% { transform: translateX(-10px); }
+                    75% { transform: translateX(10px); }
+                }
+                .error-container h3 {
+                    font-size: 22px;
+                    color: #dc3545;
+                    margin-bottom: 15px;
+                    font-weight: bold;
+                }
+                .error-message {
+                    font-size: 16px;
+                    color: #666;
+                    line-height: 1.6;
+                    margin-bottom: 30px;
+                    padding: 15px;
+                    background: #fff3cd;
+                    border-left: 4px solid #ffc107;
+                    border-radius: 5px;
+                    text-align: left;
+                }
+                .error-actions {
+                    display: flex;
+                    gap: 15px;
+                    justify-content: center;
+                }
+            </style>
             <div class="error-container">
                 <div class="error-icon">❌</div>
                 <h3>处理失败</h3>
-                <p class="error-message">${message}</p>
+                <p class="error-message">${friendlyMessage}</p>
                 <div class="error-actions">
                     <button class="btn btn-primary" onclick="if(window.appManager) { window.appManager.closeModal('toolModal'); }">关闭</button>
                     <button class="btn btn-secondary" onclick="if(window.appManager) { window.appManager.resetTool(); window.appManager.showModal('toolModal'); }">重新尝试</button>
