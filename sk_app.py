@@ -750,6 +750,11 @@ def admin_orders():
     """后台订单管理页面"""
     return send_file('frontend/admin_orders.html')
 
+@app.route('/admin/articles')
+def admin_articles_page():
+    """文章管理后台页面"""
+    return send_file('frontend/admin_articles.html')
+
 @app.route('/health')
 def health_check():
     """健康检查"""
