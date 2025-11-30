@@ -4884,6 +4884,308 @@ def get_admin_users():
         print(f"❌ 获取用户列表失败: {str(e)}")
         return jsonify({'error': f'获取用户列表失败: {str(e)}'}), 500
 
+# ==================== 社区文章功能 ====================
+
+# 文章数据存储
+articles_db = {}  # {article_id: article_data}
+
+# 加载文章数据
+def load_articles():
+    """从文件加载文章数据"""
+    global articles_db
+    try:
+        articles_file = os.path.join('data', 'articles.json')
+        if os.path.exists(articles_file):
+            with open(articles_file, 'r', encoding='utf-8') as f:
+                articles_db = json.load(f)
+            print(f"✅ 从文件加载文章数据: {len(articles_db)} 篇文章")
+        else:
+            articles_db = {}
+            print("📝 文章数据文件不存在，将创建新文件")
+    except Exception as e:
+        print(f"⚠️ 加载文章数据失败: {e}")
+        articles_db = {}
+
+# 保存文章数据
+def save_articles():
+    """保存文章数据到文件"""
+    try:
+        os.makedirs('data', exist_ok=True)
+        articles_file = os.path.join('data', 'articles.json')
+        with open(articles_file, 'w', encoding='utf-8') as f:
+            json.dump(articles_db, f, ensure_ascii=False, indent=2)
+        print(f"✅ 文章数据已保存: {len(articles_db)} 篇文章")
+    except Exception as e:
+        print(f"❌ 保存文章数据失败: {e}")
+
+# SEO关键词列表（用于自动插入）
+SEO_KEYWORDS = [
+    # 高流量关键词
+    "背景移除工具", "图片去背景", "在线背景移除", "AI去背景", "产品图片处理",
+    # 中等流量关键词
+    "免费去背景", "智能去背景", "产品图片去背景", "图片处理工具", "在线图片处理",
+    # 长尾关键词
+    "免费在线背景移除工具", "产品图片去背景软件", "亚马逊产品图片处理工具",
+    "eBay图片优化工具", "跨境电商图片处理", "图片抠图工具", "背景去除软件",
+    "去背景软件", "免费去背景工具", "在线PS", "跨境电商工具", "图片压缩工具",
+    "格式转换工具", "Listing生成工具", "AI背景移除", "图片编辑工具"
+]
+
+def insert_seo_keywords(content, keywords_list=SEO_KEYWORDS):
+    """在文章内容中自然插入SEO关键词"""
+    import re
+    import random
+    
+    # 如果内容中已经包含足够的关键词，不重复插入
+    existing_keywords = sum(1 for keyword in keywords_list if keyword in content)
+    if existing_keywords >= len(keywords_list) * 0.3:  # 如果已有30%的关键词，不再插入
+        return content
+    
+    # 随机选择一些关键词插入（不超过5个）
+    keywords_to_insert = random.sample(keywords_list, min(5, len(keywords_list)))
+    
+    # 在段落末尾或合适位置插入关键词
+    sentences = content.split('。')
+    result_sentences = []
+    
+    for i, sentence in enumerate(sentences):
+        result_sentences.append(sentence)
+        # 每隔2-3句插入一个关键词（自然插入）
+        if i > 0 and (i + 1) % 3 == 0 and keywords_to_insert:
+            keyword = keywords_to_insert.pop(0)
+            # 自然融入句子
+            if keyword not in sentence:
+                result_sentences.append(f"使用{keyword}可以提升工作效率。")
+    
+    return '。'.join(result_sentences)
+
+@app.route('/api/articles', methods=['GET'])
+def get_articles():
+    """获取文章列表"""
+    try:
+        # 查询参数
+        page = int(request.args.get('page', 1))
+        limit = int(request.args.get('limit', 10))
+        category = request.args.get('category', 'all')  # all, tutorial, tips, news
+        
+        # 筛选文章
+        filtered_articles = []
+        for article_id, article in articles_db.items():
+            # 分类筛选
+            if category != 'all' and article.get('category') != category:
+                continue
+            
+            # 只显示已发布的文章
+            if article.get('status') != 'published':
+                continue
+            
+            filtered_articles.append({
+                'id': article_id,
+                'title': article.get('title', ''),
+                'summary': article.get('summary', ''),
+                'category': article.get('category', 'tutorial'),
+                'author': article.get('author', '管理员'),
+                'created_at': article.get('created_at', ''),
+                'views': article.get('views', 0),
+                'tags': article.get('tags', [])
+            })
+        
+        # 按创建时间排序（最新的在前）
+        filtered_articles.sort(key=lambda x: x.get('created_at', ''), reverse=True)
+        
+        # 分页
+        total = len(filtered_articles)
+        start = (page - 1) * limit
+        end = start + limit
+        paginated_articles = filtered_articles[start:end]
+        
+        return jsonify({
+            'success': True,
+            'articles': paginated_articles,
+            'total': total,
+            'page': page,
+            'limit': limit,
+            'total_pages': (total + limit - 1) // limit
+        })
+    except Exception as e:
+        print(f"❌ 获取文章列表失败: {str(e)}")
+        return jsonify({'error': f'获取文章列表失败: {str(e)}'}), 500
+
+@app.route('/api/articles/<article_id>', methods=['GET'])
+def get_article(article_id):
+    """获取单篇文章"""
+    try:
+        if article_id not in articles_db:
+            return jsonify({'error': '文章不存在'}), 404
+        
+        article = articles_db[article_id]
+        
+        # 只返回已发布的文章
+        if article.get('status') != 'published':
+            return jsonify({'error': '文章不存在'}), 404
+        
+        # 增加浏览量
+        article['views'] = article.get('views', 0) + 1
+        save_articles()
+        
+        return jsonify({
+            'success': True,
+            'article': article
+        })
+    except Exception as e:
+        print(f"❌ 获取文章失败: {str(e)}")
+        return jsonify({'error': f'获取文章失败: {str(e)}'}), 500
+
+@app.route('/api/admin/articles', methods=['POST'])
+@require_admin_login
+def create_article():
+    """创建文章（管理员）"""
+    try:
+        data = request.get_json()
+        
+        title = data.get('title', '').strip()
+        content = data.get('content', '').strip()
+        summary = data.get('summary', '').strip()
+        category = data.get('category', 'tutorial')  # tutorial, tips, news
+        tags = data.get('tags', [])
+        
+        if not title or not content:
+            return jsonify({'error': '标题和内容不能为空'}), 400
+        
+        # 生成文章ID
+        article_id = f"article_{datetime.now().strftime('%Y%m%d%H%M%S')}_{uuid.uuid4().hex[:8]}"
+        
+        # 自动插入SEO关键词
+        optimized_content = insert_seo_keywords(content)
+        
+        # 如果没有摘要，自动生成（取前150字）
+        if not summary:
+            summary = content[:150] + '...' if len(content) > 150 else content
+        
+        # 创建文章
+        article = {
+            'id': article_id,
+            'title': title,
+            'content': optimized_content,  # 使用优化后的内容
+            'summary': summary,
+            'category': category,
+            'tags': tags,
+            'author': '管理员',
+            'status': 'published',  # published, draft
+            'created_at': datetime.now().isoformat(),
+            'updated_at': datetime.now().isoformat(),
+            'views': 0
+        }
+        
+        articles_db[article_id] = article
+        save_articles()
+        
+        return jsonify({
+            'success': True,
+            'article': article,
+            'message': '文章创建成功'
+        })
+    except Exception as e:
+        print(f"❌ 创建文章失败: {str(e)}")
+        return jsonify({'error': f'创建文章失败: {str(e)}'}), 500
+
+@app.route('/api/admin/articles/<article_id>', methods=['PUT'])
+@require_admin_login
+def update_article(article_id):
+    """更新文章（管理员）"""
+    try:
+        if article_id not in articles_db:
+            return jsonify({'error': '文章不存在'}), 404
+        
+        data = request.get_json()
+        article = articles_db[article_id]
+        
+        # 更新字段
+        if 'title' in data:
+            article['title'] = data['title'].strip()
+        if 'content' in data:
+            # 重新优化内容
+            article['content'] = insert_seo_keywords(data['content'].strip())
+        if 'summary' in data:
+            article['summary'] = data['summary'].strip()
+        if 'category' in data:
+            article['category'] = data['category']
+        if 'tags' in data:
+            article['tags'] = data['tags']
+        if 'status' in data:
+            article['status'] = data['status']
+        
+        article['updated_at'] = datetime.now().isoformat()
+        
+        save_articles()
+        
+        return jsonify({
+            'success': True,
+            'article': article,
+            'message': '文章更新成功'
+        })
+    except Exception as e:
+        print(f"❌ 更新文章失败: {str(e)}")
+        return jsonify({'error': f'更新文章失败: {str(e)}'}), 500
+
+@app.route('/api/admin/articles', methods=['GET'])
+@require_admin_login
+def get_admin_articles():
+    """获取所有文章列表（管理员，包括草稿）"""
+    try:
+        show_all = request.args.get('all', 'false') == 'true'
+        
+        articles_list = []
+        for article_id, article in articles_db.items():
+            # 如果show_all=true，显示所有文章（包括草稿）
+            if not show_all and article.get('status') != 'published':
+                continue
+            
+            articles_list.append({
+                'id': article_id,
+                'title': article.get('title', ''),
+                'summary': article.get('summary', ''),
+                'content': article.get('content', ''),
+                'category': article.get('category', 'tutorial'),
+                'author': article.get('author', '管理员'),
+                'created_at': article.get('created_at', ''),
+                'updated_at': article.get('updated_at', ''),
+                'views': article.get('views', 0),
+                'status': article.get('status', 'published'),
+                'tags': article.get('tags', [])
+            })
+        
+        # 按创建时间排序（最新的在前）
+        articles_list.sort(key=lambda x: x.get('created_at', ''), reverse=True)
+        
+        return jsonify({
+            'success': True,
+            'articles': articles_list,
+            'total': len(articles_list)
+        })
+    except Exception as e:
+        print(f"❌ 获取文章列表失败: {str(e)}")
+        return jsonify({'error': f'获取文章列表失败: {str(e)}'}), 500
+
+@app.route('/api/admin/articles/<article_id>', methods=['DELETE'])
+@require_admin_login
+def delete_article(article_id):
+    """删除文章（管理员）"""
+    try:
+        if article_id not in articles_db:
+            return jsonify({'error': '文章不存在'}), 404
+        
+        del articles_db[article_id]
+        save_articles()
+        
+        return jsonify({
+            'success': True,
+            'message': '文章删除成功'
+        })
+    except Exception as e:
+        print(f"❌ 删除文章失败: {str(e)}")
+        return jsonify({'error': f'删除文章失败: {str(e)}'}), 500
+
 @app.route('/api/admin/batch-confirm', methods=['POST'])
 @require_admin_login
 def batch_confirm_orders():
@@ -5562,6 +5864,9 @@ def internal_error(e):
     return jsonify({'error': '服务器内部错误'}), 500
 
 # ==================== 启动应用 ====================
+
+# 启动时加载文章数据
+load_articles()
 
 if __name__ == '__main__':
     print("🚀 启动独立测试版应用...")

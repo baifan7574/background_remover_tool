@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>文章管理 - 后台管理</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            padding: 30px;
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 24px;
+        }
+        
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #eee;
+        }
+        
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border: none;
+            background: none;
+            font-size: 16px;
+            color: #666;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -2px;
+            transition: all 0.2s;
+        }
+        
+        .tab.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+            font-weight: 600;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #333;
+        }
+        
+        input[type="text"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            font-family: inherit;
+        }
+        
+        textarea {
+            min-height: 300px;
+            resize: vertical;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+        
+        .btn-secondary {
+            background: #e2e8f0;
+            color: #475569;
+        }
+        
+        .articles-list {
+            margin-top: 20px;
+        }
+        
+        .article-item {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #e9ecef;
+        }
+        
+        .article-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 10px;
+        }
+        
+        .article-item-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+        
+        .article-item-meta {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 10px;
+        }
+        
+        .article-item-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 12px;
+        }
+        
+        .alert {
+            padding: 12px 16px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+        }
+        
+        .alert-success {
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #6ee7b7;
+        }
+        
+        .alert-error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fca5a5;
+        }
+        
+        .tags-input {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 8px;
+        }
+        
+        .tag-item {
+            background: #e0e7ff;
+            color: #4338ca;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .tag-item .remove {
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        .seo-info {
+            background: #f0f9ff;
+            border: 1px solid #bae6fd;
+            border-radius: 6px;
+            padding: 12px;
+            margin-top: 10px;
+            font-size: 13px;
+            color: #0369a1;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+            <h1>文章管理</h1>
+            <div>
+                <span id="adminInfo" style="color: #666; margin-right: 15px;">管理员: admin</span>
+                <button class="btn btn-secondary" onclick="logout()">退出登录</button>
+            </div>
+        </div>
+        
+        <div id="alertContainer"></div>
+        
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab('create')">发布文章</button>
+            <button class="tab" onclick="switchTab('list')">文章列表</button>
+        </div>
+        
+        <!-- 发布文章表单 -->
+        <div id="createTab" class="tab-content">
+            <form id="articleForm" onsubmit="createArticle(event)">
+                <div class="form-group">
+                    <label>文章标题 *</label>
+                    <input type="text" id="articleTitle" required placeholder="输入文章标题">
+                </div>
+                
+                <div class="form-group">
+                    <label>文章摘要</label>
+                    <textarea id="articleSummary" placeholder="输入文章摘要（可选，不填写将自动生成）" rows="3"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label>文章内容 *</label>
+                    <textarea id="articleContent" required placeholder="输入文章内容（系统会自动插入SEO关键词）" rows="15"></textarea>
+                    <div class="seo-info">
+                        💡 提示：系统会自动在文章中自然插入SEO关键词和长尾词，提升搜索引擎排名
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>文章分类</label>
+                    <select id="articleCategory">
+                        <option value="tutorial">教程</option>
+                        <option value="tips">技巧</option>
+                        <option value="news">资讯</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>标签（每行一个）</label>
+                    <textarea id="articleTags" placeholder="每行输入一个标签，例如：&#10;背景移除&#10;图片处理&#10;跨境电商" rows="3"></textarea>
+                </div>
+                
+                <div style="display: flex; gap: 10px;">
+                    <button type="submit" class="btn btn-primary">发布文章</button>
+                    <button type="button" class="btn btn-secondary" onclick="resetForm()">重置</button>
+                </div>
+            </form>
+        </div>
+        
+        <!-- 文章列表 -->
+        <div id="listTab" class="tab-content" style="display: none;">
+            <div id="articlesList" class="articles-list">
+                <div class="loading">加载中...</div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // 检查登录状态
+        async function checkLoginStatus() {
+            try {
+                const response = await fetch('/api/admin/stats');
+                return response.ok;
+            } catch (error) {
+                return false;
+            }
+        }
+        
+        // 退出登录
+        function logout() {
+            fetch('/api/admin/logout', { method: 'POST' })
+                .then(() => {
+                    window.location.href = '/admin/login';
+                });
+        }
+        
+        // 切换标签
+        function switchTab(tab) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.style.display = 'none');
+            
+            if (tab === 'create') {
+                document.querySelectorAll('.tab')[0].classList.add('active');
+                document.getElementById('createTab').style.display = 'block';
+            } else {
+                document.querySelectorAll('.tab')[1].classList.add('active');
+                document.getElementById('listTab').style.display = 'block';
+                loadArticlesList();
+            }
+        }
+        
+        // 创建文章
+        async function createArticle(event) {
+            event.preventDefault();
+            
+            const isLoggedIn = await checkLoginStatus();
+            if (!isLoggedIn) {
+                showAlert('请先登录', 'error');
+                setTimeout(() => {
+                    window.location.href = '/admin/login';
+                }, 1500);
+                return;
+            }
+            
+            const title = document.getElementById('articleTitle').value.trim();
+            const content = document.getElementById('articleContent').value.trim();
+            const summary = document.getElementById('articleSummary').value.trim();
+            const category = document.getElementById('articleCategory').value;
+            const tagsText = document.getElementById('articleTags').value.trim();
+            const tags = tagsText ? tagsText.split('\n').map(t => t.trim()).filter(t => t) : [];
+            
+            if (!title || !content) {
+                showAlert('标题和内容不能为空', 'error');
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/admin/articles', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        title,
+                        content,
+                        summary,
+                        category,
+                        tags
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showAlert('文章发布成功！系统已自动插入SEO关键词', 'success');
+                    resetForm();
+                    // 切换到文章列表
+                    setTimeout(() => {
+                        switchTab('list');
+                    }, 1500);
+                } else {
+                    showAlert('发布失败: ' + result.error, 'error');
+                }
+            } catch (error) {
+                showAlert('发布失败: ' + error.message, 'error');
+            }
+        }
+        
+        // 加载文章列表
+        async function loadArticlesList() {
+            const container = document.getElementById('articlesList');
+            container.innerHTML = '<div class="loading">加载中...</div>';
+            
+            try {
+                const response = await fetch('/api/admin/articles?all=true');
+                const result = await response.json();
+                
+                if (result.success) {
+                    if (result.articles.length === 0) {
+                        container.innerHTML = '<div style="text-align: center; padding: 40px; color: #999;">暂无文章</div>';
+                        return;
+                    }
+                    
+                    container.innerHTML = result.articles.map(article => {
+                        const createdDate = new Date(article.created_at).toLocaleString('zh-CN');
+                        const categoryNames = {
+                            'tutorial': '教程',
+                            'tips': '技巧',
+                            'news': '资讯'
+                        };
+                        
+                        return `
+                            <div class="article-item">
+                                <div class="article-item-header">
+                                    <div style="flex: 1;">
+                                        <div class="article-item-title">${article.title}</div>
+                                        <div class="article-item-meta">
+                                            ${categoryNames[article.category] || '文章'} • 
+                                            ${article.author} • 
+                                            ${createdDate} • 
+                                            ${article.views || 0} 次阅读
+                                        </div>
+                                    </div>
+                                </div>
+                                <div style="color: #666; margin-bottom: 15px; line-height: 1.6;">
+                                    ${article.summary || article.content.substring(0, 150) + '...'}
+                                </div>
+                                <div class="article-item-actions">
+                                    <button class="btn btn-primary btn-sm" onclick="editArticle('${article.id}')">编辑</button>
+                                    <button class="btn btn-secondary btn-sm" onclick="deleteArticle('${article.id}')">删除</button>
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+                } else {
+                    container.innerHTML = `<div style="color: #dc3545;">加载失败: ${result.error}</div>`;
+                }
+            } catch (error) {
+                container.innerHTML = `<div style="color: #dc3545;">加载失败: ${error.message}</div>`;
+            }
+        }
+        
+        // 编辑文章
+        function editArticle(articleId) {
+            // 切换到创建标签，加载文章数据
+            switchTab('create');
+            // TODO: 实现编辑功能
+            showAlert('编辑功能开发中...', 'error');
+        }
+        
+        // 删除文章
+        async function deleteArticle(articleId) {
+            if (!confirm('确定要删除这篇文章吗？')) {
+                return;
+            }
+            
+            try {
+                const response = await fetch(`/api/admin/articles/${articleId}`, {
+                    method: 'DELETE'
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showAlert('文章删除成功', 'success');
+                    loadArticlesList();
+                } else {
+                    showAlert('删除失败: ' + result.error, 'error');
+                }
+            } catch (error) {
+                showAlert('删除失败: ' + error.message, 'error');
+            }
+        }
+        
+        // 重置表单
+        function resetForm() {
+            document.getElementById('articleForm').reset();
+        }
+        
+        // 显示提示
+        function showAlert(message, type) {
+            const container = document.getElementById('alertContainer');
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type}`;
+            alert.textContent = message;
+            container.innerHTML = '';
+            container.appendChild(alert);
+            
+            setTimeout(() => {
+                alert.remove();
+            }, 3000);
+        }
+        
+        // 页面加载时检查登录
+        (async function() {
+            const isLoggedIn = await checkLoginStatus();
+            if (!isLoggedIn) {
+                window.location.href = '/admin/login';
+            }
+        })();
+    </script>
+</body>
+</html>
+

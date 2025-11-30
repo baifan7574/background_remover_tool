@@ -535,6 +535,26 @@
         </div>
     </section>
 
+    <!-- 社区文章区域 -->
+    <section class="community" id="community">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">社区文章</h2>
+                <p class="section-subtitle">跨境电商运营技巧与工具使用指南</p>
+            </div>
+            
+            <div id="articles-container" class="articles-grid">
+                <div class="loading">加载中...</div>
+            </div>
+            
+            <div id="articles-pagination" class="pagination" style="display: none; margin-top: 30px; text-align: center;">
+                <button id="prevPage" class="btn btn-outline" onclick="loadArticles(currentPage - 1)" disabled>上一页</button>
+                <span id="pageInfo" style="margin: 0 20px; color: #666;"></span>
+                <button id="nextPage" class="btn btn-outline" onclick="loadArticles(currentPage + 1)">下一页</button>
+            </div>
+        </div>
+    </section>
+
     <!-- 页脚 -->
     <footer class="footer">
         <div class="container">
@@ -1042,6 +1062,162 @@
                 }
             });
         })();
+        
+        // 文章加载功能
+        let currentPage = 1;
+        let totalPages = 1;
+        
+        async function loadArticles(page = 1) {
+            const container = document.getElementById('articles-container');
+            const pagination = document.getElementById('articles-pagination');
+            
+            if (!container) return;
+            
+            container.innerHTML = '<div class="loading">加载中...</div>';
+            
+            try {
+                const response = await fetch(`/api/articles?page=${page}&limit=6`);
+                const result = await response.json();
+                
+                if (result.success) {
+                    currentPage = result.page;
+                    totalPages = result.total_pages;
+                    
+                    if (result.articles.length === 0) {
+                        container.innerHTML = `
+                            <div style="text-align: center; padding: 60px 20px; color: #999;">
+                                <div style="font-size: 48px; margin-bottom: 20px;">📝</div>
+                                <div style="font-size: 18px; margin-bottom: 10px;">暂无文章</div>
+                                <div style="font-size: 14px;">文章发布后将显示在这里</div>
+                            </div>
+                        `;
+                        pagination.style.display = 'none';
+                        return;
+                    }
+                    
+                    // 显示文章列表
+                    container.innerHTML = result.articles.map(article => {
+                        const createdDate = new Date(article.created_at).toLocaleDateString('zh-CN');
+                        const categoryNames = {
+                            'tutorial': '教程',
+                            'tips': '技巧',
+                            'news': '资讯'
+                        };
+                        const categoryName = categoryNames[article.category] || '文章';
+                        
+                        return `
+                            <article class="article-card">
+                                <div class="article-header">
+                                    <span class="article-category">${categoryName}</span>
+                                    <span class="article-date">${createdDate}</span>
+                                </div>
+                                <h3 class="article-title">${article.title}</h3>
+                                <p class="article-summary">${article.summary}</p>
+                                <div class="article-footer">
+                                    <div class="article-meta">
+                                        <span class="article-author">👤 ${article.author}</span>
+                                        <span class="article-views">👁️ ${article.views || 0}</span>
+                                    </div>
+                                    <button class="btn btn-outline btn-sm" onclick="viewArticle('${article.id}')">阅读全文 →</button>
+                                </div>
+                            </article>
+                        `;
+                    }).join('');
+                    
+                    // 显示分页
+                    if (totalPages > 1) {
+                        pagination.style.display = 'block';
+                        document.getElementById('pageInfo').textContent = `第 ${currentPage} 页 / 共 ${totalPages} 页`;
+                        document.getElementById('prevPage').disabled = currentPage <= 1;
+                        document.getElementById('nextPage').disabled = currentPage >= totalPages;
+                    } else {
+                        pagination.style.display = 'none';
+                    }
+                } else {
+                    container.innerHTML = `<div style="text-align: center; padding: 40px; color: #999;">加载失败: ${result.error}</div>`;
+                }
+            } catch (error) {
+                container.innerHTML = `<div style="text-align: center; padding: 40px; color: #999;">加载失败: ${error.message}</div>`;
+            }
+        }
+        
+        function viewArticle(articleId) {
+            // 打开文章详情模态框
+            const modal = document.createElement('div');
+            modal.className = 'modal';
+            modal.id = 'articleModal';
+            modal.style.display = 'flex';
+            modal.innerHTML = `
+                <div class="modal-content" style="max-width: 800px; max-height: 90vh; overflow-y: auto;">
+                    <span class="modal-close" onclick="this.closest('.modal').remove()">&times;</span>
+                    <div class="modal-body" id="articleContent">
+                        <div class="loading">加载中...</div>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+            
+            // 加载文章内容
+            fetch(`/api/articles/${articleId}`)
+                .then(res => res.json())
+                .then(result => {
+                    if (result.success) {
+                        const article = result.article;
+                        const createdDate = new Date(article.created_at).toLocaleDateString('zh-CN');
+                        const categoryNames = {
+                            'tutorial': '教程',
+                            'tips': '技巧',
+                            'news': '资讯'
+                        };
+                        
+                        document.getElementById('articleContent').innerHTML = `
+                            <div class="article-detail">
+                                <div class="article-detail-header">
+                                    <h2>${article.title}</h2>
+                                    <div class="article-detail-meta">
+                                        <span>${categoryNames[article.category] || '文章'}</span>
+                                        <span>•</span>
+                                        <span>${article.author}</span>
+                                        <span>•</span>
+                                        <span>${createdDate}</span>
+                                        <span>•</span>
+                                        <span>${article.views || 0} 次阅读</span>
+                                    </div>
+                                </div>
+                                <div class="article-detail-content">
+                                    ${article.content.split('\n').map(p => `<p>${p}</p>`).join('')}
+                                </div>
+                                ${article.tags && article.tags.length > 0 ? `
+                                    <div class="article-tags">
+                                        ${article.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+                                    </div>
+                                ` : ''}
+                            </div>
+                        `;
+                    } else {
+                        document.getElementById('articleContent').innerHTML = `<div style="text-align: center; padding: 40px; color: #999;">加载失败: ${result.error}</div>`;
+                    }
+                })
+                .catch(error => {
+                    document.getElementById('articleContent').innerHTML = `<div style="text-align: center; padding: 40px; color: #999;">加载失败: ${error.message}</div>`;
+                });
+            
+            // 点击外部关闭
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    modal.remove();
+                }
+            });
+        }
+        
+        // 页面加载时加载文章
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => {
+                setTimeout(() => loadArticles(1), 500);
+            });
+        } else {
+            setTimeout(() => loadArticles(1), 500);
+        }
     </script>
 </body>
 </html>
