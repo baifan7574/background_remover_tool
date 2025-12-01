@@ -760,6 +760,7 @@ def admin_articles_page():
     return send_file('frontend/admin_articles.html')
 
 @app.route('/health')
+@app.route('/api/health')
 def health_check():
     """健康检查"""
     return jsonify({
