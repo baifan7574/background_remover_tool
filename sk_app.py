@@ -221,8 +221,12 @@ except Exception as e:
 # 导入数据持久化管理器
 try:
     from data_manager import DataManager
-    data_manager = DataManager()
+    # 使用绝对路径，确保数据文件在正确位置
+    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+    DATA_DIR = os.path.join(BASE_DIR, 'data')
+    data_manager = DataManager(data_dir=DATA_DIR)
     print("✅ 数据持久化管理器已加载")
+    print(f"📁 数据目录: {DATA_DIR}")
     
     # 从数据管理器加载订单数据（持久化）
     if hasattr(data_manager, 'orders_db'):
