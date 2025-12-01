@@ -411,6 +411,68 @@ def get_today_date():
     """获取今天的日期字符串"""
     return datetime.now().strftime('%Y-%m-%d')
 
+def get_max_file_size_by_plan(plan):
+    """根据会员类型获取文件大小限制（字节）"""
+    plan_limits = {
+        'free': 5 * 1024 * 1024,          # 5MB
+        'basic': 10 * 1024 * 1024,         # 10MB
+        'professional': 50 * 1024 * 1024,  # 50MB
+        'flagship': 100 * 1024 * 1024,     # 100MB
+        'enterprise': 500 * 1024 * 1024    # 500MB
+    }
+    return plan_limits.get(plan, 5 * 1024 * 1024)  # 默认5MB
+
+def check_file_size_by_user(user, file_size):
+    """检查文件大小是否超过用户会员类型限制
+    
+    Args:
+        user: 用户信息字典，需要包含完整的用户信息（包含plan字段）
+        file_size: 文件大小（字节）
+    
+    Returns:
+        (is_valid, error_message)
+        is_valid: True表示文件大小符合限制，False表示超过限制
+        error_message: 如果超过限制，返回错误信息
+    """
+    # 获取用户会员类型
+    user_id = user.get('id')
+    plan = 'free'  # 默认免费版
+    
+    # 优先使用数据管理器获取用户信息
+    if data_manager and user_id:
+        profile = data_manager.user_profiles_db.get(user_id)
+        if profile:
+            plan = profile.get('plan') or profile.get('membership_type') or 'free'
+    else:
+        # 备用：从user字典中获取
+        plan = user.get('plan') or user.get('membership_type') or 'free'
+    
+    max_size = get_max_file_size_by_plan(plan)
+    
+    if file_size > max_size:
+        plan_names = {
+            'free': '免费版',
+            'basic': '基础版',
+            'professional': '专业版',
+            'flagship': '旗舰版',
+            'enterprise': '企业版'
+        }
+        plan_limits_mb = {
+            'free': '5MB',
+            'basic': '10MB',
+            'professional': '50MB',
+            'flagship': '100MB',
+            'enterprise': '500MB'
+        }
+        plan_name = plan_names.get(plan, '免费版')
+        plan_limit = plan_limits_mb.get(plan, '5MB')
+        file_size_mb = f"{(file_size / (1024 * 1024)):.2f}"
+        
+        error_msg = f'图片文件过大！当前文件大小：{file_size_mb} MB，您的会员类型（{plan_name}）限制：{plan_limit}。请使用较小的图片，或升级会员以获得更大的文件大小限制。'
+        return False, error_msg
+    
+    return True, None
+
 def check_daily_usage_limit(user_id, tool_name):
     """检查用户今日使用次数是否超限（包含邀请奖励）"""
     # 优先使用数据管理器
@@ -1774,6 +1836,16 @@ def remove_background():
             if file and file.filename:
                 if not allowed_file(file.filename):
                     return jsonify({'error': '不支持的文件类型'}), 400
+                
+                # 检查文件大小（根据用户会员类型）
+                file.seek(0, os.SEEK_END)
+                file_size = file.tell()
+                file.seek(0)
+                
+                is_valid, error_msg = check_file_size_by_user(user, file_size)
+                if not is_valid:
+                    return jsonify({'error': error_msg}), 400
+                
                 filename = secure_filename(file.filename)
                 file_path = os.path.join(app.config['UPLOAD_FOLDER'], f"temp_{uuid.uuid4().hex[:8]}_{filename}")
                 file.save(file_path)
@@ -1791,6 +1863,13 @@ def remove_background():
                 if ',' in image_data:
                     image_data = image_data.split(',')[1]
                 image_bytes = base64.b64decode(image_data)
+                file_size = len(image_bytes)
+                
+                # 检查文件大小（根据用户会员类型）
+                is_valid, error_msg = check_file_size_by_user(user, file_size)
+                if not is_valid:
+                    return jsonify({'error': error_msg}), 400
+                
                 input_image = Image.open(io.BytesIO(image_bytes))
                 filename = f"upload_{uuid.uuid4().hex[:8]}.png"
             except Exception as e:
@@ -1973,6 +2052,7 @@ def image_compressor():
         # 支持两种上传方式：file和base64
         input_image = None
         filename = None
+        file_size = 0
         
         # 方式1: 从文件上传
         if 'file' in request.files:
@@ -1980,6 +2060,16 @@ def image_compressor():
             if file and file.filename:
                 if not allowed_file(file.filename):
                     return jsonify({'error': '不支持的文件类型'}), 400
+                
+                # 检查文件大小（根据用户会员类型）
+                file.seek(0, os.SEEK_END)
+                file_size = file.tell()
+                file.seek(0)
+                
+                is_valid, error_msg = check_file_size_by_user(user, file_size)
+                if not is_valid:
+                    return jsonify({'error': error_msg}), 400
+                
                 filename = secure_filename(file.filename)
                 file_path = os.path.join(app.config['UPLOAD_FOLDER'], f"temp_{uuid.uuid4().hex[:8]}_{filename}")
                 file.save(file_path)
@@ -1997,6 +2087,13 @@ def image_compressor():
                 if ',' in image_data:
                     image_data = image_data.split(',')[1]
                 image_bytes = base64.b64decode(image_data)
+                file_size = len(image_bytes)
+                
+                # 检查文件大小（根据用户会员类型）
+                is_valid, error_msg = check_file_size_by_user(user, file_size)
+                if not is_valid:
+                    return jsonify({'error': error_msg}), 400
+                
                 input_image = Image.open(io.BytesIO(image_bytes))
                 filename = f"upload_{uuid.uuid4().hex[:8]}.png"
             except Exception as e:
