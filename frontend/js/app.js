@@ -1281,6 +1281,20 @@ class AppManager {
             return;
         }
 
+        // 检查文件大小限制
+        const maxSize = this.getMaxFileSize();
+        if (file.size > maxSize) {
+            const maxSizeMB = (maxSize / (1024 * 1024)).toFixed(1);
+            const fileSizeMB = (file.size / (1024 * 1024)).toFixed(1);
+            this.showError(
+                `图片文件过大！\n\n` +
+                `当前文件大小：${fileSizeMB} MB\n` +
+                `您的会员类型限制：${maxSizeMB} MB\n\n` +
+                `请使用较小的图片，或升级会员以获得更大的文件大小限制。`
+            );
+            return;
+        }
+
         const uploadArea = document.getElementById('uploadArea');
         const fileName = document.getElementById('fileName');
         const fileSize = document.getElementById('fileSize');
@@ -1305,8 +1319,60 @@ class AppManager {
         this.processImage(file);
     }
 
+    getMaxFileSize() {
+        // 获取用户会员类型对应的文件大小限制
+        const user = this.authManager.getUser();
+        const plan = user?.plan || 'free';
+        
+        // 会员类型对应的文件大小限制（字节）
+        const planLimits = {
+            'free': 5 * 1024 * 1024,      // 5MB
+            'basic': 10 * 1024 * 1024,    // 10MB
+            'professional': 50 * 1024 * 1024,  // 50MB
+            'flagship': 100 * 1024 * 1024,    // 100MB
+            'enterprise': 500 * 1024 * 1024   // 500MB
+        };
+        
+        // 默认使用16MB（后端限制）
+        return planLimits[plan] || 16 * 1024 * 1024;
+    }
+
     handleBatchFileSelect(files) {
-        const validFiles = Array.from(files).filter(file => this.validateFile(file));
+        const maxSize = this.getMaxFileSize();
+        const validFiles = [];
+        const tooLargeFiles = [];
+        
+        Array.from(files).forEach(file => {
+            if (!this.validateFile(file)) {
+                return;
+            }
+            
+            // 检查文件大小
+            if (file.size > maxSize) {
+                tooLargeFiles.push({
+                    name: file.name,
+                    size: file.size,
+                    maxSize: maxSize
+                });
+            } else {
+                validFiles.push(file);
+            }
+        });
+        
+        // 如果有文件太大，显示错误提示
+        if (tooLargeFiles.length > 0) {
+            const maxSizeMB = (maxSize / (1024 * 1024)).toFixed(1);
+            const fileList = tooLargeFiles.map(f => {
+                const fileSizeMB = (f.size / (1024 * 1024)).toFixed(1);
+                return `${f.name} (${fileSizeMB} MB)`;
+            }).join('\n');
+            
+            this.showError(
+                `以下图片文件过大：\n\n${fileList}\n\n` +
+                `您的会员类型限制：${maxSizeMB} MB\n\n` +
+                `请使用较小的图片，或升级会员以获得更大的文件大小限制。`
+            );
+        }
         
         if (validFiles.length === 0) {
             return;
@@ -1834,6 +1900,12 @@ class AppManager {
             return result.processed_image || result.converted_image || result.cropped_image;
         } else {
             const errorMsg = result.error || '处理失败';
+            
+            // 检查是否是文件太大错误（413）
+            if (response.status === 413 || errorMsg.includes('文件过大') || errorMsg.includes('太大') || errorMsg.includes('超过限制')) {
+                this.showError(errorMsg);
+                throw new Error(errorMsg);
+            }
             
             // 检查是否是使用次数达到上限
             if (response.status === 400 && (errorMsg.includes('今日使用次数已达上限') || errorMsg.includes('使用次数已达上限'))) {
@@ -2911,10 +2983,30 @@ class AppManager {
             return false;
         }
 
-        // 检查文件大小
-        const maxSize = 16 * 1024 * 1024; // 16MB
+        // 检查文件大小（使用用户会员类型对应的限制）
+        const maxSize = this.getMaxFileSize();
         if (file.size > maxSize) {
-            this.showError('文件大小超过限制，请选择小于 16MB 的图片');
+            const maxSizeMB = (maxSize / (1024 * 1024)).toFixed(1);
+            const fileSizeMB = (file.size / (1024 * 1024)).toFixed(1);
+            
+            // 获取用户会员类型名称
+            const user = this.authManager.getUser();
+            const plan = user?.plan || 'free';
+            const planNames = {
+                'free': '免费版',
+                'basic': '基础版',
+                'professional': '专业版',
+                'flagship': '旗舰版',
+                'enterprise': '企业版'
+            };
+            const planName = planNames[plan] || '免费版';
+            
+            this.showError(
+                `图片文件过大！\n\n` +
+                `当前文件大小：${fileSizeMB} MB\n` +
+                `您的会员类型（${planName}）限制：${maxSizeMB} MB\n\n` +
+                `请使用较小的图片，或升级会员以获得更大的文件大小限制。`
+            );
             return false;
         }
 
@@ -3344,8 +3436,29 @@ class AppManager {
             friendlyMessage = '网络连接失败，请检查您的网络连接后重试';
         } else if (message.includes('超时') || message.includes('timeout')) {
             friendlyMessage = '处理超时，请稍后重试或尝试使用较小的图片';
-        } else if (message.includes('大小') || message.includes('size')) {
-            friendlyMessage = '图片文件过大，请使用小于16MB的图片';
+        } else if (message.includes('大小') || message.includes('size') || message.includes('太大') || message.includes('过大') || message.includes('413')) {
+            // 获取用户会员类型和对应的限制
+            const user = this.authManager.getUser();
+            const plan = user?.plan || 'free';
+            const planNames = {
+                'free': '免费版',
+                'basic': '基础版',
+                'professional': '专业版',
+                'flagship': '旗舰版',
+                'enterprise': '企业版'
+            };
+            const planLimits = {
+                'free': '5MB',
+                'basic': '10MB',
+                'professional': '50MB',
+                'flagship': '100MB',
+                'enterprise': '500MB'
+            };
+            const planName = planNames[plan] || '免费版';
+            const planLimit = planLimits[plan] || '5MB';
+            friendlyMessage = `图片文件过大！\n\n` +
+                `您的会员类型（${planName}）限制：${planLimit}\n\n` +
+                `请使用较小的图片，或升级会员以获得更大的文件大小限制。`;
         } else if (message.includes('格式') || message.includes('format')) {
             friendlyMessage = '不支持的图片格式，请使用JPG、PNG或WebP格式';
         } else if (message.includes('登录') || message.includes('auth')) {

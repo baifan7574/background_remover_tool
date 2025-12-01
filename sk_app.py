@@ -5863,7 +5863,38 @@ def get_invite_stats():
 
 @app.errorhandler(413)
 def too_large(e):
-    return jsonify({'error': '文件太大，最大支持16MB'}), 413
+    """文件太大错误处理"""
+    # 尝试获取用户信息，以便提供更友好的错误提示
+    try:
+        user = get_user_from_token()
+        if user:
+            plan = user.get('plan', 'free')
+            plan_limits = {
+                'free': '5MB',
+                'basic': '10MB',
+                'professional': '50MB',
+                'flagship': '100MB',
+                'enterprise': '500MB'
+            }
+            plan_limit = plan_limits.get(plan, '5MB')
+            plan_names = {
+                'free': '免费版',
+                'basic': '基础版',
+                'professional': '专业版',
+                'flagship': '旗舰版',
+                'enterprise': '企业版'
+            }
+            plan_name = plan_names.get(plan, '免费版')
+            return jsonify({
+                'error': f'图片文件过大！您的会员类型（{plan_name}）限制：{plan_limit}。请使用较小的图片，或升级会员以获得更大的文件大小限制。'
+            }), 413
+    except:
+        pass
+    
+    # 如果无法获取用户信息，返回通用错误
+    return jsonify({
+        'error': '图片文件过大！免费版限制：5MB，基础版限制：10MB。请使用较小的图片，或升级会员以获得更大的文件大小限制。'
+    }), 413
 
 @app.errorhandler(404)
 def not_found(e):
