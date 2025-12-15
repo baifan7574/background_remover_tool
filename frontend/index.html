@@ -44,6 +44,7 @@
     
     <!-- CSS样式表 -->
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/cookie-consent.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
     <!-- JavaScript库（异步加载，不阻塞页面渲染） -->
@@ -597,6 +598,7 @@
                         <li><a href="privacy.html">隐私政策</a></li>
                         <li><a href="cookie.html">Cookie政策</a></li>
                         <li><a href="refund.html">退款政策</a></li>
+                        <li><a href="#" onclick="if(window.cookieConsent) { window.cookieConsent.showCustomSettings(); return false; }" class="cookie-settings-link">Cookie设置</a></li>
                     </ul>
                 </div>
             </div>
@@ -991,6 +993,7 @@
     <!-- 核心JavaScript（延迟加载，不阻塞页面渲染） -->
     <script src="js/auth.js" defer></script>
     <script src="js/app.js" defer></script>
+    <script src="js/cookie-consent.js"></script>
     <script>
         // 确保页面加载完成后初始化
         (function() {
