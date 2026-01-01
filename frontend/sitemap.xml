@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
+        http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+    
+    <!-- 首页 -->
+    <url>
+        <loc>https://nbfive.com/</loc>
+        <lastmod>2025-12-01</lastmod>
+        <changefreq>daily</changefreq>
+        <priority>1.0</priority>
+    </url>
+    
+    <!-- 工具页面 -->
+    <url>
+        <loc>https://nbfive.com/index.html#tools</loc>
+        <lastmod>2025-12-01</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.9</priority>
+    </url>
+    
+    <!-- 定价页面 -->
+    <url>
+        <loc>https://nbfive.com/index.html#pricing</loc>
+        <lastmod>2025-12-01</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    
+    <!-- 关于我们 -->
+    <url>
+        <loc>https://nbfive.com/about.html</loc>
+        <lastmod>2025-12-02</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    
+    <!-- 服务条款 -->
+    <url>
+        <loc>https://nbfive.com/terms.html</loc>
+        <lastmod>2025-12-03</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.5</priority>
+    </url>
+    
+    <!-- 隐私政策 -->
+    <url>
+        <loc>https://nbfive.com/privacy.html</loc>
+        <lastmod>2025-12-04</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.5</priority>
+    </url>
+    
+    <!-- 联系我们 -->
+    <url>
+        <loc>https://nbfive.com/contact.html</loc>
+        <lastmod>2025-12-04</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.6</priority>
+    </url>
+    
+    <!-- 常见问题 -->
+    <url>
+        <loc>https://nbfive.com/faq.html</loc>
+        <lastmod>2025-12-04</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    
+    <!-- 帮助中心 -->
+    <url>
+        <loc>https://nbfive.com/help.html</loc>
+        <lastmod>2025-12-05</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    
+    <!-- 使用教程 -->
+    <url>
+        <loc>https://nbfive.com/tutorial.html</loc>
+        <lastmod>2025-12-06</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    
+    <!-- 动态内容：跨境电商干货文章 -->
+    <url>
+        <loc>https://nbfive.com/article.html?id=2024跨境电商小包物流软件哪个价格最低</loc>
+        <lastmod>2025-12-25</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://nbfive.com/article.html?id=亚马逊FBA费用计算器在线工具怎么使用</loc>
+        <lastmod>2025-12-25</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://nbfive.com/article.html?id=亚马逊关键词挖掘工具中文版哪个最好用</loc>
+        <lastmod>2025-12-25</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://nbfive.com/article.html?id=亚马逊选品工具哪个数据分析最准确</loc>
+        <lastmod>2025-12-25</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://nbfive.com/article.html?id=免费跨境电商ERP系统哪个支持多店铺管理</loc>
+        <lastmod>2025-12-25</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://nbfive.com/article.html?id=卖家精灵和Jungle_Scout区别对比哪个更适合新手</loc>
+        <lastmod>2025-12-25</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://nbfive.com/article.html?id=独立站客服聊天工具推荐支持多语言实时翻译</loc>
+        <lastmod>2025-12-25</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://nbfive.com/article.html?id=独立站建站工具Shopify和Shoplazza哪个更适合中国卖家</loc>
+        <lastmod>2025-12-25</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://nbfive.com/article.html?id=跨境收款工具费率对比哪家最划算</loc>
+        <lastmod>2025-12-25</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://nbfive.com/article.html?id=跨境电商1688铺货工具怎么自动抓取商品</loc>
+        <lastmod>2025-12-25</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://nbfive.com/article.html?id=跨境电商listing批量上传工具推荐</loc>
+        <lastmod>2025-12-25</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://nbfive.com/article.html?id=跨境电商listing翻译工具哪个支持小语种</loc>
+        <lastmod>2025-12-25</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://nbfive.com/article.html?id=跨境电商VAT计算工具哪个能自动申报</loc>
+        <lastmod>2025-12-25</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://nbfive.com/article.html?id=跨境电商库存管理系统如何做到精准预警</loc>
+        <lastmod>2025-12-25</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://nbfive.com/article.html?id=跨境电商新手必备的免费运营工具有哪些</loc>
+        <lastmod>2025-12-25</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://nbfive.com/article.html?id=跨境电商竞争对手数据监控工具有哪些</loc>
+        <lastmod>2025-12-25</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://nbfive.com/article.html?id=跨境电商索评邮件工具是否会被平台封号</loc>
+        <lastmod>2025-12-25</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://nbfive.com/article.html?id=跨境电商自动调价工具有哪些功能</loc>
+        <lastmod>2025-12-25</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://nbfive.com/article.html?id=跨境电商运营培训课程哪个机构的工具包好用</loc>
+        <lastmod>2025-12-25</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://nbfive.com/article.html?id=跨境电商退货处理流程自动化工具有推荐吗</loc>
+        <lastmod>2025-12-25</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    
+</urlset>
+

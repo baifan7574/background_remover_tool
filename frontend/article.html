@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }} - PixelMagic 博客</title>
+    <meta name="description" content="{{ summary }}">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .article-header {
+            background-color: #f8f9fa;
+            padding: 60px 0;
+            text-align: center;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .article-title {
+            max-width: 800px;
+            margin: 0 auto 20px;
+            font-size: 2.5rem;
+            color: #2d3748;
+            line-height: 1.2;
+        }
+
+        .article-meta {
+            color: #718096;
+            font-size: 1rem;
+        }
+
+        .content-container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #2d3748;
+        }
+
+        /* Markdown Content Styles */
+        .content-container h1,
+        .content-container h2,
+        .content-container h3 {
+            color: #1a202c;
+            margin-top: 40px;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .content-container h2 {
+            font-size: 1.8rem;
+            border-bottom: 2px solid #edf2f7;
+            padding-bottom: 10px;
+        }
+
+        .content-container h3 {
+            font-size: 1.5rem;
+        }
+
+        .content-container p {
+            margin-bottom: 20px;
+        }
+
+        .content-container ul,
+        .content-container ol {
+            margin-bottom: 20px;
+            padding-left: 20px;
+        }
+
+        .content-container li {
+            margin-bottom: 10px;
+        }
+
+        .content-container a {
+            color: #4299e1;
+            text-decoration: underline;
+        }
+
+        .content-container blockquote {
+            border-left: 4px solid #4299e1;
+            background-color: #ebf8ff;
+            padding: 15px 20px;
+            margin: 20px 0;
+            font-style: italic;
+            color: #2c5282;
+        }
+
+        .content-container code {
+            background-color: #edf2f7;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 0.9em;
+        }
+
+        .cta-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+            margin: 40px 0;
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.2);
+        }
+
+        .cta-box h3 {
+            margin-top: 0;
+            color: white;
+        }
+
+        .cta-btn {
+            display: inline-block;
+            background: white;
+            color: #667eea;
+            padding: 12px 30px;
+            border-radius: 30px;
+            font-weight: bold;
+            text-decoration: none;
+            margin-top: 15px;
+            transition: transform 0.2s;
+        }
+
+        .cta-btn:hover {
+            transform: scale(1.05);
+            text-decoration: none;
+            color: #5a67d8;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <span class="brand-icon">🎨</span>
+                <span class="brand-text">PixelMagic</span>
+            </div>
+            <div class="nav-menu">
+                <a href="/" class="nav-link">首页</a>
+                <a href="/#tools" class="nav-link">工具</a>
+                <a href="/#pricing" class="nav-link">定价</a>
+                <a href="/blog" class="nav-link active">博客</a>
+            </div>
+            <div class="nav-auth">
+                <a href="/" class="btn btn-outline">返回首页</a>
+            </div>
+        </div>
+    </nav>
+
+    <header class="article-header">
+        <div class="container">
+            <h1 class="article-title">{{ title }}</h1>
+            <div class="article-meta">
+                <span>发布日期: {{ date }}</span>
+            </div>
+        </div>
+    </header>
+
+    <article class="content-container">
+        {{ content|safe }}
+
+        <div class="cta-box">
+            <h3>想要快速处理产品图片？</h3>
+            <p>使用 PixelMagic AI 背景移除工具，一键提升图片质量！</p>
+            <a href="/" class="cta-btn">立即免费试用</a>
+        </div>
+    </article>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-bottom">
+                <p>&copy; 2024 PixelMagic. 保留所有权利。</p>
+            </div>
+        </div>
+    </footer>
+</body>
+
+</html>

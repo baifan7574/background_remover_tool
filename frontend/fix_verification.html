@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>功能修复验证</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .test-section {
+            background: white;
+            margin: 20px 0;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .test-btn {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .test-btn:hover {
+            background: #0056b3;
+        }
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+        .info { background: #d1ecf1; color: #0c5460; }
+    </style>
+</head>
+<body>
+    <h1>功能修复验证测试</h1>
+    
+    <div class="test-section">
+        <h2>1. 模态框元素测试</h2>
+        <p>测试模态框标题元素是否正确获取</p>
+        <button class="test-btn" onclick="testModalElements()">测试模态框元素</button>
+        <div id="modalTestResult"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>2. 工具按钮测试</h2>
+        <p>测试各个工具按钮是否能正常点击</p>
+        <button class="test-btn" onclick="testToolButtons()">测试工具按钮</button>
+        <div id="toolTestResult"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>3. 批量处理测试</h2>
+        <p>测试批量处理模式切换</p>
+        <button class="test-btn" onclick="testBatchMode()">测试批量模式</button>
+        <div id="batchTestResult"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>4. API路径测试</h2>
+        <p>测试API路径是否正确</p>
+        <button class="test-btn" onclick="testAPIPaths()">测试API路径</button>
+        <div id="apiTestResult"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>5. 事件绑定测试</h2>
+        <p>测试事件是否正确绑定</p>
+        <button class="test-btn" onclick="testEventBinding()">测试事件绑定</button>
+        <div id="eventTestResult"></div>
+    </div>
+
+    <script>
+        function showResult(elementId, message, type = 'info') {
+            const element = document.getElementById(elementId);
+            element.innerHTML = `<div class="status ${type}">${message}</div>`;
+        }
+
+        function testModalElements() {
+            try {
+                // 检查模态框元素是否存在
+                const modal = document.getElementById('toolModal');
+                const modalTitle = document.getElementById('modalTitle');
+                
+                if (modal && modalTitle) {
+                    showResult('modalTestResult', '✅ 模态框元素检查通过：toolModal 和 modalTitle 都存在', 'success');
+                } else {
+                    const missing = [];
+                    if (!modal) missing.push('toolModal');
+                    if (!modalTitle) missing.push('modalTitle');
+                    showResult('modalTestResult', `❌ 缺少元素: ${missing.join(', ')}`, 'error');
+                }
+            } catch (error) {
+                showResult('modalTestResult', `❌ 测试失败: ${error.message}`, 'error');
+            }
+        }
+
+        function testToolButtons() {
+            try {
+                // 检查工具按钮是否存在
+                const toolButtons = document.querySelectorAll('.tool-btn');
+                const toolCards = document.querySelectorAll('.tool-card');
+                
+                let message = `✅ 找到 ${toolButtons.length} 个工具按钮，${toolCards.length} 个工具卡片\n`;
+                
+                // 检查按钮是否有正确的data-tool属性
+                let validButtons = 0;
+                toolButtons.forEach(btn => {
+                    if (btn.dataset.tool || btn.getAttribute('data-tool')) {
+                        validButtons++;
+                    }
+                });
+                
+                message += `✅ ${validButtons} 个按钮有正确的工具类型属性`;
+                showResult('toolTestResult', message, 'success');
+            } catch (error) {
+                showResult('toolTestResult', `❌ 测试失败: ${error.message}`, 'error');
+            }
+        }
+
+        function testBatchMode() {
+            try {
+                // 检查批量处理相关元素
+                const batchModeToggle = document.getElementById('batchMode');
+                const batchUploadArea = document.getElementById('batchUploadArea');
+                const batchFileList = document.getElementById('batchFileList');
+                
+                const elements = [
+                    { name: '批量模式开关', element: batchModeToggle },
+                    { name: '批量上传区域', element: batchUploadArea },
+                    { name: '批量文件列表', element: batchFileList }
+                ];
+                
+                const existing = elements.filter(item => item.element);
+                const missing = elements.filter(item => !item.element);
+                
+                if (missing.length === 0) {
+                    showResult('batchTestResult', '✅ 所有批量处理元素都存在', 'success');
+                } else {
+                    showResult('batchTestResult', `❌ 缺少元素: ${missing.map(item => item.name).join(', ')}`, 'error');
+                }
+            } catch (error) {
+                showResult('batchTestResult', `❌ 测试失败: ${error.message}`, 'error');
+            }
+        }
+
+        async function testAPIPaths() {
+            try {
+                const apiPaths = [
+                    '/api/tools/background-remover',
+                    '/api/tools/image-compressor', 
+                    '/api/tools/convert-format',
+                    '/api/tools/image-cropper'
+                ];
+                
+                let results = [];
+                for (const path of apiPaths) {
+                    try {
+                        const response = await fetch(`http://localhost:5000${path}`, {
+                            method: 'OPTIONS'
+                        });
+                        results.push(`${path}: ${response.status}`);
+                    } catch (error) {
+                        results.push(`${path}: 连接失败`);
+                    }
+                }
+                
+                showResult('apiTestResult', `API路径测试结果:\n${results.join('\n')}`, 'info');
+            } catch (error) {
+                showResult('apiTestResult', `❌ 测试失败: ${error.message}`, 'error');
+            }
+        }
+
+        function testEventBinding() {
+            try {
+                // 检查AppManager是否存在
+                if (typeof appManager === 'undefined') {
+                    showResult('eventTestResult', '❌ AppManager 未定义，可能需要先加载主页面', 'error');
+                    return;
+                }
+                
+                // 检查关键方法是否存在
+                const methods = [
+                    'openTool',
+                    'setupToolOptions', 
+                    'setupFileUpload',
+                    'toggleBatchMode',
+                    'handleBatchFileSelect'
+                ];
+                
+                const existing = methods.filter(method => typeof appManager[method] === 'function');
+                const missing = methods.filter(method => typeof appManager[method] !== 'function');
+                
+                if (missing.length === 0) {
+                    showResult('eventTestResult', '✅ 所有关键方法都存在', 'success');
+                } else {
+                    showResult('eventTestResult', `❌ 缺少方法: ${missing.join(', ')}`, 'error');
+                }
+            } catch (error) {
+                showResult('eventTestResult', `❌ 测试失败: ${error.message}`, 'error');
+            }
+        }
+
+        // 页面加载完成后自动运行基础测试
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                testModalElements();
+                testToolButtons();
+                testBatchMode();
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

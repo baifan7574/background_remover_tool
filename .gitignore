@@ -1,0 +1,42 @@
+# 忽略备份和临时文件
+*.backup
+*.tmp
+*.zip
+*.log
+*.pyc
+*.txt
+*.png
+*.jpg
+__pycache__/
+
+# 忽略本地测试数据
+uploads/
+temp_deploy/
+verify_output.txt
+regression_test_result.txt
+data/
+
+# 忽略用户个人的每日文件夹和非核心MD文档
+每日工作*/
+*说明.md
+*指南.md
+*报告.md
+*排查.md
+分析.md
+manifesto.md
+task.md
+implementation_plan.md
+Project_CangQiong_Archive.txt
+
+# 忽略系统文件
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# 忽略环境配置（保护隐私）
+.env
+.venv/
+venv/
+
+# 忽略旧的备份文件夹
+_old_website_backup/

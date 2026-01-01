@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>格式转换测试</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .test-button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px;
+        }
+        .test-button:hover {
+            background: #0056b3;
+        }
+        #results {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>格式转换功能测试</h1>
+    
+    <button class="test-button" onclick="testAPI()">测试API连接</button>
+    <button class="test-button" onclick="testFormatConversion()">测试格式转换</button>
+    <button class="test-button" onclick="simulateClick()">模拟点击格式转换卡片</button>
+    
+    <div id="results"></div>
+
+    <script>
+        const API_BASE_URL = 'http://localhost:5000';
+        
+        function log(message) {
+            const results = document.getElementById('results');
+            results.innerHTML += '<div>' + new Date().toLocaleTimeString() + ': ' + message + '</div>';
+            console.log(message);
+        }
+        
+        async function testAPI() {
+            log('开始测试API连接...');
+            
+            try {
+                const response = await fetch(API_BASE_URL + '/api/tools/convert-format', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        test: true
+                    })
+                });
+                
+                if (response.ok) {
+                    log('✅ API连接成功');
+                } else {
+                    log('❌ API响应错误: ' + response.status);
+                }
+            } catch (error) {
+                log('❌ API连接失败: ' + error.message);
+            }
+        }
+        
+        async function testFormatConversion() {
+            log('开始测试格式转换功能...');
+            
+            // 创建一个测试图片
+            const canvas = document.createElement('canvas');
+            canvas.width = 100;
+            canvas.height = 100;
+            const ctx = canvas.getContext('2d');
+            ctx.fillStyle = 'red';
+            ctx.fillRect(0, 0, 100, 100);
+            
+            canvas.toBlob(async (blob) => {
+                const formData = new FormData();
+                formData.append('image', blob, 'test.png');
+                formData.append('output_format', 'jpg');
+                formData.append('quality', '0.8');
+                
+                try {
+                    const response = await fetch(API_BASE_URL + '/api/tools/convert-format', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    
+                    if (response.ok) {
+                        const result = await response.json();
+                        log('✅ 格式转换成功: ' + JSON.stringify(result));
+                    } else {
+                        const error = await response.text();
+                        log('❌ 格式转换失败: ' + error);
+                    }
+                } catch (error) {
+                    log('❌ 格式转换错误: ' + error.message);
+                }
+            }, 'image/png');
+        }
+        
+        function simulateClick() {
+            log('模拟点击格式转换卡片...');
+            
+            // 创建一个模拟的按钮元素
+            const mockButton = {
+                dataset: { tool: 'format_converter' },
+                getAttribute: function(attr) { return this.dataset[attr.replace('data-', '')]; }
+            };
+            
+            // 尝试调用openTool函数
+            if (typeof window.openTool === 'function') {
+                window.openTool('format_converter');
+                log('✅ 调用了openTool函数');
+            } else {
+                log('❌ openTool函数不存在');
+            }
+        }
+        
+        // 页面加载完成后自动测试
+        window.addEventListener('load', function() {
+            log('页面加载完成');
+            setTimeout(testAPI, 1000);
+        });
+    </script>
+</body>
+</html>

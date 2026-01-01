@@ -1,0 +1,18 @@
+[Unit]
+Description=NBFive Background Remover Tool (Gunicorn)
+After=network.target
+
+[Service]
+User=root
+WorkingDirectory=/home/lighthouse/background_remover_tool
+# ExecStart using Gunicorn: 1 worker only due to memory constraints (rembg is heavy), binding to port 5000, 300s timeout
+ExecStart=/usr/local/bin/gunicorn -w 1 -b 0.0.0.0:5000 sk_app:app --timeout 300 --graceful-timeout 300
+Restart=always
+RestartSec=3
+Environment=PYTHONUNBUFFERED=1
+Environment=PYTHONPATH=/home/lighthouse/background_remover_tool
+StandardOutput=append:/home/lighthouse/background_remover_tool/sk_app_systemd.log
+StandardError=append:/home/lighthouse/background_remover_tool/sk_app_systemd.log
+
+[Install]
+WantedBy=multi-user.target

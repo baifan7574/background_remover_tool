@@ -1,0 +1,1060 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>订单管理后台</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 24px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #eee;
+        }
+
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border: none;
+            background: none;
+            font-size: 16px;
+            color: #666;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -2px;
+        }
+
+        .tab.active {
+            color: #1890ff;
+            border-bottom-color: #1890ff;
+        }
+
+        .tab:hover {
+            color: #1890ff;
+        }
+
+        .orders-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .order-card {
+            border: 1px solid #e8e8e8;
+            border-radius: 6px;
+            padding: 20px;
+            background: #fafafa;
+        }
+
+        .order-card.pending {
+            border-left: 4px solid #ff9800;
+        }
+
+        .order-card.paid {
+            border-left: 4px solid #4caf50;
+        }
+
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .order-info {
+            flex: 1;
+        }
+
+        .order-no {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .order-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 12px;
+            margin-bottom: 15px;
+            color: #666;
+            font-size: 14px;
+            padding: 15px;
+            background: white;
+            border-radius: 6px;
+            border: 1px solid #f0f0f0;
+        }
+
+        .order-detail-item {
+            display: flex;
+            align-items: center;
+        }
+
+        .order-detail-label {
+            font-weight: 600;
+            margin-right: 8px;
+            color: #666;
+            min-width: 80px;
+        }
+
+        .order-amount {
+            font-size: 24px;
+            font-weight: bold;
+            color: #1890ff;
+            text-align: right;
+        }
+
+        .order-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: #1890ff;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #40a9ff;
+        }
+
+        .btn-success {
+            background: #52c41a;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #73d13d;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .status-pending {
+            background: #fff7e6;
+            color: #d46b08;
+        }
+
+        .status-paid {
+            background: #f6ffed;
+            color: #389e0d;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+        }
+
+        .empty-state-icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+        }
+
+        .refresh-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: #1890ff;
+            color: white;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s;
+        }
+
+        .refresh-btn:hover {
+            background: #40a9ff;
+            transform: scale(1.1);
+        }
+
+        /* 移动端响应式设计 */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+                /* 防止移动端缩放 */
+                -webkit-text-size-adjust: 100%;
+            }
+
+            .container {
+                padding: 15px;
+                border-radius: 0;
+                /* 确保在手机上不会超出屏幕 */
+                max-width: 100%;
+                overflow-x: hidden;
+            }
+
+            h1 {
+                font-size: 20px;
+                margin-bottom: 20px;
+                /* 防止文字被截断 */
+                word-break: break-word;
+            }
+
+            /* 统计卡片在手机上横向滚动 */
+            #statsPanel {
+                display: flex;
+                overflow-x: auto;
+                gap: 10px;
+                padding-bottom: 10px;
+                -webkit-overflow-scrolling: touch;
+                scrollbar-width: none;
+                /* Firefox */
+            }
+
+            #statsPanel::-webkit-scrollbar {
+                display: none;
+                /* Chrome/Safari */
+            }
+
+            #statsPanel>div {
+                min-width: 140px;
+                flex-shrink: 0;
+                padding: 15px;
+            }
+
+            #statsPanel>div>div:first-child {
+                font-size: 12px;
+            }
+
+            #statsPanel>div>div:last-child {
+                font-size: 22px;
+            }
+
+            /* 顶部标题和按钮在手机上堆叠 */
+            .container>div:first-child {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            .container>div:first-child>div {
+                width: 100%;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            /* 标签页在手机上可以横向滚动 */
+            .tabs {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                scrollbar-width: none;
+            }
+
+            .tabs::-webkit-scrollbar {
+                display: none;
+            }
+
+            .tab {
+                padding: 10px 15px;
+                font-size: 14px;
+                white-space: nowrap;
+                flex-shrink: 0;
+            }
+
+            /* 订单卡片在手机上优化 */
+            .order-card {
+                padding: 15px;
+            }
+
+            .order-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+
+            .order-amount {
+                font-size: 18px;
+                align-self: flex-end;
+            }
+
+            .order-details {
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
+
+            .order-detail-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 4px;
+            }
+
+            .order-detail-label {
+                font-size: 12px;
+            }
+
+            .order-no {
+                font-size: 16px;
+                word-break: break-all;
+            }
+
+            /* 按钮在手机上更大，更容易点击 */
+            .btn {
+                padding: 12px 20px;
+                font-size: 16px;
+                min-height: 44px;
+                /* iOS推荐的最小点击区域 */
+                width: 100%;
+                /* 优化触摸体验 */
+                -webkit-tap-highlight-color: rgba(24, 144, 255, 0.2);
+                touch-action: manipulation;
+                /* 防止双击缩放 */
+            }
+
+            .order-actions {
+                width: 100%;
+            }
+
+            .order-actions .btn {
+                width: 100%;
+            }
+
+            /* 批量操作栏在手机上优化 */
+            #batchActions {
+                padding: 12px;
+            }
+
+            #batchActions>div {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            #batchActions .btn {
+                width: 100%;
+            }
+
+            /* 刷新按钮在手机上调整位置 */
+            .refresh-btn {
+                width: 50px;
+                height: 50px;
+                bottom: 20px;
+                right: 20px;
+                font-size: 18px;
+            }
+        }
+
+        /* 超小屏幕优化（小于400px） */
+        @media (max-width: 400px) {
+            .container {
+                padding: 10px;
+            }
+
+            #statsPanel>div {
+                min-width: 120px;
+                padding: 12px;
+            }
+
+            #statsPanel>div>div:last-child {
+                font-size: 20px;
+            }
+
+            h1 {
+                font-size: 18px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h1 style="margin: 0;">📦 订单管理后台</h1>
+            <div>
+                <span id="adminUsername" style="margin-right: 15px; color: #666;"></span>
+                <button class="btn btn-secondary" onclick="logout()" style="padding: 8px 16px;">退出登录</button>
+            </div>
+        </div>
+
+        <!-- 数据统计面板（可点击查询） -->
+        <div id="statsPanel"
+            style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 30px;">
+            <div onclick="queryByStat('all')"
+                style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; border-radius: 8px; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;"
+                onmouseover="this.style.transform='scale(1.05)'; this.style.boxShadow='0 4px 12px rgba(0,0,0,0.15)'"
+                onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='none'">
+                <div style="font-size: 14px; opacity: 0.9;">总订单数</div>
+                <div style="font-size: 28px; font-weight: bold; margin-top: 5px;" id="statTotalOrders">0</div>
+                <div style="font-size: 12px; opacity: 0.8; margin-top: 5px;">点击查看全部</div>
+            </div>
+            <div onclick="queryByStat('pending')"
+                style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; padding: 20px; border-radius: 8px; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;"
+                onmouseover="this.style.transform='scale(1.05)'; this.style.boxShadow='0 4px 12px rgba(0,0,0,0.15)'"
+                onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='none'">
+                <div style="font-size: 14px; opacity: 0.9;">待处理</div>
+                <div style="font-size: 28px; font-weight: bold; margin-top: 5px;" id="statPendingOrders">0</div>
+                <div style="font-size: 12px; opacity: 0.8; margin-top: 5px;">点击查看待处理</div>
+            </div>
+            <div onclick="queryByStat('paid')"
+                style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white; padding: 20px; border-radius: 8px; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;"
+                onmouseover="this.style.transform='scale(1.05)'; this.style.boxShadow='0 4px 12px rgba(0,0,0,0.15)'"
+                onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='none'">
+                <div style="font-size: 14px; opacity: 0.9;">已支付</div>
+                <div style="font-size: 28px; font-weight: bold; margin-top: 5px;" id="statPaidOrders">0</div>
+                <div style="font-size: 12px; opacity: 0.8; margin-top: 5px;">点击查看已支付</div>
+            </div>
+            <div onclick="queryByStat('revenue')"
+                style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); color: white; padding: 20px; border-radius: 8px; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;"
+                onmouseover="this.style.transform='scale(1.05)'; this.style.boxShadow='0 4px 12px rgba(0,0,0,0.15)'"
+                onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='none'">
+                <div style="font-size: 14px; opacity: 0.9;">总收入</div>
+                <div style="font-size: 28px; font-weight: bold; margin-top: 5px;" id="statTotalRevenue">¥0</div>
+                <div style="font-size: 12px; opacity: 0.8; margin-top: 5px;">点击查看已支付订单</div>
+            </div>
+            <div onclick="queryByStat('users')"
+                style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); color: white; padding: 20px; border-radius: 8px; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;"
+                onmouseover="this.style.transform='scale(1.05)'; this.style.boxShadow='0 4px 12px rgba(0,0,0,0.15)'"
+                onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='none'">
+                <div style="font-size: 14px; opacity: 0.9;">总用户数</div>
+                <div style="font-size: 28px; font-weight: bold; margin-top: 5px;" id="statTotalUsers">0</div>
+                <div style="font-size: 12px; opacity: 0.8; margin-top: 5px;">点击查看所有用户</div>
+            </div>
+        </div>
+
+        <!-- 查询筛选区域 -->
+        <div id="searchPanel"
+            style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #e9ecef;">
+            <div style="display: flex; flex-wrap: wrap; gap: 15px; align-items: flex-end;">
+                <div style="flex: 1; min-width: 200px;" id="orderStatusFilter">
+                    <label style="display: block; margin-bottom: 5px; font-weight: 500; color: #333;">订单状态</label>
+                    <select id="searchStatus"
+                        style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px;">
+                        <option value="all">全部订单</option>
+                        <option value="pending">待处理</option>
+                        <option value="paid">已支付</option>
+                    </select>
+                </div>
+                <div id="userPlanFilter" style="flex: 1; min-width: 200px; display: none;">
+                    <label style="display: block; margin-bottom: 5px; font-weight: 500; color: #333;">用户类型</label>
+                    <select id="searchPlan"
+                        style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px;">
+                        <option value="all">全部用户（免费+付费）</option>
+                        <option value="free">免费用户</option>
+                        <option value="paid">付费用户</option>
+                    </select>
+                </div>
+                <div style="flex: 1; min-width: 200px;">
+                    <label style="display: block; margin-bottom: 5px; font-weight: 500; color: #333;">开始时间</label>
+                    <input type="date" id="searchStartDate"
+                        style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px;">
+                </div>
+                <div style="flex: 1; min-width: 200px;">
+                    <label style="display: block; margin-bottom: 5px; font-weight: 500; color: #333;">结束时间</label>
+                    <input type="date" id="searchEndDate"
+                        style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px;">
+                </div>
+                <div style="flex: 1; min-width: 200px;">
+                    <label style="display: block; margin-bottom: 5px; font-weight: 500; color: #333;">用户名/邮箱</label>
+                    <input type="text" id="searchUser" placeholder="输入用户名或邮箱"
+                        style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px;">
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <button class="btn btn-primary" onclick="performSearch()"
+                        style="padding: 8px 20px; white-space: nowrap;">🔍 查询</button>
+                    <button class="btn btn-secondary" onclick="resetSearch()"
+                        style="padding: 8px 20px; white-space: nowrap;">🔄 重置</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab('pending')">待确认订单</button>
+            <button class="tab" onclick="switchTab('paid')">已确认订单</button>
+            <button class="tab" onclick="switchTab('all')">全部订单</button>
+        </div>
+
+        <!-- 批量操作栏 -->
+        <div id="batchActions"
+            style="display: none; margin-bottom: 15px; padding: 15px; background: #f0f0f0; border-radius: 6px;">
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <span>已选择 <strong id="selectedCount">0</strong> 个订单</span>
+                <button class="btn btn-primary" onclick="batchConfirm()" style="padding: 8px 16px;">批量确认</button>
+                <button class="btn btn-secondary" onclick="clearSelection()" style="padding: 8px 16px;">取消选择</button>
+            </div>
+        </div>
+
+        <div id="orders-container" class="orders-list">
+            <div class="loading">加载中...</div>
+        </div>
+    </div>
+
+    <button class="refresh-btn" onclick="loadOrders()" title="刷新">🔄</button>
+
+    <script>
+        let currentTab = 'pending';
+        let currentFilters = {
+            status: 'pending',
+            startDate: '',
+            endDate: '',
+            user: ''
+        };
+
+        // 点击统计卡片查询
+        function queryByStat(statType) {
+            if (statType === 'users') {
+                // 显示用户列表
+                loadUsers();
+                return;
+            }
+
+            if (statType === 'all') {
+                currentTab = 'all';
+                currentFilters.status = 'all';
+            } else if (statType === 'pending') {
+                currentTab = 'pending';
+                currentFilters.status = 'pending';
+            } else if (statType === 'paid' || statType === 'revenue') {
+                currentTab = 'paid';
+                currentFilters.status = 'paid';
+            }
+
+            // 更新标签页
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            const tabMap = {
+                'all': 2,
+                'pending': 0,
+                'paid': 1
+            };
+            if (tabMap[currentTab] !== undefined) {
+                document.querySelectorAll('.tab')[tabMap[currentTab]].classList.add('active');
+            }
+
+            // 重置其他筛选条件
+            currentFilters.startDate = '';
+            currentFilters.endDate = '';
+            currentFilters.user = '';
+            document.getElementById('searchStatus').value = currentFilters.status;
+            document.getElementById('searchStartDate').value = '';
+            document.getElementById('searchEndDate').value = '';
+            document.getElementById('searchUser').value = '';
+
+            // 加载订单
+            loadOrders();
+        }
+
+        // 执行查询
+        function performSearch() {
+            // 检查是否在用户查询模式
+            const userPlanFilter = document.getElementById('userPlanFilter');
+            if (userPlanFilter && userPlanFilter.style.display !== 'none') {
+                // 用户查询模式
+                loadUsers();
+                return;
+            }
+
+            // 订单查询模式
+            currentFilters.status = document.getElementById('searchStatus').value;
+            currentFilters.startDate = document.getElementById('searchStartDate').value;
+            currentFilters.endDate = document.getElementById('searchEndDate').value;
+            currentFilters.user = document.getElementById('searchUser').value.trim();
+
+            // 更新当前标签
+            currentTab = currentFilters.status;
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            const tabMap = {
+                'all': 2,
+                'pending': 0,
+                'paid': 1
+            };
+            if (tabMap[currentTab] !== undefined) {
+                document.querySelectorAll('.tab')[tabMap[currentTab]].classList.add('active');
+            }
+
+            loadOrders();
+        }
+
+        // 重置查询
+        function resetSearch() {
+            // 隐藏用户查询相关的筛选条件
+            const userPlanFilter = document.getElementById('userPlanFilter');
+            if (userPlanFilter) {
+                userPlanFilter.style.display = 'none';
+            }
+            const orderStatusFilter = document.getElementById('orderStatusFilter');
+            if (orderStatusFilter) {
+                orderStatusFilter.style.display = 'block';
+            }
+
+            currentFilters = {
+                status: 'pending',
+                startDate: '',
+                endDate: '',
+                user: ''
+            };
+            document.getElementById('searchStatus').value = 'pending';
+            document.getElementById('searchStartDate').value = '';
+            document.getElementById('searchEndDate').value = '';
+            document.getElementById('searchUser').value = '';
+            if (document.getElementById('searchPlan')) {
+                document.getElementById('searchPlan').value = 'all';
+            }
+            currentTab = 'pending';
+
+            // 更新标签页
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab')[0].classList.add('active');
+
+            loadOrders();
+        }
+
+        // 检查登录状态
+        async function checkLoginStatus() {
+            try {
+                const response = await fetch('/api/admin/check-login');
+                const result = await response.json();
+
+                if (!result.success || !result.logged_in) {
+                    // 未登录，跳转到登录页面
+                    window.location.href = '/admin/login';
+                    return false;
+                }
+
+                // 显示用户名
+                const adminUsername = document.getElementById('adminUsername');
+                if (adminUsername && result.username) {
+                    adminUsername.textContent = `管理员: ${result.username}`;
+                }
+
+                return true;
+            } catch (error) {
+                console.error('检查登录状态失败:', error);
+                window.location.href = '/admin/login';
+                return false;
+            }
+        }
+
+        // 登出
+        async function logout() {
+            try {
+                await fetch('/api/admin/logout', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                window.location.href = '/admin/login';
+            } catch (error) {
+                console.error('登出失败:', error);
+                window.location.href = '/admin/login';
+            }
+        }
+
+        // 加载统计数据
+        async function loadStats() {
+            try {
+                const response = await fetch('/api/admin/stats');
+                const result = await response.json();
+
+                if (result.success && result.stats) {
+                    const stats = result.stats;
+                    document.getElementById('statTotalOrders').textContent = stats.orders.total || 0;
+                    document.getElementById('statPendingOrders').textContent = stats.orders.pending || 0;
+                    document.getElementById('statPaidOrders').textContent = stats.orders.paid || 0;
+                    document.getElementById('statTotalRevenue').textContent = '¥' + (stats.revenue.total || 0);
+                    document.getElementById('statTotalUsers').textContent = stats.users.total || 0;
+                }
+            } catch (error) {
+                console.error('加载统计数据失败:', error);
+            }
+        }
+
+        async function loadOrders() {
+            // 先检查登录状态
+            const isLoggedIn = await checkLoginStatus();
+            if (!isLoggedIn) {
+                return;
+            }
+
+            // 隐藏用户查询相关的筛选条件，显示订单查询条件
+            const userPlanFilter = document.getElementById('userPlanFilter');
+            if (userPlanFilter) {
+                userPlanFilter.style.display = 'none';
+            }
+            const orderStatusFilter = document.getElementById('orderStatusFilter');
+            if (orderStatusFilter) {
+                orderStatusFilter.style.display = 'block';
+            }
+
+            // 加载统计数据
+            loadStats();
+
+            const container = document.getElementById('orders-container');
+            container.innerHTML = '<div class="loading">加载中...</div>';
+
+            try {
+                // 构建查询参数
+                let queryParams = `status=${currentFilters.status}`;
+                if (currentFilters.startDate) {
+                    queryParams += `&start_date=${currentFilters.startDate}`;
+                }
+                if (currentFilters.endDate) {
+                    queryParams += `&end_date=${currentFilters.endDate}`;
+                }
+                if (currentFilters.user) {
+                    queryParams += `&user=${encodeURIComponent(currentFilters.user)}`;
+                }
+
+                const response = await fetch(`/api/admin/orders?${queryParams}`);
+                const result = await response.json();
+
+                if (result.success) {
+                    // 显示查询结果信息
+                    let resultInfo = '';
+                    if (currentFilters.startDate || currentFilters.endDate || currentFilters.user) {
+                        let filterText = [];
+                        if (currentFilters.startDate || currentFilters.endDate) {
+                            filterText.push(`时间: ${currentFilters.startDate || '不限'} 至 ${currentFilters.endDate || '不限'}`);
+                        }
+                        if (currentFilters.user) {
+                            filterText.push(`用户: ${currentFilters.user}`);
+                        }
+                        resultInfo = `<div style="background: #e3f2fd; padding: 10px; border-radius: 4px; margin-bottom: 15px; color: #1976d2;">
+                            <strong>查询条件：</strong>${filterText.join(' | ')} | <strong>结果：</strong>找到 ${result.orders.length} 个订单
+                        </div>`;
+                    }
+
+                    container.innerHTML = resultInfo + (result.orders.length > 0 ? '' : '');
+                    displayOrders(result.orders);
+
+                    // 订单加载后再次刷新统计数据（确保实时）
+                    loadStats();
+                } else {
+                    container.innerHTML = `<div class="empty-state">加载失败: ${result.error}</div>`;
+                }
+            } catch (error) {
+                container.innerHTML = `<div class="empty-state">加载失败: ${error.message}</div>`;
+            }
+        }
+
+        // 加载用户列表
+        async function loadUsers() {
+            // 先检查登录状态
+            const isLoggedIn = await checkLoginStatus();
+            if (!isLoggedIn) {
+                return;
+            }
+
+            // 显示用户查询相关的筛选条件
+            const userPlanFilter = document.getElementById('userPlanFilter');
+            if (userPlanFilter) {
+                userPlanFilter.style.display = 'block';
+            }
+            const searchStatus = document.getElementById('searchStatus');
+            if (searchStatus) {
+                searchStatus.parentElement.style.display = 'none';
+            }
+
+            const container = document.getElementById('orders-container');
+            container.innerHTML = '<div class="loading">加载中...</div>';
+
+            try {
+                // 构建查询参数
+                const planFilter = document.getElementById('searchPlan') ? document.getElementById('searchPlan').value : 'all';
+                let queryParams = `plan=${planFilter}`; // 显示所有用户（免费+付费）
+                const userQuery = document.getElementById('searchUser').value.trim();
+                const startDate = document.getElementById('searchStartDate').value;
+                const endDate = document.getElementById('searchEndDate').value;
+
+                if (userQuery) {
+                    queryParams += `&user_query=${encodeURIComponent(userQuery)}`;
+                }
+                if (startDate) {
+                    queryParams += `&start_date=${startDate}`;
+                }
+                if (endDate) {
+                    queryParams += `&end_date=${endDate}`;
+                }
+
+                const response = await fetch(`/api/admin/users?${queryParams}`);
+                const result = await response.json();
+
+                if (result.success) {
+                    // 显示查询结果信息
+                    let resultInfo = '';
+                    if (userQuery || startDate || endDate) {
+                        let filterText = [];
+                        if (startDate || endDate) {
+                            filterText.push(`注册时间: ${startDate || '不限'} 至 ${endDate || '不限'}`);
+                        }
+                        if (userQuery) {
+                            filterText.push(`用户: ${userQuery}`);
+                        }
+                        resultInfo = `<div style="background: #e3f2fd; padding: 10px; border-radius: 4px; margin-bottom: 15px; color: #1976d2;">
+                            <strong>查询条件：</strong>${filterText.join(' | ')} | <strong>结果：</strong>找到 ${result.users.length} 个用户
+                        </div>`;
+                    } else {
+                        resultInfo = `<div style="background: #e3f2fd; padding: 10px; border-radius: 4px; margin-bottom: 15px; color: #1976d2;">
+                            <strong>显示所有用户（免费+付费）</strong> | <strong>总数：</strong>${result.users.length} 个用户
+                        </div>`;
+                    }
+
+                    container.innerHTML = resultInfo;
+                    displayUsers(result.users);
+                } else {
+                    container.innerHTML = `<div class="empty-state">加载失败: ${result.error}</div>`;
+                }
+            } catch (error) {
+                container.innerHTML = `<div class="empty-state">加载失败: ${error.message}</div>`;
+            }
+        }
+
+        // 显示用户列表
+        function displayUsers(users) {
+            const container = document.getElementById('orders-container');
+
+            if (users.length === 0) {
+                container.innerHTML += `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">👤</div>
+                        <div>暂无用户</div>
+                    </div>
+                `;
+                return;
+            }
+
+            const usersHtml = users.map(user => {
+                const plan = user.plan || 'free';
+                const planText = plan === 'free' ? '免费用户' : (plan === 'entry' ? '入门版' : (plan === 'professional' ? '专业版' : plan));
+                const planColor = plan === 'free' ? '#999' : (plan === 'entry' ? '#1890ff' : '#52c41a');
+
+                const createdTime = user.created_at ? new Date(user.created_at).toLocaleString('zh-CN') : '-';
+                const expiresAt = user.membership_expires_at ? new Date(user.membership_expires_at).toLocaleString('zh-CN') : '-';
+
+                return `
+                    <div class="order-card" style="border-left: 4px solid ${planColor};">
+                        <div class="order-header">
+                            <div class="order-info">
+                                <div class="order-no">用户ID: ${user.user_id}</div>
+                                <span class="status-badge" style="background: ${planColor}; color: white;">${planText}</span>
+                            </div>
+                            <div class="order-amount" style="color: ${planColor}; font-weight: bold;">${user.credits || 0} 积分</div>
+                        </div>
+                        <div class="order-details">
+                            <div class="order-detail-item">
+                                <span class="order-detail-label">用户名:</span>
+                                <span>${user.name || '未知用户'}</span>
+                            </div>
+                            <div class="order-detail-item">
+                                <span class="order-detail-label">用户邮箱:</span>
+                                <span>${user.email || '-'}</span>
+                            </div>
+                            <div class="order-detail-item">
+                                <span class="order-detail-label">会员计划:</span>
+                                <span style="color: ${planColor}; font-weight: bold;">${planText}</span>
+                            </div>
+                            <div class="order-detail-item">
+                                <span class="order-detail-label">当前积分:</span>
+                                <span style="color: #1890ff; font-weight: bold;">${user.credits || 0}</span>
+                            </div>
+                            <div class="order-detail-item">
+                                <span class="order-detail-label">注册时间:</span>
+                                <span>${createdTime}</span>
+                            </div>
+                            <div class="order-detail-item">
+                                <span class="order-detail-label">会员到期时间:</span>
+                                <span>${expiresAt || '-'}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            container.innerHTML += usersHtml;
+        }
+
+        function displayOrders(orders) {
+            const container = document.getElementById('orders-container');
+
+            if (orders.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📭</div>
+                        <div>暂无订单</div>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = orders.map(order => {
+                const status = order.status || 'pending';
+                const statusText = status === 'paid' ? '已确认' : '待确认';
+                const statusClass = status === 'paid' ? 'status-paid' : 'status-pending';
+
+                const createdTime = new Date(order.created_at).toLocaleString('zh-CN');
+                const paidTime = order.paid_at ? new Date(order.paid_at).toLocaleString('zh-CN') : '-';
+
+                return `
+                    <div class="order-card ${status}">
+                        <div class="order-header">
+                            <div class="order-info">
+                                <div class="order-no">订单号: ${order.order_no}</div>
+                                <span class="status-badge ${statusClass}">${statusText}</span>
+                            </div>
+                            <div class="order-amount">¥${order.amount}</div>
+                        </div>
+                        <div class="order-details">
+                            <div class="order-detail-item">
+                                <span class="order-detail-label">用户名:</span>
+                                <span>${order.user_name || order.user_email || order.user_id || '未知用户'}</span>
+                            </div>
+                            <div class="order-detail-item">
+                                <span class="order-detail-label">用户邮箱:</span>
+                                <span>${order.user_email || '-'}</span>
+                            </div>
+                            <div class="order-detail-item">
+                                <span class="order-detail-label">会员计划:</span>
+                                <span>${order.plan_name || order.plan}</span>
+                            </div>
+                            <div class="order-detail-item">
+                                <span class="order-detail-label">付费金额:</span>
+                                <span style="color: #1890ff; font-weight: bold;">¥${order.amount}</span>
+                            </div>
+                            <div class="order-detail-item">
+                                <span class="order-detail-label">支付方式:</span>
+                                <span>${getPaymentMethodName(order.payment_method)}</span>
+                            </div>
+                            <div class="order-detail-item">
+                                <span class="order-detail-label">创建时间:</span>
+                                <span>${createdTime}</span>
+                            </div>
+                            <div class="order-detail-item">
+                                <span class="order-detail-label">付费时间:</span>
+                                <span>${paidTime}</span>
+                            </div>
+                            <div class="order-detail-item">
+                                <span class="order-detail-label">到期时间:</span>
+                                <span>${order.membership_expires_at ? new Date(order.membership_expires_at).toLocaleString('zh-CN') : (order.status === 'paid' ? '未设置' : '-')}</span>
+                            </div>
+                            <div class="order-detail-item">
+                                <span class="order-detail-label">用户ID:</span>
+                                <span style="font-size: 12px; color: #999;">${order.user_id}</span>
+                            </div>
+                        </div>
+                        ${(status === 'pending' || status === 'waiting_confirmation') ? `
+                            <div class="order-actions">
+                                <button class="btn btn-primary" onclick="confirmOrder('${order.order_no}')">确认已收款</button>
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function getPaymentMethodName(method) {
+            const methods = {
+                'alipay_qrcode': '支付宝收款码',
+                'wechat_qrcode': '微信收款码',
+                'alipay': '支付宝',
+                'wxpay': '微信支付'
+            };
+            return methods[method] || method;
+        }
+
+        async function confirmOrder(orderNo) {
+            if (!confirm(`确认订单 ${orderNo} 已收款？`)) {
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/payment/confirm', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        order_no: orderNo
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    alert('订单确认成功！会员已开通');
+                    loadOrders(); // 重新加载订单列表（会自动刷新统计数据）
+                    loadStats(); // 立即刷新统计数据
+                } else {
+                    alert(`确认失败: ${result.error}`);
+                }
+            } catch (error) {
+                alert(`确认失败: ${error.message}`);
+            }
+        }
+
+        function switchTab(tab) {
+            currentTab = tab;
+
+            // 更新标签样式
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+
+            // 加载订单
+            loadOrders();
+        }
+
+        // 页面加载时自动加载订单和统计数据
+        loadOrders();
+
+        // 每30秒自动刷新订单和统计数据
+        setInterval(() => {
+            loadOrders();
+        }, 30000);
+
+        // 每10秒单独刷新统计数据（更频繁更新）
+        setInterval(() => {
+            loadStats();
+        }, 10000);
+    </script>
+</body>
+
+</html>

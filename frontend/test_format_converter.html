@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>格式转换功能测试</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        .btn {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .btn:hover {
+            background: #0056b3;
+        }
+        .result {
+            margin: 10px 0;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 5px;
+        }
+        .error {
+            color: red;
+            background: #ffe6e6;
+        }
+        .success {
+            color: green;
+            background: #e6ffe6;
+        }
+    </style>
+</head>
+<body>
+    <h1>格式转换功能测试</h1>
+    
+    <div class="test-section">
+        <h2>1. 直接API测试</h2>
+        <p>测试格式转换API是否可用</p>
+        <button class="btn" onclick="testFormatAPI()">测试API</button>
+        <div id="apiResult" class="result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>2. 前端功能测试</h2>
+        <p>模拟点击格式转换卡片</p>
+        <button class="btn" onclick="simulateFormatConverterClick()">模拟点击格式转换</button>
+        <div id="clickResult" class="result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>3. 文件上传测试</h2>
+        <p>测试文件上传和格式转换</p>
+        <input type="file" id="testFile" accept="image/*">
+        <br><br>
+        <select id="targetFormat">
+            <option value="png">PNG</option>
+            <option value="jpg">JPG</option>
+            <option value="webp">WebP</option>
+        </select>
+        <button class="btn" onclick="testFileConversion()">测试转换</button>
+        <div id="conversionResult" class="result"></div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:5000';
+        
+        // 测试API可用性
+        async function testFormatAPI() {
+            const resultDiv = document.getElementById('apiResult');
+            resultDiv.innerHTML = '测试中...';
+            
+            try {
+                const response = await fetch(`${API_BASE}/health`);
+                if (response.ok) {
+                    const data = await response.json();
+                    resultDiv.innerHTML = `<div class="success">✅ 后端服务正常: ${data.status}</div>`;
+                    
+                    // 测试格式转换路由是否存在
+                    const formatResponse = await fetch(`${API_BASE}/api/tools/convert-format`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ test: true })
+                    });
+                    
+                    if (formatResponse.status === 400) {
+                        resultDiv.innerHTML += '<div class="success">✅ 格式转换API路由存在</div>';
+                    } else {
+                        resultDiv.innerHTML += '<div class="error">❌ 格式转换API路由可能有问题</div>';
+                    }
+                } else {
+                    resultDiv.innerHTML = '<div class="error">❌ 后端服务不可用</div>';
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">❌ 连接错误: ${error.message}</div>`;
+            }
+        }
+        
+        // 模拟点击格式转换卡片
+        function simulateFormatConverterClick() {
+            const resultDiv = document.getElementById('clickResult');
+            
+            try {
+                // 检查AppManager是否存在
+                if (typeof window.appManager !== 'undefined') {
+                    resultDiv.innerHTML = '<div class="success">✅ AppManager存在，尝试打开格式转换工具...</div>';
+                    
+                    // 尝试调用openTool方法
+                    window.appManager.openTool('format_converter');
+                    resultDiv.innerHTML += '<div class="success">✅ 已调用openTool方法</div>';
+                } else {
+                    resultDiv.innerHTML = '<div class="error">❌ AppManager不存在</div>';
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">❌ 调用失败: ${error.message}</div>`;
+            }
+        }
+        
+        // 测试文件转换
+        async function testFileConversion() {
+            const resultDiv = document.getElementById('conversionResult');
+            const fileInput = document.getElementById('testFile');
+            const formatSelect = document.getElementById('targetFormat');
+            
+            if (!fileInput.files[0]) {
+                resultDiv.innerHTML = '<div class="error">❌ 请先选择文件</div>';
+                return;
+            }
+            
+            resultDiv.innerHTML = '转换中...';
+            
+            try {
+                const file = fileInput.files[0];
+                const base64 = await fileToBase64(file);
+                
+                const requestData = {
+                    image: base64,
+                    target_format: formatSelect.value
+                };
+                
+                const response = await fetch(`${API_BASE}/api/tools/convert-format`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(requestData)
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    resultDiv.innerHTML = `
+                        <div class="success">✅ 转换成功！</div>
+                        <p>原始格式: ${result.conversion_info?.original_format}</p>
+                        <p>目标格式: ${result.conversion_info?.target_format}</p>
+                        <p>输出大小: ${result.conversion_info?.output_size}</p>
+                        <p>处理时间: ${result.conversion_info?.processing_time}秒</p>
+                    `;
+                    
+                    // 显示预览图
+                    if (result.converted_image) {
+                        const mimeType = formatSelect.value === 'jpg' ? 'image/jpeg' : `image/${formatSelect.value}`;
+                        resultDiv.innerHTML += `
+                            <div>
+                                <h4>预览:</h4>
+                                <img src="data:${mimeType};base64,${result.converted_image}" 
+                                     style="max-width: 300px; border: 1px solid #ddd;" />
+                            </div>
+                        `;
+                    }
+                } else {
+                    resultDiv.innerHTML = `<div class="error">❌ 转换失败: ${result.error}</div>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">❌ 转换错误: ${error.message}</div>`;
+            }
+        }
+        
+        // 文件转base64
+        function fileToBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => {
+                    const base64 = reader.result.split(',')[1];
+                    resolve(base64);
+                };
+                reader.onerror = error => reject(error);
+            });
+        }
+        
+        // 页面加载完成后自动测试
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('测试页面加载完成');
+            testFormatAPI();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>图片压缩下载功能测试</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        .btn {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .btn:hover {
+            background: #0056b3;
+        }
+        .success {
+            color: green;
+            font-weight: bold;
+        }
+        .error {
+            color: red;
+            font-weight: bold;
+        }
+        .result {
+            margin: 10px 0;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 5px;
+        }
+        #testImage {
+            max-width: 200px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🗜️ 图片压缩下载功能测试</h1>
+        <p>此页面用于测试图片压缩工具的下载功能是否正常工作</p>
+
+        <div class="test-section">
+            <h3>1. API连接测试</h3>
+            <button class="btn" onclick="testAPIConnection()">测试后端连接</button>
+            <div id="apiResult" class="result"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>2. 图片压缩测试</h3>
+            <input type="file" id="imageInput" accept="image/*" onchange="handleImageSelect(event)">
+            <br><br>
+            <img id="testImage" style="display: none;" alt="测试图片">
+            <br>
+            <button class="btn" onclick="testCompression()" id="compressBtn" style="display: none;">模拟压缩图片</button>
+            <button class="btn" onclick="testRealCompression()" id="realCompressBtn" style="display: none; background: #28a745;">真实API压缩</button>
+            <div id="compressionResult" class="result"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>3. 下载功能测试</h3>
+            <button class="btn" onclick="testDownload()" id="downloadBtn" style="display: none;">测试下载功能</button>
+            <div id="downloadResult" class="result"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:5000';
+        let currentCompressedImage = null;
+        let currentFormat = 'jpeg';
+
+        // 测试API连接
+        async function testAPIConnection() {
+            const resultDiv = document.getElementById('apiResult');
+            resultDiv.innerHTML = '正在测试连接...';
+            
+            try {
+                // 首先尝试无认证的连接测试
+                const response = await fetch(`${API_BASE}/health`, {
+                    method: 'GET'
+                });
+                
+                if (response.ok) {
+                    resultDiv.innerHTML = '<span class="success">✅ API连接正常</span>';
+                } else {
+                    resultDiv.innerHTML = `<span class="error">❌ API连接失败: ${response.status}</span><br><small>提示: 后端服务器可能需要认证</small>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<span class="error">❌ 连接错误: ${error.message}</span><br><small>请检查后端服务器是否在${API_BASE}运行</small>`;
+            }
+        }
+
+        // 处理图片选择
+        function handleImageSelect(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = document.getElementById('testImage');
+                img.src = e.target.result;
+                img.style.display = 'block';
+                document.getElementById('compressBtn').style.display = 'inline-block';
+                document.getElementById('realCompressBtn').style.display = 'inline-block';
+                
+                // 存储图片数据
+                currentCompressedImage = e.target.result.split(',')[1]; // 去掉data:image/...;base64,前缀
+                
+                // 直接显示下载按钮（模拟压缩成功）
+                document.getElementById('downloadBtn').style.display = 'inline-block';
+                document.getElementById('compressionResult').innerHTML = '<span class="success">✅ 图片已加载，可以选择测试压缩方式</span>';
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // 测试图片压缩（模拟）
+        async function testCompression() {
+            const resultDiv = document.getElementById('compressionResult');
+            
+            if (!currentCompressedImage) {
+                resultDiv.innerHTML = '<span class="error">❌ 请先选择图片</span>';
+                return;
+            }
+
+            // 模拟压缩过程
+            resultDiv.innerHTML = '<span class="success">✅ 模拟压缩成功！</span><br><small>注意: 这是模拟压缩，实际下载的是原始图片</small>';
+            
+            // 显示下载按钮
+            document.getElementById('downloadBtn').style.display = 'inline-block';
+        }
+
+        // 测试下载功能
+        function testDownload() {
+            const resultDiv = document.getElementById('downloadResult');
+            
+            if (!currentCompressedImage) {
+                resultDiv.innerHTML = '<span class="error">❌ 没有可下载的图片</span>';
+                return;
+            }
+
+            try {
+                // 创建下载链接
+                const link = document.createElement('a');
+                
+                // 根据格式设置正确的MIME类型
+                const mimeType = currentFormat === 'jpg' || currentFormat === 'jpeg' ? 'image/jpeg' : `image/${currentFormat}`;
+                link.href = `data:${mimeType};base64,${currentCompressedImage}`;
+                
+                // 设置文件扩展名
+                const extension = currentFormat === 'jpg' ? 'jpg' : currentFormat;
+                link.download = `compressed_test_${new Date().getTime()}.${extension}`;
+                
+                // 触发下载
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                
+                resultDiv.innerHTML = '<span class="success">✅ 下载成功！请检查下载文件夹</span>';
+            } catch (error) {
+                resultDiv.innerHTML = `<span class="error">❌ 下载失败: ${error.message}</span>`;
+            }
+        }
+
+        // 测试真实API压缩
+        async function testRealCompression() {
+            const resultDiv = document.getElementById('compressionResult');
+            const file = document.getElementById('imageInput').files[0];
+            
+            if (!file) {
+                resultDiv.innerHTML = '<span class="error">❌ 请先选择图片</span>';
+                return;
+            }
+
+            resultDiv.innerHTML = '<span class="info">🔄 正在调用真实API压缩...</span>';
+
+            try {
+                // 首先尝试获取有效的token
+                let token = null;
+                try {
+                    // 尝试注册测试用户
+                    const registerResponse = await fetch(`${API_BASE}/auth/register`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            email: 'test@example.com',
+                            password: '123456',
+                            name: '测试用户'
+                        })
+                    });
+                    
+                    if (registerResponse.ok) {
+                        const registerData = await registerResponse.json();
+                        console.log('注册成功:', registerData);
+                    }
+                    
+                    // 尝试登录获取token
+                    const loginResponse = await fetch(`${API_BASE}/auth/login`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            email: 'test@example.com',
+                            password: '123456'
+                        })
+                    });
+                    
+                    if (loginResponse.ok) {
+                        const loginData = await loginResponse.json();
+                        token = loginData.data?.token || loginData.token;
+                        console.log('登录成功，获取到token');
+                    } else {
+                        console.log('登录失败:', await loginResponse.text());
+                    }
+                } catch (authError) {
+                    console.log('认证过程出错:', authError);
+                }
+
+                // 读取图片为base64
+                const imageBase64 = await new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onload = () => {
+                        const base64 = reader.result.split(',')[1];
+                        resolve(base64);
+                    };
+                    reader.onerror = reject;
+                    reader.readAsDataURL(file);
+                });
+
+                // 调用压缩API
+                const headers = {
+                    'Content-Type': 'application/json',
+                };
+                
+                if (token) {
+                    headers['Authorization'] = `Bearer ${token}`;
+                }
+
+                const response = await fetch(`${API_BASE}/api/compress-image`, {
+                    method: 'POST',
+                    headers: headers,
+                    body: JSON.stringify({
+                        image_base64: imageBase64,
+                        quality: 80,
+                        format: 'auto'
+                    })
+                });
+
+                console.log('API响应状态:', response.status);
+                console.log('API响应头:', response.headers);
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.log('API错误响应:', errorText);
+                    
+                    if (response.status === 401) {
+                        resultDiv.innerHTML = `<span class="error">❌ 认证失败 (401) - ${token ? 'Token无效或过期' : '需要登录'}</span>`;
+                    } else if (response.status === 500) {
+                        resultDiv.innerHTML = `<span class="error">❌ 服务器错误 (500) - ${errorText}</span>`;
+                    } else {
+                        resultDiv.innerHTML = `<span class="error">❌ API调用失败 (${response.status}) - ${errorText}</span>`;
+                    }
+                    return;
+                }
+
+                const data = await response.json();
+                console.log('API成功响应:', data);
+
+                // 更新压缩后的图片数据
+                if (data.compressed_image_base64) {
+                    currentCompressedImage = data.compressed_image_base64;
+                    
+                    // 显示压缩后的图片
+                    const img = document.getElementById('testImage');
+                    img.src = `data:image/${data.compression_info?.format || 'jpeg'};base64,${currentCompressedImage}`;
+                    
+                    // 显示下载按钮
+                    document.getElementById('downloadBtn').style.display = 'inline-block';
+                    
+                    // 显示压缩信息
+                    const info = data.compression_info || {};
+                    resultDiv.innerHTML = `
+                        <span class="success">✅ 真实API压缩成功！</span><br>
+                        <small>原始大小: ${(info.original_size / 1024).toFixed(2)} KB</small><br>
+                        <small>压缩后大小: ${(info.compressed_size / 1024).toFixed(2)} KB</small><br>
+                        <small>压缩率: ${info.compression_ratio}%</small><br>
+                        <small>格式: ${info.format}</small>
+                    `;
+                } else {
+                    resultDiv.innerHTML = '<span class="error">❌ API响应格式异常：缺少compressed_image_base64字段</span>';
+                }
+
+            } catch (error) {
+                console.error('真实API压缩测试失败:', error);
+                resultDiv.innerHTML = `<span class="error">❌ 真实API压缩测试失败: ${error.message}</span>`;
+            }
+        }
+
+        // 页面加载时自动测试API连接
+        window.onload = function() {
+            testAPIConnection();
+        };
+    </script>
+</body>
+</html>

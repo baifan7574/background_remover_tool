@@ -1,0 +1,3412 @@
+{
+  "732c0755-e973-4d0f-ac8a-258e263deb22": {
+    "user_id": "732c0755-e973-4d0f-ac8a-258e263deb22",
+    "email": "testuser789@example.com",
+    "name": "测试用户789",
+    "plan": "free",
+    "credits": 100,
+    "daily_usage": {
+      "2025-11-16": {
+        "currency_converter": 1
+      }
+    },
+    "usage_stats": {
+      "background_remover": {
+        "current_usage": 0,
+        "daily_limit": 3,
+        "remaining_usage": 3
+      },
+      "image_compressor": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "format_converter": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "image_cropper": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "currency_converter": {
+        "current_usage": 1,
+        "daily_limit": 10,
+        "remaining_usage": 9
+      },
+      "unit_converter": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "shipping_calculator": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      }
+    },
+    "created_at": "2025-11-16T00:43:21.428363",
+    "updated_at": "2025-11-16T00:59:38.295459"
+  },
+  "caddbc49-5ab5-4f0d-8087-39820bcfced2": {
+    "user_id": "caddbc49-5ab5-4f0d-8087-39820bcfced2",
+    "email": "test3542@test.com",
+    "name": "????3542",
+    "plan": "free",
+    "daily_usage": {},
+    "usage_stats": {
+      "background_remover": {
+        "current_usage": 0,
+        "daily_limit": 3,
+        "remaining_usage": 3
+      },
+      "image_compressor": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "format_converter": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "image_cropper": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "currency_converter": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "unit_converter": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "shipping_calculator": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "send_email": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      }
+    },
+    "created_at": "2025-11-16T01:11:45.810507",
+    "updated_at": "2025-11-16T01:11:45.810513"
+  },
+  "9dc67a64-4268-45ad-8935-6ce358474c3e": {
+    "user_id": "9dc67a64-4268-45ad-8935-6ce358474c3e",
+    "email": "newuser738@test.com",
+    "name": "???738",
+    "plan": "free",
+    "daily_usage": {},
+    "usage_stats": {
+      "background_remover": {
+        "current_usage": 0,
+        "daily_limit": 3,
+        "remaining_usage": 3
+      },
+      "image_compressor": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "format_converter": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "image_cropper": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "currency_converter": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "unit_converter": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "shipping_calculator": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "send_email": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      }
+    },
+    "created_at": "2025-11-16T01:12:13.146922",
+    "updated_at": "2025-11-16T01:12:13.146923"
+  },
+  "14ea55ca-1801-424b-84ac-c6fd0d5ae025": {
+    "user_id": "14ea55ca-1801-424b-84ac-c6fd0d5ae025",
+    "email": "newuser5519@test.com",
+    "name": "????",
+    "plan": "free",
+    "daily_usage": {},
+    "usage_stats": {
+      "background_remover": {
+        "current_usage": 0,
+        "daily_limit": 3,
+        "remaining_usage": 3
+      },
+      "image_compressor": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "format_converter": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "image_cropper": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "currency_converter": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "unit_converter": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "shipping_calculator": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "send_email": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      }
+    },
+    "created_at": "2025-11-16T01:20:20.452991",
+    "updated_at": "2025-11-16T01:20:20.452999"
+  },
+  "e5109d40-1c23-415b-8b8b-d04bd57bedb2": {
+    "user_id": "e5109d40-1c23-415b-8b8b-d04bd57bedb2",
+    "email": "88888888@163.com",
+    "name": "88888888",
+    "plan": "free",
+    "daily_usage": {},
+    "usage_stats": {
+      "background_remover": {
+        "current_usage": 0,
+        "daily_limit": 3,
+        "remaining_usage": 3
+      },
+      "image_compressor": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "format_converter": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "image_cropper": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "currency_converter": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "unit_converter": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "shipping_calculator": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "send_email": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      }
+    },
+    "created_at": "2025-11-16T01:23:10.656180",
+    "updated_at": "2025-11-16T01:23:10.656182"
+  },
+  "77b0db38-f713-4683-8414-c13a02c7b0e0": {
+    "user_id": "77b0db38-f713-4683-8414-c13a02c7b0e0",
+    "email": "5252@100.com",
+    "name": "525252",
+    "plan": "free",
+    "daily_usage": {
+      "2025-11-20": {
+        "background_remover": 4
+      }
+    },
+    "usage_stats": {
+      "background_remover": {
+        "current_usage": 4,
+        "daily_limit": 3,
+        "remaining_usage": -1
+      },
+      "image_compressor": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "format_converter": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "image_cropper": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "currency_converter": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "unit_converter": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "shipping_calculator": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "send_email": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      }
+    },
+    "created_at": "2025-11-20T08:35:08.139856",
+    "updated_at": "2025-11-20T08:40:03.526146"
+  },
+  "caa8cd6c-39b5-4197-8baf-dc782473e712": {
+    "user_id": "caa8cd6c-39b5-4197-8baf-dc782473e712",
+    "email": "111@111.com",
+    "name": "111111",
+    "plan": "free",
+    "daily_usage": {
+      "2025-11-24": {
+        "background_remover": 1
+      },
+      "2025-12-27": {
+        "background_remover": 3
+      }
+    },
+    "usage_stats": {
+      "background_remover": {
+        "current_usage": 3,
+        "daily_limit": 3,
+        "remaining_usage": 0
+      },
+      "image_compressor": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "format_converter": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "image_cropper": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "currency_converter": {
+        "current_usage": 0,
+        "daily_limit": 3,
+        "remaining_usage": 3
+      },
+      "unit_converter": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "shipping_calculator": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "send_email": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "keyword_analyzer": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "add_watermark": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "remove_watermark": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "image_rotate_flip": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "listing_generator": {
+        "current_usage": 0,
+        "daily_limit": 3,
+        "remaining_usage": 3
+      }
+    },
+    "created_at": "2025-11-20T09:06:22.159910",
+    "updated_at": "2025-12-27T00:44:49.734851"
+  },
+  "a5b4ccf2-ebd2-4fd7-89f0-c9e1304d8c6a": {
+    "user_id": "a5b4ccf2-ebd2-4fd7-89f0-c9e1304d8c6a",
+    "email": "6969@sohu.com",
+    "name": "6969",
+    "plan": "free",
+    "daily_usage": {},
+    "usage_stats": {
+      "background_remover": {
+        "current_usage": 0,
+        "daily_limit": 3,
+        "remaining_usage": 3
+      },
+      "image_compressor": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "format_converter": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "image_cropper": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "currency_converter": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "unit_converter": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "shipping_calculator": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "send_email": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      }
+    },
+    "created_at": "2025-11-20T09:07:45.294130",
+    "updated_at": "2025-11-20T09:07:45.294130"
+  },
+  "9633196e-3ecd-49f1-8df9-ae14de4ab108": {
+    "user_id": "9633196e-3ecd-49f1-8df9-ae14de4ab108",
+    "email": "787878@163.com",
+    "name": "787878",
+    "plan": "free",
+    "daily_usage": {
+      "2025-11-20": {
+        "background_remover": 3,
+        "image_compressor": 2
+      },
+      "2025-11-24": {
+        "background_remover": 2
+      }
+    },
+    "usage_stats": {
+      "background_remover": {
+        "current_usage": 0,
+        "daily_limit": 3,
+        "remaining_usage": 3
+      },
+      "image_compressor": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "format_converter": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "image_cropper": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "currency_converter": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "unit_converter": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "shipping_calculator": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "send_email": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      }
+    },
+    "created_at": "2025-11-20T09:13:36.314409",
+    "updated_at": "2025-11-24T21:58:19.070688"
+  },
+  "dad0c075-506e-4404-8fb6-6c11edeeae42": {
+    "user_id": "dad0c075-506e-4404-8fb6-6c11edeeae42",
+    "email": "12121212@163.com",
+    "name": "121212121212121",
+    "plan": "basic",
+    "daily_usage": {
+      "2025-11-25": {
+        "background_remover": 3,
+        "image_compressor": 1,
+        "image_cropper": 1,
+        "currency_converter": 1
+      }
+    },
+    "usage_stats": {
+      "background_remover": {
+        "current_usage": 3,
+        "daily_limit": 3,
+        "remaining_usage": 0
+      },
+      "image_compressor": {
+        "current_usage": 1,
+        "daily_limit": 5,
+        "remaining_usage": 4
+      },
+      "format_converter": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "image_cropper": {
+        "current_usage": 1,
+        "daily_limit": 5,
+        "remaining_usage": 4
+      },
+      "currency_converter": {
+        "current_usage": 1,
+        "daily_limit": 10,
+        "remaining_usage": 9
+      },
+      "unit_converter": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "shipping_calculator": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "send_email": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      }
+    },
+    "created_at": "2025-11-20T10:43:06.827911",
+    "updated_at": "2025-11-25T12:45:09.520125",
+    "membership_type": "basic",
+    "membership_expires_at": "2025-12-25T11:38:16.238950"
+  },
+  "04454149-b472-40cf-8ceb-69db3b984243": {
+    "user_id": "04454149-b472-40cf-8ceb-69db3b984243",
+    "email": "5858@100.com",
+    "name": "5858",
+    "plan": "free",
+    "daily_usage": {},
+    "usage_stats": {
+      "background_remover": {
+        "current_usage": 0,
+        "daily_limit": 3,
+        "remaining_usage": 3
+      },
+      "image_compressor": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "format_converter": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "image_cropper": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "currency_converter": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "unit_converter": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "shipping_calculator": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "send_email": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      }
+    },
+    "created_at": "2025-11-20T11:13:23.964396",
+    "updated_at": "2025-11-20T11:13:23.964399"
+  },
+  "79926250-2461-4a52-b15e-892ed86b8790": {
+    "user_id": "79926250-2461-4a52-b15e-892ed86b8790",
+    "email": "14141@11.com",
+    "name": "1414",
+    "plan": "free",
+    "daily_usage": {
+      "2025-11-20": {
+        "background_remover": 3
+      }
+    },
+    "usage_stats": {
+      "background_remover": {
+        "current_usage": 3,
+        "daily_limit": 3,
+        "remaining_usage": 0
+      },
+      "image_compressor": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "format_converter": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "image_cropper": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "currency_converter": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "unit_converter": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "shipping_calculator": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "send_email": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      }
+    },
+    "created_at": "2025-11-20T11:50:36.431247",
+    "updated_at": "2025-11-20T12:12:10.822376"
+  },
+  "1e7e7c2b-1926-4beb-a4b7-ec30ca89a2dd": {
+    "user_id": "1e7e7c2b-1926-4beb-a4b7-ec30ca89a2dd",
+    "email": "100100@163.com",
+    "name": "100100",
+    "plan": "free",
+    "daily_usage": {
+      "2025-11-20": {
+        "background_remover": 3
+      }
+    },
+    "usage_stats": {
+      "background_remover": {
+        "current_usage": 3,
+        "daily_limit": 3,
+        "remaining_usage": 0
+      },
+      "image_compressor": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "format_converter": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "image_cropper": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "currency_converter": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "unit_converter": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "shipping_calculator": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "send_email": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      }
+    },
+    "created_at": "2025-11-20T12:15:37.996969",
+    "updated_at": "2025-11-20T12:42:42.145984"
+  },
+  "2b3acba4-586d-4324-afb6-68689a1583a3": {
+    "user_id": "2b3acba4-586d-4324-afb6-68689a1583a3",
+    "email": "123@321.com",
+    "name": "100100",
+    "plan": "free",
+    "daily_usage": {
+      "2025-11-20": {
+        "background_remover": 3,
+        "image_compressor": 3,
+        "format_converter": 1,
+        "image_cropper": 4
+      },
+      "2025-11-21": {
+        "background_remover": 2,
+        "keyword_analyzer": 10
+      }
+    },
+    "usage_stats": {
+      "background_remover": {
+        "current_usage": 2,
+        "daily_limit": 3,
+        "remaining_usage": 1
+      },
+      "image_compressor": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "format_converter": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "image_cropper": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "currency_converter": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "unit_converter": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "shipping_calculator": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "send_email": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      }
+    },
+    "created_at": "2025-11-20T12:45:05.214239",
+    "updated_at": "2025-11-21T08:17:43.829317"
+  },
+  "146c9b69-ce30-40a9-9423-18f4b0f5c7e1": {
+    "user_id": "146c9b69-ce30-40a9-9423-18f4b0f5c7e1",
+    "email": "100@100.com",
+    "name": "100",
+    "plan": "free",
+    "daily_usage": {
+      "2025-11-21": {
+        "keyword_analyzer": 10,
+        "currency_converter": 6,
+        "background_remover": 3
+      }
+    },
+    "usage_stats": {
+      "background_remover": {
+        "current_usage": 3,
+        "daily_limit": 3,
+        "remaining_usage": 0
+      },
+      "image_compressor": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "format_converter": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "image_cropper": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "keyword_analyzer": {
+        "current_usage": 10,
+        "daily_limit": 10,
+        "remaining_usage": 0
+      },
+      "currency_converter": {
+        "current_usage": 6,
+        "daily_limit": 10,
+        "remaining_usage": 4
+      },
+      "unit_converter": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "shipping_calculator": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "send_email": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      }
+    },
+    "created_at": "2025-11-21T08:22:08.545121",
+    "updated_at": "2025-11-21T10:09:49.579502"
+  },
+  "7157797e-3b53-4c6b-ba4c-47f18e557021": {
+    "user_id": "7157797e-3b53-4c6b-ba4c-47f18e557021",
+    "email": "5656@11.com",
+    "name": "5656",
+    "plan": "free",
+    "daily_usage": {
+      "2025-11-21": {
+        "add_watermark": 8,
+        "remove_watermark": 3
+      }
+    },
+    "usage_stats": {
+      "background_remover": {
+        "current_usage": 0,
+        "daily_limit": 3,
+        "remaining_usage": 3
+      },
+      "image_compressor": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "format_converter": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "image_cropper": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "keyword_analyzer": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "currency_converter": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "unit_converter": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "shipping_calculator": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "send_email": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "add_watermark": {
+        "current_usage": 8,
+        "daily_limit": 10,
+        "remaining_usage": 2
+      },
+      "remove_watermark": {
+        "current_usage": 3,
+        "daily_limit": 10,
+        "remaining_usage": 7
+      }
+    },
+    "created_at": "2025-11-21T10:17:11.191194",
+    "updated_at": "2025-11-21T10:32:01.715268"
+  },
+  "e4c08462-9ad3-43e1-b07c-410d5bfbb492": {
+    "user_id": "e4c08462-9ad3-43e1-b07c-410d5bfbb492",
+    "email": "1818@100.com",
+    "name": "1818",
+    "plan": "free",
+    "daily_usage": {},
+    "usage_stats": {
+      "background_remover": {
+        "current_usage": 0,
+        "daily_limit": 3,
+        "remaining_usage": 3
+      },
+      "image_compressor": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "format_converter": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "image_cropper": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "keyword_analyzer": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "currency_converter": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "unit_converter": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "shipping_calculator": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "send_email": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "add_watermark": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "remove_watermark": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      }
+    },
+    "invite_code": "5DIQC9F5",
+    "invited_by": null,
+    "invite_rewards": {
+      "daily_rewards": {},
+      "one_time_rewards": [
+        {
+          "date": "2025-11-21",
+          "tool": "all_tools",
+          "count": 20,
+          "expires_at": "2025-12-21T14:35:31.433272",
+          "used": 4
+        }
+      ]
+    },
+    "created_at": "2025-11-21T14:35:31.424018",
+    "updated_at": "2025-11-21T14:35:31.433272"
+  },
+  "f3c3b5c7-ea22-4cd0-8156-6f915b843304": {
+    "user_id": "f3c3b5c7-ea22-4cd0-8156-6f915b843304",
+    "email": "9999@100.com",
+    "name": "9999",
+    "plan": "free",
+    "daily_usage": {},
+    "usage_stats": {
+      "background_remover": {
+        "current_usage": 0,
+        "daily_limit": 3,
+        "remaining_usage": 3
+      },
+      "image_compressor": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "format_converter": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "image_cropper": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "keyword_analyzer": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "currency_converter": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "unit_converter": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "shipping_calculator": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "send_email": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "add_watermark": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "remove_watermark": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      }
+    },
+    "invite_code": "PB7F6HAV",
+    "invited_by": null,
+    "invite_rewards": {
+      "daily_rewards": {},
+      "one_time_rewards": [
+        {
+          "date": "2025-11-21",
+          "tool": "all_tools",
+          "count": 20,
+          "expires_at": "2025-12-21T15:50:15.434641",
+          "used": 4
+        }
+      ]
+    },
+    "created_at": "2025-11-21T15:50:15.424632",
+    "updated_at": "2025-11-21T15:50:15.434641"
+  },
+  "b5f46795-fa64-43f0-8954-c94794a5deb5": {
+    "user_id": "b5f46795-fa64-43f0-8954-c94794a5deb5",
+    "email": "585855@gmail.com",
+    "name": "58585858585",
+    "plan": "free",
+    "daily_usage": {},
+    "usage_stats": {
+      "background_remover": {
+        "current_usage": 0,
+        "daily_limit": 3,
+        "remaining_usage": 3
+      },
+      "image_compressor": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "format_converter": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "image_cropper": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "keyword_analyzer": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "currency_converter": {
+        "current_usage": 0,
+        "daily_limit": 3,
+        "remaining_usage": 3
+      },
+      "unit_converter": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "shipping_calculator": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "send_email": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "add_watermark": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "remove_watermark": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      }
+    },
+    "invite_code": "V7XJP3SC",
+    "invited_by": null,
+    "invite_rewards": {
+      "daily_rewards": {},
+      "one_time_rewards": [
+        {
+          "date": "2025-11-24",
+          "tool": "all_tools",
+          "count": 20,
+          "expires_at": "2025-12-24T10:48:39.835000",
+          "used": 1
+        }
+      ]
+    },
+    "created_at": "2025-11-24T10:48:39.801731",
+    "updated_at": "2025-11-24T10:48:39.835000"
+  },
+  "cc846d96-c7f6-4487-9c54-bffaf0d67ab8": {
+    "user_id": "cc846d96-c7f6-4487-9c54-bffaf0d67ab8",
+    "email": "74747474@11.com",
+    "name": "7474747",
+    "plan": "free",
+    "daily_usage": {},
+    "usage_stats": {
+      "background_remover": {
+        "current_usage": 0,
+        "daily_limit": 3,
+        "remaining_usage": 3
+      },
+      "image_compressor": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "format_converter": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "image_cropper": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "keyword_analyzer": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "currency_converter": {
+        "current_usage": 0,
+        "daily_limit": 3,
+        "remaining_usage": 3
+      },
+      "unit_converter": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "shipping_calculator": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "send_email": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "add_watermark": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "remove_watermark": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      }
+    },
+    "invite_code": "KU1F4ACC",
+    "invited_by": null,
+    "invite_rewards": {
+      "daily_rewards": {},
+      "one_time_rewards": [
+        {
+          "date": "2025-11-24",
+          "tool": "all_tools",
+          "count": 20,
+          "expires_at": "2025-12-24T14:49:29.651726",
+          "used": 5
+        }
+      ]
+    },
+    "created_at": "2025-11-24T14:49:29.638250",
+    "updated_at": "2025-11-24T14:49:29.651726"
+  },
+  "039e8f4f-cb10-4b1b-89c8-e1e717159ede": {
+    "user_id": "039e8f4f-cb10-4b1b-89c8-e1e717159ede",
+    "email": "test@example.com",
+    "name": "测试用户",
+    "plan": "free",
+    "daily_usage": {
+      "2025-11-24": {
+        "background_remover": 1,
+        "image_compressor": 1,
+        "format_converter": 1,
+        "image_cropper": 2,
+        "keyword_analyzer": 2,
+        "currency_converter": 2,
+        "add_watermark": 2
+      }
+    },
+    "usage_stats": {
+      "background_remover": {
+        "current_usage": 1,
+        "daily_limit": 3,
+        "remaining_usage": 2
+      },
+      "image_compressor": {
+        "current_usage": 1,
+        "daily_limit": 5,
+        "remaining_usage": 4
+      },
+      "format_converter": {
+        "current_usage": 1,
+        "daily_limit": 5,
+        "remaining_usage": 4
+      },
+      "image_cropper": {
+        "current_usage": 2,
+        "daily_limit": 5,
+        "remaining_usage": 3
+      },
+      "keyword_analyzer": {
+        "current_usage": 2,
+        "daily_limit": 5,
+        "remaining_usage": 3
+      },
+      "currency_converter": {
+        "current_usage": 2,
+        "daily_limit": 3,
+        "remaining_usage": 1
+      },
+      "unit_converter": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "shipping_calculator": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "send_email": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "add_watermark": {
+        "current_usage": 2,
+        "daily_limit": 10,
+        "remaining_usage": 8
+      },
+      "remove_watermark": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      }
+    },
+    "invite_code": "XMODCPFB",
+    "invited_by": null,
+    "invite_rewards": {
+      "daily_rewards": {},
+      "one_time_rewards": [
+        {
+          "date": "2025-11-24",
+          "tool": "all_tools",
+          "count": 20,
+          "expires_at": "2025-12-24T17:24:27.475535",
+          "used": 11
+        }
+      ]
+    },
+    "created_at": "2025-11-24T17:24:27.458038",
+    "updated_at": "2025-11-24T18:44:46.858979"
+  },
+  "e5301abb-843b-40ce-ab50-b20363cffc00": {
+    "user_id": "e5301abb-843b-40ce-ab50-b20363cffc00",
+    "email": "99999@100.com",
+    "name": "88888888",
+    "plan": "free",
+    "daily_usage": {
+      "2025-11-25": {
+        "background_remover": 1
+      }
+    },
+    "usage_stats": {
+      "background_remover": {
+        "current_usage": 1,
+        "daily_limit": 3,
+        "remaining_usage": 2
+      },
+      "image_compressor": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "format_converter": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "image_cropper": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "keyword_analyzer": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "currency_converter": {
+        "current_usage": 0,
+        "daily_limit": 3,
+        "remaining_usage": 3
+      },
+      "unit_converter": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "shipping_calculator": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "send_email": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "add_watermark": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "remove_watermark": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      }
+    },
+    "invite_code": "8H08NSCD",
+    "invited_by": null,
+    "invite_rewards": {
+      "daily_rewards": {},
+      "one_time_rewards": [
+        {
+          "date": "2025-11-25",
+          "tool": "all_tools",
+          "count": 20,
+          "expires_at": "2025-12-25T10:36:20.660719",
+          "used": 1
+        }
+      ]
+    },
+    "created_at": "2025-11-25T10:36:20.646591",
+    "updated_at": "2025-11-25T10:41:10.480959"
+  },
+  "a504441e-2af8-41c4-ac02-0da71e6c6532": {
+    "user_id": "a504441e-2af8-41c4-ac02-0da71e6c6532",
+    "email": "6969696969696@11.com",
+    "name": "69696969696",
+    "plan": "basic",
+    "daily_usage": {
+      "2025-11-25": {
+        "background_remover": 3,
+        "format_converter": 1,
+        "remove_watermark": 1,
+        "image_cropper": 1
+      }
+    },
+    "usage_stats": {
+      "background_remover": {
+        "current_usage": 3,
+        "daily_limit": 3,
+        "remaining_usage": 0
+      },
+      "image_compressor": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "format_converter": {
+        "current_usage": 1,
+        "daily_limit": 5,
+        "remaining_usage": 4
+      },
+      "image_cropper": {
+        "current_usage": 1,
+        "daily_limit": 5,
+        "remaining_usage": 4
+      },
+      "keyword_analyzer": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "currency_converter": {
+        "current_usage": 0,
+        "daily_limit": 3,
+        "remaining_usage": 3
+      },
+      "unit_converter": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "shipping_calculator": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "send_email": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "add_watermark": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "remove_watermark": {
+        "current_usage": 1,
+        "daily_limit": 10,
+        "remaining_usage": 9
+      }
+    },
+    "invite_code": "GFDAXC7K",
+    "invited_by": null,
+    "invite_rewards": {
+      "daily_rewards": {},
+      "one_time_rewards": [
+        {
+          "date": "2025-11-25",
+          "tool": "all_tools",
+          "count": 20,
+          "expires_at": "2025-12-25T12:45:55.144664",
+          "used": 6
+        }
+      ]
+    },
+    "created_at": "2025-11-25T12:45:55.126168",
+    "updated_at": "2025-11-25T13:59:51.758862",
+    "membership_type": "basic",
+    "membership_expires_at": "2025-12-25T12:48:33.470233"
+  },
+  "2002df0e-1ee3-4224-aa48-bf4a8dc2aaf8": {
+    "user_id": "2002df0e-1ee3-4224-aa48-bf4a8dc2aaf8",
+    "email": "25252525252@11.com",
+    "name": "252525252",
+    "plan": "basic",
+    "daily_usage": {
+      "2025-11-25": {
+        "background_remover": 1
+      }
+    },
+    "usage_stats": {
+      "background_remover": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "image_compressor": {
+        "current_usage": 0,
+        "daily_limit": 20,
+        "remaining_usage": 20
+      },
+      "format_converter": {
+        "current_usage": 0,
+        "daily_limit": 20,
+        "remaining_usage": 20
+      },
+      "image_cropper": {
+        "current_usage": 0,
+        "daily_limit": 20,
+        "remaining_usage": 20
+      },
+      "keyword_analyzer": {
+        "current_usage": 0,
+        "daily_limit": 50,
+        "remaining_usage": 50
+      },
+      "currency_converter": {
+        "current_usage": 0,
+        "daily_limit": -1,
+        "remaining_usage": -1
+      },
+      "unit_converter": {
+        "current_usage": 0,
+        "daily_limit": -1,
+        "remaining_usage": -1
+      },
+      "shipping_calculator": {
+        "current_usage": 0,
+        "daily_limit": 20,
+        "remaining_usage": 20
+      },
+      "send_email": {
+        "current_usage": 0,
+        "daily_limit": 20,
+        "remaining_usage": 20
+      },
+      "add_watermark": {
+        "current_usage": 0,
+        "daily_limit": 50,
+        "remaining_usage": 50
+      },
+      "remove_watermark": {
+        "current_usage": 0,
+        "daily_limit": 50,
+        "remaining_usage": 50
+      },
+      "image_rotate_flip": {
+        "current_usage": 0,
+        "daily_limit": 50,
+        "remaining_usage": 50
+      },
+      "listing_generator": {
+        "current_usage": 0,
+        "daily_limit": 20,
+        "remaining_usage": 20
+      }
+    },
+    "invite_code": "381INOJI",
+    "invited_by": null,
+    "invite_rewards": {
+      "daily_rewards": {},
+      "one_time_rewards": [
+        {
+          "date": "2025-11-25",
+          "tool": "all_tools",
+          "count": 20,
+          "expires_at": "2025-12-25T14:00:47.640406",
+          "used": 1
+        }
+      ]
+    },
+    "created_at": "2025-11-25T14:00:47.630816",
+    "updated_at": "2025-11-25T14:19:03.710565",
+    "membership_type": "basic",
+    "membership_expires_at": "2026-01-24T14:03:22.463372"
+  },
+  "c10dbabb-62d0-476b-8f8c-94572674bceb": {
+    "user_id": "c10dbabb-62d0-476b-8f8c-94572674bceb",
+    "email": "autotest@example.com",
+    "name": "AutoTestUser",
+    "plan": "free",
+    "daily_usage": {},
+    "usage_stats": {
+      "background_remover": {
+        "current_usage": 0,
+        "daily_limit": 3,
+        "remaining_usage": 3
+      },
+      "image_compressor": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "format_converter": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "image_cropper": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "keyword_analyzer": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "currency_converter": {
+        "current_usage": 0,
+        "daily_limit": 3,
+        "remaining_usage": 3
+      },
+      "unit_converter": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "shipping_calculator": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "send_email": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "add_watermark": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "remove_watermark": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "image_rotate_flip": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "listing_generator": {
+        "current_usage": 0,
+        "daily_limit": 3,
+        "remaining_usage": 3
+      }
+    },
+    "invite_code": "87H9QZU5",
+    "invited_by": null,
+    "invite_rewards": {
+      "daily_rewards": {},
+      "one_time_rewards": [
+        {
+          "date": "2025-12-27",
+          "tool": "all_tools",
+          "count": 20,
+          "expires_at": "2026-01-26T00:30:55.558901",
+          "used": 0
+        }
+      ]
+    },
+    "created_at": "2025-12-27T00:30:55.546581",
+    "updated_at": "2025-12-27T00:30:55.558901"
+  },
+  "3b367834-86db-4587-a430-8b818dcf5339": {
+    "user_id": "3b367834-86db-4587-a430-8b818dcf5339",
+    "email": "5656@5656.com",
+    "name": "5656",
+    "plan": "free",
+    "daily_usage": {},
+    "usage_stats": {
+      "background_remover": {
+        "current_usage": 0,
+        "daily_limit": 3,
+        "remaining_usage": 3
+      },
+      "image_compressor": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "format_converter": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "image_cropper": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "keyword_analyzer": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "currency_converter": {
+        "current_usage": 0,
+        "daily_limit": 3,
+        "remaining_usage": 3
+      },
+      "unit_converter": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "shipping_calculator": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "send_email": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "add_watermark": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "remove_watermark": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "image_rotate_flip": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "listing_generator": {
+        "current_usage": 0,
+        "daily_limit": 3,
+        "remaining_usage": 3
+      }
+    },
+    "invite_code": "1KC862DJ",
+    "invited_by": null,
+    "invite_rewards": {
+      "daily_rewards": {},
+      "one_time_rewards": [
+        {
+          "date": "2025-12-28",
+          "tool": "all_tools",
+          "count": 20,
+          "expires_at": "2026-01-27T13:30:03.442912",
+          "used": 0
+        }
+      ]
+    },
+    "created_at": "2025-12-28T13:30:03.410513",
+    "updated_at": "2025-12-28T13:30:03.442912"
+  },
+  "db03a1c4-ffb4-49ac-86a3-a142253c293b": {
+    "user_id": "db03a1c4-ffb4-49ac-86a3-a142253c293b",
+    "email": "46@46.com",
+    "name": "test888@test.com",
+    "plan": "free",
+    "daily_usage": {},
+    "usage_stats": {
+      "background_remover": {
+        "current_usage": 0,
+        "daily_limit": 3,
+        "remaining_usage": 3
+      },
+      "image_compressor": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "format_converter": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "image_cropper": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "keyword_analyzer": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "currency_converter": {
+        "current_usage": 0,
+        "daily_limit": 3,
+        "remaining_usage": 3
+      },
+      "unit_converter": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "shipping_calculator": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "send_email": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "add_watermark": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "remove_watermark": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "image_rotate_flip": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "listing_generator": {
+        "current_usage": 0,
+        "daily_limit": 3,
+        "remaining_usage": 3
+      }
+    },
+    "invite_code": "03GDLGLR",
+    "invited_by": null,
+    "invite_rewards": {
+      "daily_rewards": {},
+      "one_time_rewards": [
+        {
+          "date": "2025-12-28",
+          "tool": "all_tools",
+          "count": 20,
+          "expires_at": "2026-01-27T14:07:55.204271",
+          "used": 0
+        }
+      ]
+    },
+    "created_at": "2025-12-28T14:07:55.190147",
+    "updated_at": "2025-12-28T14:07:55.204271"
+  },
+  "8f4ac4d0-d55c-4ad5-90bd-20996d1cfb5c": {
+    "user_id": "8f4ac4d0-d55c-4ad5-90bd-20996d1cfb5c",
+    "email": "test_auto_confirm@test.com",
+    "name": "Test User",
+    "plan": "buyout",
+    "daily_usage": {},
+    "usage_stats": {
+      "background_remover": {
+        "current_usage": 0,
+        "daily_limit": 3,
+        "remaining_usage": 3
+      },
+      "image_compressor": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "format_converter": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "image_cropper": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "keyword_analyzer": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "currency_converter": {
+        "current_usage": 0,
+        "daily_limit": 3,
+        "remaining_usage": 3
+      },
+      "unit_converter": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "shipping_calculator": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "send_email": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "add_watermark": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "remove_watermark": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "image_rotate_flip": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "listing_generator": {
+        "current_usage": 0,
+        "daily_limit": 3,
+        "remaining_usage": 3
+      }
+    },
+    "invite_code": "Q86GCA12",
+    "invited_by": null,
+    "invite_rewards": {
+      "daily_rewards": {},
+      "one_time_rewards": [
+        {
+          "date": "2025-12-28",
+          "tool": "all_tools",
+          "count": 20,
+          "expires_at": "2026-01-27T14:16:40.854361",
+          "used": 0
+        }
+      ]
+    },
+    "created_at": "2025-12-28T14:16:40.842689",
+    "updated_at": "2025-12-28T14:21:10.163738",
+    "membership_type": "buyout",
+    "membership_expires_at": "2026-01-27T14:21:10.163738"
+  },
+  "63f8728d-b84b-4290-9c94-841ee0955280": {
+    "user_id": "63f8728d-b84b-4290-9c94-841ee0955280",
+    "email": "test_auto_bfdd2475@example.com",
+    "name": "Test User",
+    "plan": "free",
+    "daily_usage": {},
+    "usage_stats": {
+      "background_remover": {
+        "current_usage": 0,
+        "daily_limit": 3,
+        "remaining_usage": 3
+      },
+      "image_compressor": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "format_converter": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "image_cropper": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "keyword_analyzer": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "currency_converter": {
+        "current_usage": 0,
+        "daily_limit": 3,
+        "remaining_usage": 3
+      },
+      "unit_converter": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "shipping_calculator": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "send_email": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "add_watermark": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "remove_watermark": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "image_rotate_flip": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "listing_generator": {
+        "current_usage": 0,
+        "daily_limit": 3,
+        "remaining_usage": 3
+      }
+    },
+    "invite_code": "GUUSS527",
+    "invited_by": null,
+    "invite_rewards": {
+      "daily_rewards": {},
+      "one_time_rewards": [
+        {
+          "date": "2025-12-28",
+          "tool": "all_tools",
+          "count": 20,
+          "expires_at": "2026-01-27T16:31:46.759787",
+          "used": 0
+        }
+      ]
+    },
+    "created_at": "2025-12-28T16:31:46.699013",
+    "updated_at": "2025-12-28T16:31:46.759787"
+  },
+  "3ab3d265-138a-4ec4-a764-0320b4671e7f": {
+    "user_id": "3ab3d265-138a-4ec4-a764-0320b4671e7f",
+    "email": "test_auto_e09e4fbd@example.com",
+    "name": "Test User",
+    "plan": "free",
+    "daily_usage": {},
+    "usage_stats": {
+      "background_remover": {
+        "current_usage": 0,
+        "daily_limit": 3,
+        "remaining_usage": 3
+      },
+      "image_compressor": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "format_converter": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "image_cropper": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "keyword_analyzer": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "currency_converter": {
+        "current_usage": 0,
+        "daily_limit": 3,
+        "remaining_usage": 3
+      },
+      "unit_converter": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "shipping_calculator": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "send_email": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "add_watermark": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "remove_watermark": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "image_rotate_flip": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "listing_generator": {
+        "current_usage": 0,
+        "daily_limit": 3,
+        "remaining_usage": 3
+      }
+    },
+    "invite_code": "GCQ4BMSX",
+    "invited_by": null,
+    "invite_rewards": {
+      "daily_rewards": {},
+      "one_time_rewards": [
+        {
+          "date": "2025-12-28",
+          "tool": "all_tools",
+          "count": 20,
+          "expires_at": "2026-01-27T16:32:33.706596",
+          "used": 0
+        }
+      ]
+    },
+    "created_at": "2025-12-28T16:32:33.670521",
+    "updated_at": "2025-12-28T16:32:33.707103"
+  },
+  "7b258865-6e91-412b-b243-03b88acf2b1f": {
+    "user_id": "7b258865-6e91-412b-b243-03b88acf2b1f",
+    "email": "112@112.com",
+    "name": "112",
+    "plan": "buyout",
+    "daily_usage": {
+      "2025-12-28": {
+        "background_remover": 12,
+        "image_rotate_flip": 2,
+        "keyword_analyzer": 2,
+        "listing_generator": 1,
+        "currency_converter": 1
+      }
+    },
+    "usage_stats": {
+      "background_remover": {
+        "current_usage": 0,
+        "daily_limit": 3,
+        "remaining_usage": 3
+      },
+      "image_compressor": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "format_converter": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "image_cropper": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "keyword_analyzer": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "currency_converter": {
+        "current_usage": 0,
+        "daily_limit": 3,
+        "remaining_usage": 3
+      },
+      "unit_converter": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "shipping_calculator": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "send_email": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "add_watermark": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "remove_watermark": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "image_rotate_flip": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "listing_generator": {
+        "current_usage": 0,
+        "daily_limit": 3,
+        "remaining_usage": 3
+      }
+    },
+    "invite_code": "YUG1LZLS",
+    "invited_by": null,
+    "invite_rewards": {
+      "daily_rewards": {},
+      "one_time_rewards": [
+        {
+          "date": "2025-12-28",
+          "tool": "all_tools",
+          "count": 20,
+          "expires_at": "2026-01-27T19:20:03.948518",
+          "used": 18
+        }
+      ]
+    },
+    "created_at": "2025-12-28T19:20:03.914340",
+    "updated_at": "2025-12-28T20:53:47.569579",
+    "membership_type": "buyout",
+    "membership_expires_at": "2126-02-02T19:24:11.881384"
+  },
+  "d85a5e47-6eda-4bab-bf5d-ea807ea0de60": {
+    "user_id": "d85a5e47-6eda-4bab-bf5d-ea807ea0de60",
+    "email": "tool_tester_eb6c14@test.com",
+    "name": "Tool Tester",
+    "plan": "free",
+    "daily_usage": {
+      "2025-12-28": {
+        "background_remover": 1,
+        "image_rotate_flip": 1,
+        "keyword_analyzer": 1,
+        "currency_converter": 1
+      }
+    },
+    "usage_stats": {
+      "background_remover": {
+        "current_usage": 1,
+        "daily_limit": 3,
+        "remaining_usage": 2
+      },
+      "image_compressor": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "format_converter": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "image_cropper": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "keyword_analyzer": {
+        "current_usage": 1,
+        "daily_limit": 5,
+        "remaining_usage": 4
+      },
+      "currency_converter": {
+        "current_usage": 1,
+        "daily_limit": 3,
+        "remaining_usage": 2
+      },
+      "unit_converter": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "shipping_calculator": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "send_email": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "add_watermark": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "remove_watermark": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "image_rotate_flip": {
+        "current_usage": 1,
+        "daily_limit": 5,
+        "remaining_usage": 4
+      },
+      "listing_generator": {
+        "current_usage": 0,
+        "daily_limit": 3,
+        "remaining_usage": 3
+      }
+    },
+    "invite_code": "562KSTSF",
+    "invited_by": null,
+    "invite_rewards": {
+      "daily_rewards": {},
+      "one_time_rewards": [
+        {
+          "date": "2025-12-28",
+          "tool": "all_tools",
+          "count": 20,
+          "expires_at": "2026-01-27T19:53:30.913910",
+          "used": 4
+        }
+      ]
+    },
+    "created_at": "2025-12-28T19:53:30.899361",
+    "updated_at": "2025-12-28T19:53:45.361612"
+  },
+  "1334b184-f3ed-48a3-b34b-b0f8877f55fd": {
+    "user_id": "1334b184-f3ed-48a3-b34b-b0f8877f55fd",
+    "email": "tool_tester_2c6a25@test.com",
+    "name": "Tool Tester",
+    "plan": "free",
+    "daily_usage": {
+      "2025-12-28": {
+        "background_remover": 1,
+        "image_rotate_flip": 1,
+        "keyword_analyzer": 1,
+        "currency_converter": 1
+      }
+    },
+    "usage_stats": {
+      "background_remover": {
+        "current_usage": 1,
+        "daily_limit": 3,
+        "remaining_usage": 2
+      },
+      "image_compressor": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "format_converter": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "image_cropper": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "keyword_analyzer": {
+        "current_usage": 1,
+        "daily_limit": 5,
+        "remaining_usage": 4
+      },
+      "currency_converter": {
+        "current_usage": 1,
+        "daily_limit": 3,
+        "remaining_usage": 2
+      },
+      "unit_converter": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "shipping_calculator": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "send_email": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "add_watermark": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "remove_watermark": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "image_rotate_flip": {
+        "current_usage": 1,
+        "daily_limit": 5,
+        "remaining_usage": 4
+      },
+      "listing_generator": {
+        "current_usage": 0,
+        "daily_limit": 3,
+        "remaining_usage": 3
+      }
+    },
+    "invite_code": "EKXXG3WX",
+    "invited_by": null,
+    "invite_rewards": {
+      "daily_rewards": {},
+      "one_time_rewards": [
+        {
+          "date": "2025-12-28",
+          "tool": "all_tools",
+          "count": 20,
+          "expires_at": "2026-01-27T19:54:24.446031",
+          "used": 4
+        }
+      ]
+    },
+    "created_at": "2025-12-28T19:54:24.423241",
+    "updated_at": "2025-12-28T19:54:37.345937"
+  },
+  "c1750e7b-123a-44f1-ac78-57f28d282ea4": {
+    "user_id": "c1750e7b-123a-44f1-ac78-57f28d282ea4",
+    "email": "tool_tester_128cbf@test.com",
+    "name": "Tool Tester",
+    "plan": "free",
+    "daily_usage": {
+      "2025-12-28": {
+        "background_remover": 1,
+        "image_rotate_flip": 1,
+        "keyword_analyzer": 1,
+        "listing_generator": 1,
+        "currency_converter": 1
+      }
+    },
+    "usage_stats": {
+      "background_remover": {
+        "current_usage": 1,
+        "daily_limit": 3,
+        "remaining_usage": 2
+      },
+      "image_compressor": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "format_converter": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "image_cropper": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "keyword_analyzer": {
+        "current_usage": 1,
+        "daily_limit": 5,
+        "remaining_usage": 4
+      },
+      "currency_converter": {
+        "current_usage": 1,
+        "daily_limit": 3,
+        "remaining_usage": 2
+      },
+      "unit_converter": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "shipping_calculator": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "send_email": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "add_watermark": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "remove_watermark": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "image_rotate_flip": {
+        "current_usage": 1,
+        "daily_limit": 5,
+        "remaining_usage": 4
+      },
+      "listing_generator": {
+        "current_usage": 1,
+        "daily_limit": 3,
+        "remaining_usage": 2
+      }
+    },
+    "invite_code": "72F7WM57",
+    "invited_by": null,
+    "invite_rewards": {
+      "daily_rewards": {},
+      "one_time_rewards": [
+        {
+          "date": "2025-12-28",
+          "tool": "all_tools",
+          "count": 20,
+          "expires_at": "2026-01-27T19:58:43.693694",
+          "used": 5
+        }
+      ]
+    },
+    "created_at": "2025-12-28T19:58:43.679008",
+    "updated_at": "2025-12-28T19:58:56.635326"
+  },
+  "205682e3-001b-4645-b004-f2492cf99278": {
+    "user_id": "205682e3-001b-4645-b004-f2492cf99278",
+    "email": "tool_tester_c64e95@test.com",
+    "name": "Tool Tester",
+    "plan": "free",
+    "daily_usage": {
+      "2025-12-28": {
+        "background_remover": 1,
+        "image_rotate_flip": 1,
+        "keyword_analyzer": 1,
+        "listing_generator": 1,
+        "currency_converter": 1
+      }
+    },
+    "usage_stats": {
+      "background_remover": {
+        "current_usage": 1,
+        "daily_limit": 3,
+        "remaining_usage": 2
+      },
+      "image_compressor": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "format_converter": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "image_cropper": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "keyword_analyzer": {
+        "current_usage": 1,
+        "daily_limit": 5,
+        "remaining_usage": 4
+      },
+      "currency_converter": {
+        "current_usage": 1,
+        "daily_limit": 3,
+        "remaining_usage": 2
+      },
+      "unit_converter": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "shipping_calculator": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "send_email": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "add_watermark": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "remove_watermark": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "image_rotate_flip": {
+        "current_usage": 1,
+        "daily_limit": 5,
+        "remaining_usage": 4
+      },
+      "listing_generator": {
+        "current_usage": 1,
+        "daily_limit": 3,
+        "remaining_usage": 2
+      }
+    },
+    "invite_code": "DKTV51B2",
+    "invited_by": null,
+    "invite_rewards": {
+      "daily_rewards": {},
+      "one_time_rewards": [
+        {
+          "date": "2025-12-28",
+          "tool": "all_tools",
+          "count": 20,
+          "expires_at": "2026-01-27T20:18:10.931156",
+          "used": 5
+        }
+      ]
+    },
+    "created_at": "2025-12-28T20:18:10.908182",
+    "updated_at": "2025-12-28T20:18:23.929402"
+  },
+  "920682c9-c514-4826-80ec-2b26d97955ac": {
+    "user_id": "920682c9-c514-4826-80ec-2b26d97955ac",
+    "email": "tool_tester_9290a4@test.com",
+    "name": "Tool Tester",
+    "plan": "free",
+    "daily_usage": {
+      "2025-12-28": {
+        "background_remover": 1,
+        "image_rotate_flip": 1,
+        "keyword_analyzer": 1,
+        "listing_generator": 1,
+        "currency_converter": 1
+      }
+    },
+    "usage_stats": {
+      "background_remover": {
+        "current_usage": 1,
+        "daily_limit": 3,
+        "remaining_usage": 2
+      },
+      "image_compressor": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "format_converter": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "image_cropper": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "keyword_analyzer": {
+        "current_usage": 1,
+        "daily_limit": 5,
+        "remaining_usage": 4
+      },
+      "currency_converter": {
+        "current_usage": 1,
+        "daily_limit": 3,
+        "remaining_usage": 2
+      },
+      "unit_converter": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "shipping_calculator": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "send_email": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "add_watermark": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "remove_watermark": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "image_rotate_flip": {
+        "current_usage": 1,
+        "daily_limit": 5,
+        "remaining_usage": 4
+      },
+      "listing_generator": {
+        "current_usage": 1,
+        "daily_limit": 3,
+        "remaining_usage": 2
+      }
+    },
+    "invite_code": "PMFJ73KE",
+    "invited_by": null,
+    "invite_rewards": {
+      "daily_rewards": {},
+      "one_time_rewards": [
+        {
+          "date": "2025-12-28",
+          "tool": "all_tools",
+          "count": 20,
+          "expires_at": "2026-01-27T20:18:54.722896",
+          "used": 5
+        }
+      ]
+    },
+    "created_at": "2025-12-28T20:18:54.704742",
+    "updated_at": "2025-12-28T20:19:07.968523"
+  },
+  "e4884139-d3e9-49b6-8645-096e381fba9b": {
+    "user_id": "e4884139-d3e9-49b6-8645-096e381fba9b",
+    "email": "tool_tester_155d54@test.com",
+    "name": "Tool Tester",
+    "plan": "free",
+    "daily_usage": {
+      "2025-12-28": {
+        "background_remover": 1,
+        "image_rotate_flip": 1,
+        "keyword_analyzer": 1,
+        "listing_generator": 1,
+        "currency_converter": 1,
+        "super_resolution": 1,
+        "remove_watermark": 1
+      }
+    },
+    "usage_stats": {
+      "background_remover": {
+        "current_usage": 1,
+        "daily_limit": 3,
+        "remaining_usage": 2
+      },
+      "image_compressor": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "format_converter": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "image_cropper": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "keyword_analyzer": {
+        "current_usage": 1,
+        "daily_limit": 5,
+        "remaining_usage": 4
+      },
+      "currency_converter": {
+        "current_usage": 1,
+        "daily_limit": 3,
+        "remaining_usage": 2
+      },
+      "unit_converter": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "shipping_calculator": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "send_email": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "add_watermark": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "remove_watermark": {
+        "current_usage": 1,
+        "daily_limit": 10,
+        "remaining_usage": 9
+      },
+      "image_rotate_flip": {
+        "current_usage": 1,
+        "daily_limit": 5,
+        "remaining_usage": 4
+      },
+      "listing_generator": {
+        "current_usage": 1,
+        "daily_limit": 3,
+        "remaining_usage": 2
+      }
+    },
+    "invite_code": "JKHQIW68",
+    "invited_by": null,
+    "invite_rewards": {
+      "daily_rewards": {},
+      "one_time_rewards": [
+        {
+          "date": "2025-12-28",
+          "tool": "all_tools",
+          "count": 20,
+          "expires_at": "2026-01-27T20:28:42.952860",
+          "used": 7
+        }
+      ]
+    },
+    "created_at": "2025-12-28T20:28:42.853231",
+    "updated_at": "2025-12-28T20:29:03.210772"
+  },
+  "ca0ca69a-7f2b-4e16-9bc6-adcd2533fe34": {
+    "user_id": "ca0ca69a-7f2b-4e16-9bc6-adcd2533fe34",
+    "email": "tool_tester_7c7d87@test.com",
+    "name": "Tool Tester",
+    "plan": "free",
+    "daily_usage": {
+      "2025-12-28": {
+        "background_remover": 1,
+        "image_rotate_flip": 1,
+        "keyword_analyzer": 1,
+        "listing_generator": 1,
+        "currency_converter": 1,
+        "super_resolution": 1,
+        "remove_watermark": 1
+      }
+    },
+    "usage_stats": {
+      "background_remover": {
+        "current_usage": 1,
+        "daily_limit": 3,
+        "remaining_usage": 2
+      },
+      "image_compressor": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "format_converter": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "image_cropper": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "keyword_analyzer": {
+        "current_usage": 1,
+        "daily_limit": 5,
+        "remaining_usage": 4
+      },
+      "currency_converter": {
+        "current_usage": 1,
+        "daily_limit": 3,
+        "remaining_usage": 2
+      },
+      "unit_converter": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "shipping_calculator": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "send_email": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "add_watermark": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "remove_watermark": {
+        "current_usage": 1,
+        "daily_limit": 10,
+        "remaining_usage": 9
+      },
+      "image_rotate_flip": {
+        "current_usage": 1,
+        "daily_limit": 5,
+        "remaining_usage": 4
+      },
+      "listing_generator": {
+        "current_usage": 1,
+        "daily_limit": 3,
+        "remaining_usage": 2
+      }
+    },
+    "invite_code": "0MSGLRMM",
+    "invited_by": null,
+    "invite_rewards": {
+      "daily_rewards": {},
+      "one_time_rewards": [
+        {
+          "date": "2025-12-28",
+          "tool": "all_tools",
+          "count": 20,
+          "expires_at": "2026-01-27T20:29:43.662829",
+          "used": 7
+        }
+      ]
+    },
+    "created_at": "2025-12-28T20:29:43.606828",
+    "updated_at": "2025-12-28T20:30:04.895557"
+  },
+  "088cf86b-7bb3-4b13-aabb-7b09d2c92a6c": {
+    "user_id": "088cf86b-7bb3-4b13-aabb-7b09d2c92a6c",
+    "email": "tool_tester_ad0405@test.com",
+    "name": "Tool Tester",
+    "plan": "free",
+    "daily_usage": {
+      "2025-12-28": {
+        "background_remover": 1,
+        "image_rotate_flip": 1,
+        "keyword_analyzer": 1,
+        "listing_generator": 1,
+        "currency_converter": 1,
+        "super_resolution": 1,
+        "remove_watermark": 1
+      }
+    },
+    "usage_stats": {
+      "background_remover": {
+        "current_usage": 1,
+        "daily_limit": 3,
+        "remaining_usage": 2
+      },
+      "image_compressor": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "format_converter": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "image_cropper": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "keyword_analyzer": {
+        "current_usage": 1,
+        "daily_limit": 5,
+        "remaining_usage": 4
+      },
+      "currency_converter": {
+        "current_usage": 1,
+        "daily_limit": 3,
+        "remaining_usage": 2
+      },
+      "unit_converter": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "shipping_calculator": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "send_email": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "add_watermark": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "remove_watermark": {
+        "current_usage": 1,
+        "daily_limit": 10,
+        "remaining_usage": 9
+      },
+      "image_rotate_flip": {
+        "current_usage": 1,
+        "daily_limit": 5,
+        "remaining_usage": 4
+      },
+      "listing_generator": {
+        "current_usage": 1,
+        "daily_limit": 3,
+        "remaining_usage": 2
+      }
+    },
+    "invite_code": "L8ERB2J1",
+    "invited_by": null,
+    "invite_rewards": {
+      "daily_rewards": {},
+      "one_time_rewards": [
+        {
+          "date": "2025-12-28",
+          "tool": "all_tools",
+          "count": 20,
+          "expires_at": "2026-01-27T21:09:52.657493",
+          "used": 7
+        }
+      ]
+    },
+    "created_at": "2025-12-28T21:09:52.527150",
+    "updated_at": "2025-12-28T21:10:12.942213"
+  },
+  "8d09f4ad-ef7a-4f0f-af70-226d7d85485a": {
+    "user_id": "8d09f4ad-ef7a-4f0f-af70-226d7d85485a",
+    "email": "test@test.com",
+    "name": "Test User",
+    "plan": "free",
+    "daily_usage": {},
+    "usage_stats": {
+      "background_remover": {
+        "current_usage": 0,
+        "daily_limit": 3,
+        "remaining_usage": 3
+      },
+      "image_compressor": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "format_converter": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "image_cropper": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "keyword_analyzer": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "currency_converter": {
+        "current_usage": 0,
+        "daily_limit": 3,
+        "remaining_usage": 3
+      },
+      "unit_converter": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "shipping_calculator": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "send_email": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "add_watermark": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "remove_watermark": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "image_rotate_flip": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "listing_generator": {
+        "current_usage": 0,
+        "daily_limit": 3,
+        "remaining_usage": 3
+      }
+    },
+    "invite_code": "4410MM50",
+    "invited_by": null,
+    "invite_rewards": {
+      "daily_rewards": {},
+      "one_time_rewards": [
+        {
+          "date": "2025-12-29",
+          "tool": "all_tools",
+          "count": 20,
+          "expires_at": "2026-01-28T00:07:48.764997",
+          "used": 0
+        }
+      ]
+    },
+    "created_at": "2025-12-29T00:07:48.705127",
+    "updated_at": "2025-12-29T00:07:48.766086"
+  },
+  "local_dev_user": {
+    "id": "local_dev_user",
+    "email": "local@soeasyhub.com",
+    "plan": "buyout",
+    "credits": 999999,
+    "nickname": "开发调试员",
+    "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=dev",
+    "daily_usage": {
+      "2025-12-29": {
+        "background_remover": 19,
+        "image_rotate_flip": 2,
+        "keyword_analyzer": 2,
+        "listing_generator": 5,
+        "currency_converter": 1,
+        "remove_watermark": 5,
+        "super_resolution": 1,
+        "unit_converter": 4,
+        "shipping_calculator": 2
+      }
+    },
+    "updated_at": "2025-12-29T14:19:29.028916"
+  },
+  "051c6713-ecc2-4d55-8e06-bc5810592441": {
+    "user_id": "051c6713-ecc2-4d55-8e06-bc5810592441",
+    "email": "test_verify@example.com",
+    "name": "Test User",
+    "plan": "free",
+    "daily_usage": {},
+    "usage_stats": {
+      "background_remover": {
+        "current_usage": 0,
+        "daily_limit": 3,
+        "remaining_usage": 3
+      },
+      "image_compressor": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "format_converter": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "image_cropper": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "keyword_analyzer": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "currency_converter": {
+        "current_usage": 0,
+        "daily_limit": 3,
+        "remaining_usage": 3
+      },
+      "unit_converter": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "shipping_calculator": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "send_email": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "add_watermark": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "remove_watermark": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "image_rotate_flip": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "listing_generator": {
+        "current_usage": 0,
+        "daily_limit": 3,
+        "remaining_usage": 3
+      }
+    },
+    "invite_code": "JBPBFVXY",
+    "invited_by": null,
+    "invite_rewards": {
+      "daily_rewards": {},
+      "one_time_rewards": [
+        {
+          "date": "2025-12-29",
+          "tool": "all_tools",
+          "count": 20,
+          "expires_at": "2026-01-28T14:00:56.331889",
+          "used": 0
+        }
+      ]
+    },
+    "created_at": "2025-12-29T14:00:56.319275",
+    "updated_at": "2025-12-29T14:00:56.331889"
+  },
+  "007f26db-cf1e-4dd3-bda3-6c2b5d1bb6ba": {
+    "user_id": "007f26db-cf1e-4dd3-bda3-6c2b5d1bb6ba",
+    "email": "test_debug_01@example.com",
+    "name": "DebugUser",
+    "plan": "free",
+    "daily_usage": {},
+    "usage_stats": {
+      "background_remover": {
+        "current_usage": 0,
+        "daily_limit": 3,
+        "remaining_usage": 3
+      },
+      "image_compressor": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "format_converter": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "image_cropper": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "keyword_analyzer": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "currency_converter": {
+        "current_usage": 0,
+        "daily_limit": 3,
+        "remaining_usage": 3
+      },
+      "unit_converter": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "shipping_calculator": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "send_email": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "add_watermark": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "remove_watermark": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "image_rotate_flip": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "listing_generator": {
+        "current_usage": 0,
+        "daily_limit": 3,
+        "remaining_usage": 3
+      }
+    },
+    "invite_code": "U4NAF7NM",
+    "invited_by": null,
+    "invite_rewards": {
+      "daily_rewards": {},
+      "one_time_rewards": [
+        {
+          "date": "2025-12-29",
+          "tool": "all_tools",
+          "count": 20,
+          "expires_at": "2026-01-28T15:44:14.622959",
+          "used": 0
+        }
+      ]
+    },
+    "created_at": "2025-12-29T15:44:14.607445",
+    "updated_at": "2025-12-29T15:44:14.622959"
+  },
+  "c657ed5f-1704-4349-ae59-371c0c0e812c": {
+    "user_id": "c657ed5f-1704-4349-ae59-371c0c0e812c",
+    "email": "test_final_2025@example.com",
+    "name": "测试用户2025",
+    "plan": "free",
+    "daily_usage": {},
+    "usage_stats": {
+      "background_remover": {
+        "current_usage": 0,
+        "daily_limit": 3,
+        "remaining_usage": 3
+      },
+      "image_compressor": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "format_converter": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "image_cropper": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "keyword_analyzer": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "currency_converter": {
+        "current_usage": 0,
+        "daily_limit": 3,
+        "remaining_usage": 3
+      },
+      "unit_converter": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "shipping_calculator": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "send_email": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "add_watermark": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "remove_watermark": {
+        "current_usage": 0,
+        "daily_limit": 10,
+        "remaining_usage": 10
+      },
+      "image_rotate_flip": {
+        "current_usage": 0,
+        "daily_limit": 5,
+        "remaining_usage": 5
+      },
+      "listing_generator": {
+        "current_usage": 0,
+        "daily_limit": 3,
+        "remaining_usage": 3
+      }
+    },
+    "invite_code": "0ZW3Q1NK",
+    "invited_by": null,
+    "invite_rewards": {
+      "daily_rewards": {},
+      "one_time_rewards": [
+        {
+          "date": "2025-12-29",
+          "tool": "all_tools",
+          "count": 20,
+          "expires_at": "2026-01-28T15:51:54.786186",
+          "used": 0
+        }
+      ]
+    },
+    "created_at": "2025-12-29T15:51:54.761807",
+    "updated_at": "2025-12-29T15:51:54.786186"
+  }
+}

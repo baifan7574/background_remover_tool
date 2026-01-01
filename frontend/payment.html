@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NBFive AI - 获取终身授权</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Inter:wght@400;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #020617;
+            --bg-card: rgba(30, 41, 59, 0.7);
+            --accent-blue: #38bdf8;
+            --accent-gold: #fbbf24;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --shadow-premium: 0 10px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Outfit', 'Inter', 'PingFang SC', sans-serif;
+            background: var(--bg-dark);
+            min-height: 100vh;
+            color: var(--text-primary);
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .brand-logo {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-gold) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        header p {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+        }
+
+        .plans-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            max-width: 900px;
+            margin: 0 auto 60px;
+        }
+
+        .plan-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 40px;
+            text-align: center;
+            transition: all 0.4s ease;
+            position: relative;
+        }
+
+        .plan-card.popular {
+            border: 2px solid var(--accent-gold);
+            transform: scale(1.05);
+            box-shadow: 0 0 50px rgba(251, 191, 36, 0.15);
+        }
+
+        .plan-badge {
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--accent-gold);
+            color: #000;
+            padding: 8px 24px;
+            border-radius: 20px;
+            font-weight: 800;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+        }
+
+        .price {
+            margin: 30px 0;
+        }
+
+        .amount {
+            font-size: 3.5rem;
+            font-weight: 900;
+            color: var(--text-primary);
+        }
+
+        .period {
+            font-size: 1rem;
+            color: var(--text-secondary);
+        }
+
+        .features-list {
+            margin-bottom: 40px;
+            text-align: left;
+        }
+
+        .features-list li {
+            list-style: none;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--glass-border);
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .features-list li i {
+            color: var(--accent-blue);
+        }
+
+        .btn {
+            display: inline-block;
+            width: 100%;
+            padding: 16px;
+            border-radius: 12px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+
+        .btn-gold {
+            background: linear-gradient(135deg, var(--accent-gold) 0%, #d97706 100%);
+            color: #000;
+            border: none;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--glass-border);
+            color: var(--text-primary);
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+
+        .modal-content {
+            background: #1e293b;
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            width: 90%;
+            max-width: 500px;
+            margin: 40px auto;
+            padding: 40px;
+            position: relative;
+        }
+
+        .payment-methods {
+            margin: 30px 0;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .method-card {
+            border: 1px solid var(--glass-border);
+            padding: 20px;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+
+        .method-card.selected {
+            border-color: var(--accent-blue);
+            background: rgba(56, 189, 248, 0.1);
+        }
+
+        .method-card i {
+            display: block;
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .alipay-icon {
+            color: #1677ff;
+        }
+
+        .paypal-icon {
+            color: #003087;
+        }
+
+        .intl-badge {
+            display: inline-block;
+            background: #0ea5e9;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            vertical-align: middle;
+            margin-left: 5px;
+        }
+
+        .paypal-info {
+            background: rgba(14, 165, 233, 0.1);
+            border: 1px dashed #0ea5e9;
+            padding: 15px;
+            border-radius: 12px;
+            margin-top: 20px;
+            font-size: 0.9rem;
+            color: #bae6fd;
+            display: none;
+        }
+
+        #messageContainer {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 2000;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <div class="brand-logo">⚡ NBFive AI</div>
+            <p>获取终身授权，开启跨境视觉特种作战</p>
+            <p style="font-size: 0.9rem; opacity: 0.8; margin-top: 5px;">Unlock Lifetime Access for Global E-commerce
+                Success</p>
+        </header>
+
+        <div id="membershipPlans" class="plans-grid">
+            <!-- 计划列表由 JS 加载 -->
+        </div>
+    </div>
+
+    <!-- 支付确认模态框 -->
+    <div id="upgradeModal" class="modal">
+        <div class="modal-content">
+            <h2 id="selectedPlanName" style="margin-bottom: 20px;">确认授权计划</h2>
+            <div id="selectedPlanPrice" class="amount" style="font-size: 2.5rem; margin-bottom: 30px;">¥199</div>
+
+            <div class="payment-methods">
+                <div class="method-card" data-method="alipay_qrcode">
+                    <i class="fab fa-alipay alipay-icon"></i>
+                    <span>支付宝</span>
+                </div>
+                <div class="method-card" data-method="wechat_qrcode">
+                    <i class="fab fa-weixin wechat-icon"></i>
+                    <span>微信支付</span>
+                </div>
+                <div class="method-card" data-method="paypal">
+                    <i class="fab fa-paypal paypal-icon"></i>
+                    <span>PayPal <span class="intl-badge">International</span></span>
+                </div>
+            </div>
+
+            <div id="paypalInfo" class="paypal-info">
+                <p><i class="fas fa-info-circle"></i> International users: Please use PayPal. 50% OFF Applied!</p>
+                <p style="margin-top: 5px; font-weight: 600; color: #38bdf8;">PH Community Deal: $28.00 (Standard
+                    $56.00)</p>
+            </div>
+
+            <div class="actions" style="display: flex; gap: 15px;">
+                <button class="btn btn-outline close-payment-modal">取消</button>
+                <button id="confirmPaymentBtn" class="btn btn-gold">立即支付</button>
+            </div>
+
+            <div id="paymentStatus" style="margin-top: 20px;"></div>
+        </div>
+    </div>
+
+    <div id="messageContainer"></div>
+
+    <script src="js/auth.js"></script>
+    <script src="payment.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            window.paymentManager = new PaymentManager();
+        });
+    </script>
+</body>
+
+</html>

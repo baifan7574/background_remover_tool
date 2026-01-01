@@ -1,0 +1,33 @@
+# robots.txt for nbfive.com
+# 允许所有搜索引擎抓取
+
+User-agent: *
+Allow: /
+
+# 禁止抓取后台管理页面
+Disallow: /admin/
+Disallow: /api/
+
+# 禁止抓取上传文件目录
+Disallow: /uploads/
+
+# 禁止抓取测试页面
+Disallow: /test.html
+Disallow: /simple_test.html
+Disallow: /test_*.html
+
+# 禁止抓取支付相关页面（包含敏感信息）
+Disallow: /payment.html
+Disallow: /payment/
+
+# 允许抓取静态资源
+Allow: /css/
+Allow: /js/
+Allow: /images/
+
+# 网站地图位置
+Sitemap: https://nbfive.com/sitemap.xml
+
+# 爬取延迟（可选，单位：秒）
+# Crawl-delay: 1
+

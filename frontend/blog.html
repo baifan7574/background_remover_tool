@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>跨境电商运营干货 - PixelMagic 博客</title>
+    <meta name="description" content="PixelMagic 官方博客，分享跨境电商运营技巧、亚马逊/eBay图片处理指南、工具使用教程。">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .blog-header {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 80px 0 40px;
+            text-align: center;
+        }
+
+        .blog-header h1 {
+            font-size: 2.5rem;
+            color: #2d3748;
+            margin-bottom: 20px;
+        }
+
+        .blog-container {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .article-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: transform 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .article-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        .article-content {
+            padding: 24px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .article-tag {
+            background-color: #e2e8f0;
+            color: #4a5568;
+            font-size: 0.8rem;
+            padding: 4px 8px;
+            border-radius: 4px;
+            align-self: flex-start;
+            margin-bottom: 12px;
+        }
+
+        .article-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 12px;
+            line-height: 1.4;
+        }
+
+        .article-excerpt {
+            color: #718096;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            flex-grow: 1;
+        }
+
+        .article-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid #edf2f7;
+            padding-top: 16px;
+            font-size: 0.85rem;
+            color: #a0aec0;
+        }
+
+        .read-more-btn {
+            display: inline-block;
+            background-color: #4299e1;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: background-color 0.2s;
+        }
+
+        .read-more-btn:hover {
+            background-color: #3182ce;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- 复用 Index 的导航栏 -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <span class="brand-icon">🎨</span>
+                <span class="brand-text">PixelMagic</span>
+            </div>
+            <div class="nav-menu">
+                <a href="/" class="nav-link">首页</a>
+                <a href="/#tools" class="nav-link">工具</a>
+                <a href="/#pricing" class="nav-link">定价</a>
+                <a href="/blog" class="nav-link active">博客</a>
+            </div>
+            <div class="nav-auth">
+                <a href="/" class="btn btn-outline">返回首页</a>
+            </div>
+        </div>
+    </nav>
+
+    <header class="blog-header">
+        <div class="container">
+            <h1>跨境电商运营干货</h1>
+            <p>分享最新的亚马逊/eBay运营技巧与图片处理指南</p>
+        </div>
+    </header>
+
+    <div class="blog-container">
+        {% for article in articles %}
+        <div class="article-card">
+            <div class="article-content">
+                <span class="article-tag">干货技巧</span>
+                <h2 class="article-title">{{ article.title }}</h2>
+                <p class="article-excerpt">{{ article.summary }}...</p>
+                <div class="article-meta">
+                    <span>{{ article.date }}</span>
+                    <a href="/article.html?id={{ article.slug }}" class="read-more-btn">阅读全文</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- 复用 Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-bottom">
+                <p>&copy; 2024 PixelMagic. 保留所有权利。</p>
+            </div>
+        </div>
+    </footer>
+</body>
+
+</html>

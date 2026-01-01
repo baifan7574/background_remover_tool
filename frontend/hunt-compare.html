@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>性价比处刑：NBFive AI vs 竞品全方位对比</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --price-down: #ef4444;
+            --price-up: #22c55e;
+            --gold-glow: 0 0 20px rgba(251, 191, 36, 0.4);
+        }
+
+        .compare-hero {
+            padding: 100px 20px;
+            text-align: center;
+            background: radial-gradient(circle at center, rgba(56, 189, 248, 0.1) 0%, transparent 70%);
+        }
+
+        .compare-title {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #fff 0%, #94a3b8 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .compare-subtitle {
+            font-size: 1.25rem;
+            color: var(--text-dim);
+            max-width: 800px;
+            margin: 0 auto 50px;
+        }
+
+        .battle-container {
+            max-width: 1200px;
+            margin: 0 auto 100px;
+            padding: 0 20px;
+        }
+
+        .compare-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 15px;
+            margin-top: 30px;
+        }
+
+        .compare-table th {
+            padding: 20px;
+            text-align: left;
+            color: var(--text-dim);
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .compare-table td {
+            padding: 25px 20px;
+            background: rgba(30, 41, 59, 0.5);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .compare-table tr td:first-child {
+            border-left: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 12px 0 0 12px;
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .compare-table tr td:last-child {
+            border-right: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 0 12px 12px 0;
+        }
+
+        .nbfive-col {
+            background: rgba(56, 189, 248, 0.1) !important;
+            border: 1px solid var(--accent-blue) !important;
+            position: relative;
+        }
+
+        .nbfive-col::after {
+            content: '最佳选择';
+            position: absolute;
+            top: -10px;
+            right: 10px;
+            background: var(--accent-gold);
+            color: #000;
+            padding: 2px 10px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: bold;
+        }
+
+        .check-icon {
+            color: #22c55e;
+            margin-right: 8px;
+        }
+
+        .times-icon {
+            color: #ef4444;
+            margin-right: 8px;
+        }
+
+        .price-smash {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--accent-gold);
+        }
+
+        .competitor-price {
+            text-decoration: line-through;
+            color: var(--text-dim);
+            font-size: 0.9rem;
+        }
+
+        .calculator-card {
+            background: var(--bg-card);
+            border: 1px solid var(--accent-blue);
+            border-radius: 16px;
+            padding: 40px;
+            text-align: center;
+            margin-top: 50px;
+            box-shadow: var(--gold-glow);
+        }
+
+        .calc-result {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--accent-gold);
+            margin: 20px 0;
+        }
+
+        .cta-section {
+            text-align: center;
+            padding: 50px 0;
+        }
+
+        .btn-buy-now {
+            padding: 20px 50px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, var(--accent-gold) 0%, #d97706 100%);
+            color: #000;
+            border-radius: 50px;
+            text-decoration: none;
+            display: inline-block;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 10px 30px rgba(251, 191, 36, 0.3);
+        }
+
+        .btn-buy-now:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(251, 191, 36, 0.5);
+        }
+
+        /* 导航高亮 */
+        @keyframes pulse-gold {
+            0% {
+                text-shadow: 0 0 5px rgba(251, 191, 36, 0.5);
+            }
+
+            50% {
+                text-shadow: 0 0 15px rgba(251, 191, 36, 0.8);
+            }
+
+            100% {
+                text-shadow: 0 0 5px rgba(251, 191, 36, 0.5);
+            }
+        }
+
+        .highlight-link {
+            color: var(--accent-gold) !important;
+            font-weight: bold;
+            animation: pulse-gold 2s infinite;
+        }
+    </style>
+</head>
+
+<body class="tech-theme">
+    <nav class="glass-nav">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <span class="logo-icon">N5</span>
+                <span class="brand-text">NBFive AI</span>
+            </a>
+            <div class="nav-links">
+                <a href="index.html">返回首页</a>
+                <a href="hunt-compare.html" class="highlight-link">性价比对比</a>
+                <a href="payment.html" class="btn-primary">立即买断</a>
+            </div>
+        </div>
+    </nav>
+
+    <header class="compare-hero">
+        <h1 class="compare-title">拒绝“租用”软件，开启“拥有”时代</h1>
+        <p class="compare-subtitle">为什么聪明的老卖家都会选择 NBFive AI？这不是省钱，这是在为您的电商业务建立资产。</p>
+    </header>
+
+    <section class="battle-container">
+        <table class="compare-table">
+            <thead>
+                <tr>
+                    <th>对比项</th>
+                    <th>普通竞品 (remove.bg 等)</th>
+                    <th class="nbfive-col">NBFive AI</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>付费模式</td>
+                    <td><i class="fas fa-redo times-icon"></i> 按月/按年订阅 (不付钱就停用)</td>
+                    <td class="nbfive-col"><i class="fas fa-infinity check-icon"></i> 终身买断 (一次付费，永久使用)</td>
+                </tr>
+                <tr>
+                    <td>单价成本</td>
+                    <td><i class="fas fa-dollar-sign times-icon"></i> 约 ¥1.5 - ¥5 / 张</td>
+                    <td class="nbfive-col"><i class="fas fa-hand-holding-usd check-icon"></i> 无限次数，单价趋于 ¥0</td>
+                </tr>
+                <tr>
+                    <td>批量处理能力</td>
+                    <td><i class="fas fa-layer-group times-icon"></i> 严格点数限制，通常需要排队</td>
+                    <td class="nbfive-col"><i class="fas fa-bolt check-icon"></i> 苍穹引擎并发，支持 2GB 包处理</td>
+                </tr>
+                <tr>
+                    <td>电商适配性</td>
+                    <td><i class="fas fa-shapes times-icon"></i> 通用算法，发丝级处理需加钱</td>
+                    <td class="nbfive-col"><i class="fas fa-shopping-cart check-icon"></i> 针对 Amazon/Shopify 深度优化</td>
+                </tr>
+                <tr>
+                    <td>隐私与安全</td>
+                    <td><i class="fas fa-cloud times-icon"></i> 您的图片会留在对方服务器</td>
+                    <td class="nbfive-col"><i class="fas fa-user-shield check-icon"></i> 处理完即销毁，隐私 100% 保护</td>
+                </tr>
+                <tr>
+                    <td>一年总支出</td>
+                    <td><span class="competitor-price">¥1,200 - ¥5,000+</span></td>
+                    <td class="nbfive-col"><span class="price-smash">¥199 (终身)</span></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="calculator-card">
+            <h2>💸 帮您算一笔账</h2>
+            <p>如果您是一个每天处理 30 张图片的成熟卖家：</p>
+            <div class="calc-result">一年为您节省约 ¥3,800+</div>
+            <p>这笔钱足够您多开一个店铺的月租，或者投一次精准的站外广告。</p>
+        </div>
+
+        <div class="cta-section">
+            <a href="payment.html" class="btn-buy-now">夺取终身授权 - ¥199</a>
+            <p style="margin-top: 20px; color: var(--text-dim);"><i class="fas fa-shield-alt"></i> 苍穹系统实时监控中，确保支付安全</p>
+        </div>
+    </section>
+
+    <footer class="glass-footer">
+        <div class="footer-bottom">
+            <p>&copy; 2025 NBFive AI. 隶属于苍穹系统 (Cang Qiong System). 保留所有权利。</p>
+        </div>
+    </footer>
+</body>
+
+</html>

@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>支付成功 - PixelMagic</title>
+    <link rel="stylesheet" href="../style.css">
+    <style>
+        .success-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 2rem;
+        }
+        
+        .success-card {
+            background: white;
+            border-radius: 20px;
+            padding: 3rem;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            max-width: 500px;
+            width: 100%;
+            animation: slideUp 0.5s ease-out;
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 2rem;
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            color: white;
+            animation: scaleIn 0.5s ease-out 0.2s both;
+        }
+        
+        @keyframes scaleIn {
+            from {
+                transform: scale(0);
+            }
+            to {
+                transform: scale(1);
+            }
+        }
+        
+        .success-title {
+            font-size: 2rem;
+            color: #333;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+        
+        .success-message {
+            color: #666;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+        
+        .success-details {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            text-align: left;
+        }
+        
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            color: #555;
+        }
+        
+        .detail-label {
+            font-weight: 500;
+        }
+        
+        .detail-value {
+            color: #333;
+            font-weight: 600;
+        }
+        
+        .success-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 0.75rem 2rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+        
+        .btn-outline {
+            background: transparent;
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+        
+        .btn-outline:hover {
+            background: #667eea;
+            color: white;
+        }
+        
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .error-message {
+            background: #fee;
+            color: #c33;
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="success-container">
+        <div class="success-card">
+            <div class="success-icon">✓</div>
+            <h1 class="success-title">支付成功！</h1>
+            <p class="success-message">恭喜您成功升级会员，现在可以享受更多功能了。</p>
+            
+            <div class="error-message" id="errorMessage">
+                支付状态确认中，请稍候...
+            </div>
+            
+            <div class="success-details" id="orderDetails">
+                <div class="detail-item">
+                    <span class="detail-label">订单号：</span>
+                    <span class="detail-value" id="orderNumber">-</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">会员类型：</span>
+                    <span class="detail-value" id="planType">-</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">支付金额：</span>
+                    <span class="detail-value" id="amount">-</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">支付方式：</span>
+                    <span class="detail-value" id="paymentMethod">-</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">支付时间：</span>
+                    <span class="detail-value" id="paymentTime">-</span>
+                </div>
+            </div>
+            
+            <div class="success-actions">
+                <a href="index.html" class="btn btn-primary">返回首页</a>
+                <a href="#" class="btn btn-outline" onclick="viewOrderDetails()">查看订单</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/auth.js"></script>
+    <script>
+        // 获取URL参数
+        function getUrlParameter(name) {
+            name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+            var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+            var results = regex.exec(location.search);
+            return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+        }
+
+        // 格式化时间
+        function formatDateTime(timestamp) {
+            const date = new Date(timestamp);
+            return date.toLocaleString('zh-CN');
+        }
+
+        // 获取会员类型中文名
+        function getPlanTypeName(planType) {
+            const planNames = {
+                'basic': '基础版',
+                'professional': '专业版',
+                'flagship': '旗舰版',
+                'enterprise': '企业版'
+            };
+            return planNames[planType] || planType;
+        }
+
+        // 获取支付方式中文名
+        function getPaymentMethodName(method) {
+            const methodNames = {
+                'alipay': '支付宝',
+                'wechat': '微信支付'
+            };
+            return methodNames[method] || method;
+        }
+
+        // 检查支付状态
+        async function checkPaymentStatus() {
+            const orderId = getUrlParameter('order_id');
+            const outTradeNo = getUrlParameter('out_trade_no');
+            const orderNo = getUrlParameter('order_no');
+            
+            // 优先使用 order_no，然后是 out_trade_no，最后是 order_id
+            const finalOrderNo = orderNo || outTradeNo || orderId;
+            
+            if (!finalOrderNo) {
+                document.getElementById('errorMessage').style.display = 'block';
+                document.getElementById('errorMessage').textContent = '订单信息缺失，请检查支付状态。';
+                return;
+            }
+
+            try {
+                // 使用订单号查询订单状态（优先使用 order_no，然后是 out_trade_no）
+                const orderNo = finalOrderNo;
+                
+                // 获取API基础URL（从环境或默认）
+                const apiBaseUrl = window.API_BASE_URL || 'http://localhost:5000';
+                
+                // 获取token（使用auth_token作为key，与auth.js保持一致）
+                const token = localStorage.getItem('auth_token');
+                
+                // 构建请求头（token可选，因为后端已支持无token查询）
+                const headers = {
+                    'Content-Type': 'application/json'
+                };
+                if (token) {
+                    headers['Authorization'] = `Bearer ${token}`;
+                }
+                
+                const response = await fetch(`${apiBaseUrl}/api/payment/query-order/${orderNo}`, {
+                    headers: headers
+                });
+                
+                // 如果401错误且使用了token，尝试不带token查询
+                if (!response.ok && response.status === 401 && token) {
+                    console.log('Token可能已过期，尝试不带token查询...');
+                    const retryResponse = await fetch(`${apiBaseUrl}/api/payment/query-order/${orderNo}`, {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    });
+                    if (retryResponse.ok) {
+                        const retryData = await retryResponse.json();
+                        if (retryData.success && retryData.order) {
+                            // 使用重试的结果继续处理
+                            const order = retryData.order;
+                            document.getElementById('orderNumber').textContent = order.order_no || orderNo;
+                            document.getElementById('planType').textContent = getPlanTypeName(order.plan || order.plan_type);
+                            document.getElementById('amount').textContent = `¥${order.amount || 0}`;
+                            document.getElementById('paymentMethod').textContent = getPaymentMethodName(order.payment_method || 'alipay');
+                            document.getElementById('paymentTime').textContent = order.paid_at ? formatDateTime(order.paid_at) : formatDateTime(new Date());
+                            document.getElementById('errorMessage').style.display = 'none';
+                            // 更新用户信息（如果有authManager）
+                            if (window.authManager) {
+                                try {
+                                    await window.authManager.updateUserInfo();
+                                } catch (e) {
+                                    console.log('更新用户信息失败:', e);
+                                }
+                            }
+                            return; // 成功处理，退出函数
+                        }
+                    }
+                }
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+
+                if (data.success && data.order) {
+                    const order = data.order;
+                    
+                    // 更新订单详情
+                    document.getElementById('orderNumber').textContent = order.order_no || orderNo;
+                    document.getElementById('planType').textContent = getPlanTypeName(order.plan || order.plan_type);
+                    document.getElementById('amount').textContent = `¥${order.amount || 0}`;
+                    document.getElementById('paymentMethod').textContent = getPaymentMethodName(order.payment_method || 'alipay');
+                    document.getElementById('paymentTime').textContent = order.paid_at ? formatDateTime(order.paid_at) : formatDateTime(new Date());
+                    
+                    // 隐藏错误消息
+                    document.getElementById('errorMessage').style.display = 'none';
+                    
+                    // 更新用户信息
+                    if (window.authManager) {
+                        await window.authManager.updateUserInfo();
+                    }
+                } else {
+                    document.getElementById('errorMessage').style.display = 'block';
+                    document.getElementById('errorMessage').textContent = data.error || data.message || '订单状态查询失败，请稍后刷新页面查看。';
+                }
+            } catch (error) {
+                console.error('查询支付状态失败:', error);
+                document.getElementById('errorMessage').style.display = 'block';
+                document.getElementById('errorMessage').textContent = '网络错误，请稍后重试。如果已支付，会员权益稍后会自动激活。';
+            }
+        }
+
+        // 查看订单详情
+        function viewOrderDetails() {
+            const orderId = getUrlParameter('order_id') || getUrlParameter('out_trade_no');
+            if (orderId) {
+                // 这里可以跳转到订单详情页面
+                alert(`订单详情功能正在开发中\n订单号：${orderId}`);
+            }
+        }
+
+        // 页面加载完成后检查支付状态
+        document.addEventListener('DOMContentLoaded', function() {
+            checkPaymentStatus();
+        });
+    </script>
+</body>
+</html>

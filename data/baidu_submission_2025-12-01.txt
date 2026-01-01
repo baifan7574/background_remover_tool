@@ -1,0 +1,12 @@
+百度快速抓取提交清单
+日期：2025-12-01
+共 8 个URL
+
+https://www.nbfive.com/
+https://www.nbfive.com/about.html
+https://www.nbfive.com/faq.html
+https://www.nbfive.com/help.html
+https://www.nbfive.com/tutorial.html
+https://www.nbfive.com/contact.html
+https://www.nbfive.com/index.html#tools
+https://www.nbfive.com/index.html#pricing
